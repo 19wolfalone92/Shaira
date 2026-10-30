@@ -1,6 +1,6 @@
 /* Cache only this app's public static files. No user progress or personal data is sent anywhere. */
-const CACHE = "shaira-static-v1";
-const SHELL = ["./", "./index.html", "./assets/styles.css", "./assets/lessons.js", "./assets/app.js", "./manifest.webmanifest", "./icons/icon.svg"];
+const CACHE = "shaira-static-v2";
+const SHELL = ["./", "./index.html", "./assets/styles.css", "./assets/lessons.js", "./assets/app.js", "./manifest.webmanifest", "./icons/icon.svg", "./icons/icon-180.png", "./icons/icon-192.png", "./icons/icon-512.png"];
 self.addEventListener("install", event => {
   event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(SHELL)).then(() => self.skipWaiting()));
 });
