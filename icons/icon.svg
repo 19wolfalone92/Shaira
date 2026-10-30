@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Shaira Russian learning">
+  <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#7463d8"/><stop offset=".6" stop-color="#b67bcf"/><stop offset="1" stop-color="#e2a4bd"/></linearGradient></defs>
+  <rect width="512" height="512" rx="114" fill="url(#g)"/>
+  <path d="M390 110c-83-26-170-4-207 58-26 44-26 114 6 157 41 54 105 74 173 54" fill="none" stroke="#fff" stroke-width="16" stroke-linecap="round" opacity=".22"/>
+  <text x="255" y="343" text-anchor="middle" font-family="Arial,sans-serif" font-size="288" font-weight="750" fill="white">Ш</text>
+  <circle cx="390" cy="368" r="21" fill="#fff1b5"/>
+</svg>
