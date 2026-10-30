@@ -1,0 +1,14 @@
+{
+  "name": "shaira-russian-pwa",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Bilingual offline-capable Russian learning PWA",
+  "scripts": {
+    "test": "node --test tests/*.test.mjs",
+    "check": "node --check assets/app.js && node --check assets/lessons.js && node --check sw.js && npm test"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
