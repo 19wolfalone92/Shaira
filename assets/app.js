@@ -142,7 +142,7 @@ function quizMarkup(lesson) {
     `<form id="answer-form" autocomplete="off"><label for="answer-input">${phrase("answer")}</label><input id="answer-input" name="answer" type="text" lang="ru" spellcheck="false" autocomplete="off" autocapitalize="off" required placeholder="АБВ…" />
     <small class="input-hint">${phrase("answerHint")}</small><button class="primary-button" type="submit">${phrase("checkAnswer")}</button></form>${keyboard()}`}
     <div class="feedback ${feedback?.correct ? "success" : "error"}" ${feedback ? "" : "hidden"} role="status">${feedback ? escapeHtml(feedback.message) : ""}</div>
-    ${feedback?.correct ? `<button class="primary-button" type="button" data-action="finish-lesson">${phrase("finish")} →</button>` : ""}</div>`;
+    ${feedback?.correct && currentRoute() !== "review" ? `<button class="primary-button" type="button" data-action="finish-lesson">${phrase("finish")} →</button>` : ""}</div>`;
 }
 function keyboard() {
   return `<div class="cyrillic-keyboard" aria-label="${phrase("keyboard")}"><div class="key-caption">${phrase("keyboard")}</div>${keyboardRows.map(row=>`<div class="key-row">${Array.from(row).map(key=>`<button type="button" data-action="type-key" data-char="${key.toLowerCase()}" aria-label="${key}">${key.toLowerCase()}</button>`).join("")}</div>`).join("")}<div class="key-row"><button type="button" class="space-key" data-action="type-key" data-char=" ">space</button><button type="button" data-action="delete-key">⌫</button></div></div>`;
@@ -206,7 +206,7 @@ function checkAnswer(value) {
     state.completed.push(lesson.id);
     save();
   }
-  // Preserve typed input after wrong answers.
+  // Keep the learner on the same question for another attempt.
   render();
   if (!correct && lesson.quiz.type !== "choice") document.getElementById("answer-input")?.focus();
 }
