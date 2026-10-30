@@ -10,7 +10,7 @@ Run content/integrity tests with `node --test tests/*.test.mjs` (Node 20+).
 
 ## Deployment
 
-Static app designed for GitHub Pages. Go to **Settings → Pages → Build and deployment → GitHub Actions** once. The included workflow then deploys on pushes to `main`. On iPhone, open the HTTPS site in Safari, tap Share → Add to Home Screen. Online is needed for the first visit; cached material can subsequently work offline.
+Static app designed for GitHub Pages (includes iPhone touch icon and installable PNG icons). Go to **Settings → Pages → Build and deployment → GitHub Actions** once. The included workflow then deploys on pushes to `main`. On iPhone, open the HTTPS site in Safari, tap Share → Add to Home Screen. Online is needed for the first visit; cached material can subsequently work offline.
 
 ## Scope and limitations
 
