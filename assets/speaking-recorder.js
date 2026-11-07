@@ -17,7 +17,8 @@ export async function startPrivateRecording(onStop){
     recorder.addEventListener("dataavailable",event=>{if(event.data&&event.data.size)chunks.push(event.data);});
     recorder.addEventListener("stop",()=>{
       releaseStream(stream);
-      if(active===current)active=null;
+      if(active!==current)return; // discarded session, do not create a blob URL
+      active=null;
       if(!chunks.length)return onStop?.(null);
       const blob=new Blob(chunks,{type:recorder.mimeType||chunks[0].type||"audio/mp4"});
       objectURL=URL.createObjectURL(blob);
