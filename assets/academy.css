@@ -112,3 +112,9 @@
 .aca-recorder-buttons{display:flex;gap:10px;flex-wrap:wrap}
 .aca-secondary{font-size:13px;font-weight:800;border:1px solid #bca9db;border-radius:10px;color:#58488a;background:#fff;padding:11px 14px;min-height:44px}
 .aca-recorder audio{width:100%;max-width:100%;margin-top:10px}
+
+/* English-first vocabulary and conversation stage filters: usable on narrow iPhones. */
+.aca-vocab-tabs{display:flex;gap:8px;overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x proximity;padding:8px 2px 13px;margin:7px 0 13px;scrollbar-width:thin;-webkit-overflow-scrolling:touch}
+.aca-vocab-tabs a{flex:0 0 auto;white-space:nowrap;scroll-snap-align:start;padding:10px 14px;border:1px solid #ded5ea;background:#fff;text-decoration:none;color:#574776;border-radius:999px;font-size:12px;font-weight:800;min-height:38px;box-sizing:border-box}
+.aca-vocab-tabs a.selected,.aca-vocab-tabs a[aria-current="page"]{color:#fff;background:#62509a;border-color:#62509a}
+.aca-vocab-tabs a:focus-visible{outline:3px solid #b49adb;outline-offset:2px}
