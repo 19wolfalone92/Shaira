@@ -24,7 +24,7 @@ test("20 original reading texts offer contextual comprehension and production ta
  assert.equal(new Set(readingLibrary.map(x=>x.id)).size,20);
  for(const stage of levels)assert.equal(readingsForStage(stage).length,4,stage);
  for(const r of readingLibrary){
-   assert.ok(r.text.length>100,r.id+" has meaningful text");
+   assert.ok(r.text.length>=({starter:80,a1:250,a2:400,b1:600,b2:900}[r.stage]),r.id+" text length appropriate to stage");
    assert.match(r.text,/[\u0400-\u052F]/u,r.id);
    for(const l of ["en","tl"])assert.ok(r.title[l]&&r.guide[l]&&r.task[l],r.id+" "+l);
    assert.ok(r.glossary.length>=4,r.id);
@@ -46,7 +46,7 @@ test("30 adult writing assignments are levelled and have meaningful goals",()=>{
    assert.ok(writingWordTargets[level][0]<writingWordTargets[level][1]);
  }
  for(const w of writingTasks){
-  assert.ok(w.model.length>35,w.id);
+  assert.ok(w.model.length>=({starter:20,a1:45,a2:60,b1:70,b2:80}[w.stage]),w.id+" useful Russian model opening");
   assert.match(w.model,/[\u0400-\u052F]/u,w.id);
   for(const l of ["en","tl"])assert.ok(w.title[l]&&w.brief[l]&&w.check[l],w.id+" "+l);
  }
