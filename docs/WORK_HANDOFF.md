@@ -80,7 +80,7 @@ This repository is now **far more substantial** than the initial 13 beginner les
 1. Test actual iPhone Safari install, offline operation, touch/pen writing, keyboard, navigation, Russian voices, VoiceOver, 200% text zoom. Fix any bugs before producing further learning content.
 2. Grow each stage with much deeper exercise banks and quality native audio. For B2 add real paragraphs and multi-paragraph texts, inferential reading questions and teacher-reviewed 180–250-word essay tasks.
 3. Build meaningful mastery checkpoints and feedback; currently there are too few questions per grammar topic to confirm acquisition.
-4. Add opt-in local progress **export/import** before users entrust important drafts to this app.
+4. Progress **export/import** is now implemented in Settings using a validated JSON backup. Test backup transfer between actual iPhones, recovery after Safari data loss and accessibility.
 5. Have qualified native speakers check all Russian examples and Filipino explanations, with change tracking.
 6. Deploy verified changes from feature branch via PR and merge only after CI passes. Published Pages output currently follows main.
 
