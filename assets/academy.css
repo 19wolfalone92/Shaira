@@ -93,3 +93,12 @@
 .aca-dialogue-line>div{flex:1;min-width:0}.aca-dialogue-line strong{display:block;font-size:15px;font-weight:700;line-height:1.65;color:#463c65;overflow-wrap:anywhere}
 .aca-dialogue-line small{display:block;font-size:11px;margin-top:8px;line-height:1.5;color:#827993}
 .aca-dialogue-line .aca-sound{padding:7px;flex:none}
+
+.writing-modes{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:6px 0 17px}
+.writing-modes button{background:#fff;color:#65588d;border:1px solid #e8dff5;padding:12px 5px;border-radius:12px;font-weight:750;font-size:12px}
+.writing-modes button.selected{background:#ede6fc;color:#674db6;border:2px solid #9580dc}
+.writing-target{font-size:clamp(27px,6vw,39px);line-height:1.35;font-weight:800;color:#6957bd;margin:18px 0;text-align:center;overflow-wrap:anywhere}
+.case-toggle{border:0;display:block;margin:-10px auto 17px;color:#7464b4;text-decoration:underline;background:none;font-size:12px;padding:8px}
+.guide-letter.long{font-size:clamp(49px,9vw,82px);white-space:nowrap;text-align:center;max-width:98%;overflow:hidden;text-overflow:ellipsis}
+.guide-letter.sentence{font-size:clamp(25px,5vw,36px);text-align:center;line-height:1.35;max-width:92%;width:100%;overflow-wrap:anywhere}
+.writing-academy-link{display:block;margin-top:22px;text-align:center;color:#7260b2;font-weight:750;font-size:12px;text-decoration:none}
