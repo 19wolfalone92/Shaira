@@ -68,7 +68,8 @@ const listStages=(path,l)=>'<div class="lp-level-grid">'+stages.map(s=>{
 function overview(l){
   return back(l)+top("SHAIRA · STUDY",TXT[l].home,TXT[l].intro)+
   '<div class="lp-advice">'+esc(TXT[l].introAdvice)+'</div>'+
-  '<div class="lp-paths"><a href="#academy/coach"><span>◎</span><div><strong>Your Personal Study Coach</strong><p>Find what to practise next across seven language skills.</p></div><b>›</b></a>'+
+  '<div class="lp-paths"><a href="#academy/search"><span>⌕</span><div><strong>Search all Russian learning materials</strong><p>Find Russian and English words, grammar topics, verb forms, texts and dialogues.</p></div><b>›</b></a>'+
+  '<a href="#academy/coach"><span>◎</span><div><strong>Your Personal Study Coach</strong><p>Find what to practise next across seven language skills.</p></div><b>›</b></a>'+
   '<a href="#academy/sounds"><span>🔊</span><div><strong>Russian Sounds & Phonetics</strong><p>30 sound contrasts for adult listening, reading and pronunciation practice.</p></div><b>›</b></a>'+
   '<a href="#academy/scenarios"><span>💬</span><div><strong>Interactive Russian roleplay</strong><p>15 adult situations with context-sensitive responses and branching dialogue outcomes.</p></div><b>›</b></a>'+
   '<a href="#academy/verbs"><span>Я</span><div><strong>Russian Verb Lab</strong><p>Learn 240 authentic conjugated forms and hear each verb pattern.</p></div><b>›</b></a>'+ 
