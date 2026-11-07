@@ -1,5 +1,5 @@
 import { sections, lessons, alphabet, keyboardRows } from "./lessons.js";
-import { academyHtml, handleAcademyAction, handleAcademySubmit, academyStatistics } from "./academy-ui.js";
+import { academyHtml, handleAcademyAction, handleAcademySubmit, academyStatistics, stopSpeakingRehearsal } from "./academy-ui.js";
 import { downloadBackup, restoreBackup } from "./backup.js";
 import {labHtml,labAction,labInput,labStats} from "./learning-labs.js";
 
@@ -236,6 +236,7 @@ function settingsPage() {
 function render() {
   if (drawingCleanup) { drawingCleanup(); drawingCleanup = null; }
   const route = currentRoute();
+  if(!route.startsWith("academy/lesson/") || !route.endsWith("/speak"))stopSpeakingRehearsal();
   const page = route === "home" ? home() : route === "academy/lab" || route.startsWith("academy/grammar") || route.startsWith("academy/library") || route.startsWith("academy/writing") ? labHtml(route,state.language) : route.startsWith("academy") ? academyHtml(route,state.language) : route === "review" ? reviewPage() : route === "write" ? writePage() :
     route === "settings" ? settingsPage() : lessonPage(route.slice(7));
   document.documentElement.lang = state.language === "tl" ? "fil" : "en";
