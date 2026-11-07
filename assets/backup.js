@@ -9,6 +9,7 @@ const LISTENING="shaira-listening-v1";
 const MIXER="shaira-mixed-practice-v1";
 const SCENARIOS="shaira-scenarios-v1";
 const PHONETICS="shaira-phonetics-v1";
+const MICRO="shaira-microsteps-v1";
 export const BACKUP_FORMAT="shaira-learning-backup";
 export const BACKUP_VERSION=1;
 function object(x){return x!==null&&typeof x==="object"&&!Array.isArray(x);}
@@ -212,6 +213,19 @@ function cleanPhonetics(x){
  }
  return {items};
 }
+function cleanMicro(x){
+ const raw=safeObj(x),finished=[];
+ const mode=["gentle","steady","challenge"].includes(raw.mode)?raw.mode:"gentle";
+ const index=Number.isInteger(raw.index)&&raw.index>=0&&raw.index<=78?raw.index:0;
+ if(Array.isArray(raw.finished))for(const value of raw.finished.slice(-78)){
+  if(!object(value)||!Number.isInteger(value.index)||value.index<0||value.index>=78||
+     !["learned","tested"].includes(value.method)||!Number.isFinite(value.at)||value.at<0)continue;
+  finished.push({index:value.index,method:value.method,at:value.at});
+ }
+ const wrong=Number.isInteger(raw.wrong)&&raw.wrong>=0&&raw.wrong<=100000?raw.wrong:0;
+ const totalPractice=Number.isInteger(raw.totalPractice)&&raw.totalPractice>=0&&raw.totalPractice<=100000?raw.totalPractice:0;
+ return {index,mode,finished,wrong,totalPractice};
+}
 function parseExisting(storage,key){
   try{return JSON.parse(storage.getItem(key)||"{}");}
   catch{return {};}
@@ -228,7 +242,8 @@ export function buildBackup(storage=globalThis.localStorage){
     listening:cleanListening(parseExisting(storage,LISTENING)),
     mixer:cleanMixer(parseExisting(storage,MIXER)),
     scenarios:cleanScenarios(parseExisting(storage,SCENARIOS)),
-    phonetics:cleanPhonetics(parseExisting(storage,PHONETICS))
+    phonetics:cleanPhonetics(parseExisting(storage,PHONETICS)),
+    micro:cleanMicro(parseExisting(storage,MICRO))
   };
 }
 export function readBackup(json){
@@ -236,11 +251,11 @@ export function readBackup(json){
   let data;try{data=JSON.parse(json);}catch{throw new Error("Invalid JSON backup.");}
   if(!object(data)||data.format!==BACKUP_FORMAT||data.version!==BACKUP_VERSION)throw new Error("Not a compatible Shaira backup.");
   if(!object(data.legacy)||!object(data.academy))throw new Error("The backup is missing required progress data.");
-  return {legacy:cleanProgress(data.legacy),academy:cleanAcademy(data.academy),labs:cleanLabs(data.labs),daily:cleanDaily(data.daily),mastery:cleanMastery(data.mastery),cases:cleanCasePractice(data.cases),listening:cleanListening(data.listening),mixer:cleanMixer(data.mixer),scenarios:cleanScenarios(data.scenarios),phonetics:cleanPhonetics(data.phonetics)};
+  return {legacy:cleanProgress(data.legacy),academy:cleanAcademy(data.academy),labs:cleanLabs(data.labs),daily:cleanDaily(data.daily),mastery:cleanMastery(data.mastery),cases:cleanCasePractice(data.cases),listening:cleanListening(data.listening),mixer:cleanMixer(data.mixer),scenarios:cleanScenarios(data.scenarios),phonetics:cleanPhonetics(data.phonetics),micro:cleanMicro(data.micro)};
 }
 export function restoreBackup(json,storage=globalThis.localStorage){
   const parsed=readBackup(json); // do all validation before changing device state
-  const beforeLegacy=storage.getItem(LEGACY),beforeAcademy=storage.getItem(ACADEMY),beforeLabs=storage.getItem(LABS),beforeDaily=storage.getItem(DAILY),beforeMastery=storage.getItem(MASTERY),beforeCases=storage.getItem(CASES),beforeListening=storage.getItem(LISTENING),beforeMixer=storage.getItem(MIXER),beforeScenarios=storage.getItem(SCENARIOS),beforePhonetics=storage.getItem(PHONETICS);
+  const beforeLegacy=storage.getItem(LEGACY),beforeAcademy=storage.getItem(ACADEMY),beforeLabs=storage.getItem(LABS),beforeDaily=storage.getItem(DAILY),beforeMastery=storage.getItem(MASTERY),beforeCases=storage.getItem(CASES),beforeListening=storage.getItem(LISTENING),beforeMixer=storage.getItem(MIXER),beforeScenarios=storage.getItem(SCENARIOS),beforePhonetics=storage.getItem(PHONETICS),beforeMicro=storage.getItem(MICRO);
   try{
     storage.setItem(LEGACY,JSON.stringify(parsed.legacy));
     storage.setItem(ACADEMY,JSON.stringify(parsed.academy));
@@ -252,6 +267,7 @@ export function restoreBackup(json,storage=globalThis.localStorage){
     storage.setItem(MIXER,JSON.stringify(parsed.mixer));
     storage.setItem(SCENARIOS,JSON.stringify(parsed.scenarios));
     storage.setItem(PHONETICS,JSON.stringify(parsed.phonetics));
+    storage.setItem(MICRO,JSON.stringify(parsed.micro));
   }catch(error){
     try{
       if(beforeLegacy===null)storage.removeItem?.(LEGACY);else storage.setItem(LEGACY,beforeLegacy);
@@ -264,6 +280,7 @@ export function restoreBackup(json,storage=globalThis.localStorage){
       if(beforeMixer===null)storage.removeItem?.(MIXER);else storage.setItem(MIXER,beforeMixer);
       if(beforeScenarios===null)storage.removeItem?.(SCENARIOS);else storage.setItem(SCENARIOS,beforeScenarios);
       if(beforePhonetics===null)storage.removeItem?.(PHONETICS);else storage.setItem(PHONETICS,beforePhonetics);
+      if(beforeMicro===null)storage.removeItem?.(MICRO);else storage.setItem(MICRO,beforeMicro);
     }catch{}
     throw new Error("Could not write backup to this device: "+error.message);
   }
