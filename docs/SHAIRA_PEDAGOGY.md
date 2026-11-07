@@ -139,3 +139,7 @@ The Verb Lab supplies explicit English-guided tables for 24 selected verbs and a
 Fifteen interactive adult scenarios provide three decisions each and an alternate reply based on the learner's chosen Russian sentence. English explanations explain the intended model. This is guided pragmatic practice, not natural-language generation or free-speaking evaluation.
 
 Authentic Russian recordings and independent language assessment remain required for validated B2.
+
+## v0.7 real language skill extensions
+
+A phonetics lab trains 30 Russian sound contrasts (60 possible listening targets) with distinct auditory choices and explanations. The learner is not assigned a fake listening score if Russian speech cannot run. Writing now includes structured English rubrics, 29 specific and context-limited error patterns, a Cyrillic keyboard and spoken draft readback. Seven actual practice categories inform the personal Study Coach, while English and Russian queries can locate 800+ indexed resources in the offline learning library. For actual B2, native recordings, independently evaluated spontaneous speaking and authoritative essay assessment remain essential.
