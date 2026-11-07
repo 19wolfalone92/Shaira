@@ -9,6 +9,9 @@ import {readingLibrary} from "./reading-library.js";
 import {writingTasks,writingWordTargets} from "./writing-tasks.js";
 import {lessons} from "./lessons.js";
 import {openingDays,weeklyThemes} from "./daily-content.js";
+import {studioForUnit} from "./studio-lessons.js";
+import {checkpointForStage} from "./stage-checkpoints.js";
+import {MASTERY_KEY,loadMastery} from "./mastery-engine.js";
 
 export const DAILY_KEY="shaira-daily-v1";
 export const DAYS_PER_STAGE=42;
@@ -34,7 +37,7 @@ export function makeDay(index){
  const stage=stageOf(index),level=stage.id,levelNo=stages.indexOf(stage);
  const within=index%DAYS_PER_STAGE,week=Math.floor(within/7),weekday=within%7;
  const stageUnits=group(units,level);
- const unit=selected(stageUnits,week+(weekday===5?1:weekday===6?2:0));
+ const unit=selected(stageUnits,week*2+(weekday>=4?1:0));
  const pack=selected(firstWordPacks,levelNo*8+week*2+(weekday>=5?1:0));
  const stageDialogues=group(dialogues,level);
  const dialogue=selected(stageDialogues,week);
@@ -105,6 +108,16 @@ export function makeDay(index){
        "Re-read and answer without hints","Basahin muli at sumagot nang walang tulong",15,{key:passage.id}));
    }
  }
+ if(index>=14&&(weekday===0||weekday===4)){
+   const skill=studioForUnit(unit.id);
+   if(skill)tasks.unshift(task("studio:"+unit.id,"studio","#academy/mastery/"+unit.id,
+      "Learn and practise: "+unit.title.en,"Aralin at sanayin: "+unit.title.tl,15,{key:unit.id}));
+ }
+ if(within===DAYS_PER_STAGE-1){
+   const checkpoint=checkpointForStage(level);
+   if(checkpoint)tasks.push(task("checkpoint:"+level,"checkpoint","#academy/checkpoint/"+level,
+     "Stage review: "+stage.label,"Pagsusuri sa antas: "+stage.label,20,{key:level}));
+ }
  const intro=index<openingDays.length?openingDays[index]:weeklyThemes[weekday];
  return {
   index,number:index+1,total:GUIDED_STUDY_DAYS,stage:level,stageLabel:stage.label,week:week+1,
@@ -139,7 +152,8 @@ export function snapshot(storage=globalThis.localStorage){
  const academy=parse(storage,"shaira-academy-v1");
  const labs=parse(storage,"shaira-labs-v1");
  const legacy=parse(storage,"shaira-progress-v1");
- return {academy,labs,legacy};
+ const mastery=loadMastery(storage);
+ return {academy,labs,legacy,mastery};
 }
 export function stepComplete(step,state,snap,audioAvailable=true){
  const t=Number(state.startedAt)||0;
@@ -156,6 +170,15 @@ export function stepComplete(step,state,snap,audioAvailable=true){
  if(step.kind==="reading"){
    const rec=safeRecord(safeRecord(l.readings)[step.key]);
    return Number(rec.last)>=t&&rec.lastPassed===true;
+ }
+ if(step.kind==="studio"){
+   const row=safeRecord(safeRecord(snap.mastery).studios)[step.key];
+   return Number(row?.last)>=t&&Number(row?.lastScore)===3;
+ }
+ if(step.kind==="checkpoint"){
+   const row=safeRecord(safeRecord(snap.mastery).checkpoints)[step.key];
+   return Number(row?.last)>=t&&row?.lastPassed===true&&
+     Number(row?.lastScore)>=8&&Number(row?.correctTyped)>=1&&Number(row?.correctReading)>=1;
  }
  if(step.kind==="writing"){
    const rec=String(safeRecord(l.drafts)[step.key]||"");
