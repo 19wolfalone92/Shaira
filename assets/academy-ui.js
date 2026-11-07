@@ -148,13 +148,20 @@ function firstWordsPage(route,l){
     '<div><span class="aca-emoji">'+w.icon+'</span><button class="aca-sound" data-aca="sound" data-text="'+esc(w.ru)+'">🔊</button><b lang="ru">'+esc(w.ru)+'</b><small>'+esc(val(w,l))+'</small></div>').join("")+'</div><button class="aca-cta aca-wide" data-aca="start-quiz">'+UI[l].testNow+' →</button></section>';
 }
 function dialoguesPage(route,l){
-  const id=route.split("/")[2];
-  if(!id)return '<a class="aca-back" href="#academy">← '+UI[l].back+'</a>'+
-    top("💬 "+UI[l].talk,tx("Russian conversation lab","Pagsasanay sa usapan sa Ruso",l),tx("Read each line, listen, repeat aloud and check meaning.","Basahin, pakinggan, ulitin nang malakas at suriin ang kahulugan.",l))+
-    '<div class="aca-units">'+dialogues.map(d=>'<a class="aca-unit-card" href="#academy/dialogues/'+d.id+'"><span class="aca-unit-icon">'+d.icon+'</span><span><small>'+getStage(d.stage).label+'</small><strong>'+esc(val(d.title,l))+'</strong><em>'+(store.done["dialogue/"+d.id+"/complete"]?UI[l].completed:UI[l].talk)+'</em></span><span class="aca-chev">›</span></a>').join("")+'</div>';
+  const parts=route.split("/"),id=parts[2];
+  if(!id||id==="group"){
+    const stage=stages.some(s=>s.id===parts[3])?parts[3]:"starter";
+    const tabs='<nav class="aca-vocab-tabs" aria-label="Dialogue level">'+stages.map(s=>
+      '<a href="#academy/dialogues/group/'+s.id+'" class="'+(stage===s.id?'selected':'')+'" '+(stage===s.id?'aria-current="page"':'')+'>'+s.label+'</a>').join("")+'</nav>';
+    const items=dialogues.filter(d=>d.stage===stage);
+    return '<a class="aca-back" href="#academy">← '+UI[l].back+'</a>'+
+      top("💬 "+UI[l].talk,"30 Russian conversations","Read a Russian exchange, hear each line, practise speaking aloud, and answer an English comprehension question.")+
+      tabs+'<div class="aca-units">'+items.map(d=>
+        '<a class="aca-unit-card" href="#academy/dialogues/'+d.id+'"><span class="aca-unit-icon">'+d.icon+'</span><span><small>'+getStage(d.stage).label+'</small><strong>'+esc(val(d.title,l))+'</strong><em>'+(store.done["dialogue/"+d.id+"/complete"]?UI[l].completed:UI[l].talk)+'</em></span><span class="aca-chev">›</span></a>').join("")+'</div>';
+  }
   const d=dialogues.find(x=>x.id===id);if(!d)return dialoguesPage("academy/dialogues",l);
   const s=ensureSession(route,l);
-  return '<a class="aca-back" href="#academy/dialogues">← '+UI[l].back+'</a>'+
+  return '<a class="aca-back" href="#academy/dialogues/group/'+d.stage+'">← '+UI[l].back+'</a>'+
     top(d.icon+" "+getStage(d.stage).label,val(d.title,l),val(d.goal,l))+
     '<section class="aca-panel"><h2>🗣️ '+UI[l].speak+'</h2><p class="aca-muted">'+UI[l].speechInfo+'</p>'+
     '<div class="aca-dialogue">'+d.lines.map(line=>'<div class="aca-dialogue-line '+(line.who==="А"?"aca-speaker-a":"aca-speaker-b")+'"><b>'+line.who+'</b><div><strong lang="ru">'+esc(line.ru)+'</strong>'+(s.show?'<small>'+esc(val(line,l))+'</small>':"")+'</div><button class="aca-sound" data-aca="sound" data-text="'+esc(line.ru)+'">🔊</button></div>').join("")+'</div>'+
