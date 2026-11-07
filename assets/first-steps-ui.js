@@ -14,7 +14,7 @@ function makeSession(state){
  return active;
 }
 function getSession(state){
- if(!active||active.index!==state.index||active.mode!==state.mode&&active.complete===false)
+ if(!active||(active.index!==state.index&&!active.complete&&!active.test?.result?.ok)||(active.mode!==state.mode&&!active.complete))
   return makeSession(state);
  return active;
 }
@@ -39,7 +39,7 @@ function studyCard(step){
      ':</strong> '+esc(trans)+'</div>'+
    '<p>'+esc(step.tip)+'</p>';
  return '<section class="ms-study"><div class="ms-section-label">1 · LEARN ONE TINY THING</div>'+
- '<h2>'+esc(step.title)+'</h2><p>'+esc(step.description)+'</p>'+
+ '<h2>'+esc(hidden?'A tiny Russian check':step.title)+'</h2><p>'+esc(step.description)+'</p>'+
  detail+
  '<div class="ms-study-buttons"><button type="button" data-micro="hear" class="ms-outline" '+
  (hasAudio()?"":"disabled")+' aria-label="Listen to the Russian model">🔊 Hear it</button>'+
@@ -80,7 +80,7 @@ function summary(state){
  '</span><b>'+c.count+'/'+c.total+'</b><i><em style="width:'+Math.round(c.count/c.total*100)+'%"></em></i></div>').join("")+'</div>'+
  '</details>';
 }
-function startHeader(state,step){
+function startHeader(state,step,hidden=false){
  const pct=Math.round(state.index/MICRO_TOTAL*100);
  return '<section class="ms-hero"><span>SHAIRA · RUSSIAN FROM ABSOLUTE ZERO</span>'+
  '<h1>One small step at a time.</h1>'+
@@ -124,12 +124,12 @@ function fastPanel(state,session){
 export function firstStepsHtml(){
  const state=readMicro(),step=microStepAt(state.index);
  const s=getSession(state);
- if(s.complete&&s.index<state.index)return startHeader(state,step)+success(state,s)+summary(state);
+ if(s.complete&&s.index<state.index)return startHeader(state,step,true)+success(state,s)+summary(state);
  if(state.index>=MICRO_TOTAL)return '<section class="ms-success"><span>🎓</span><h1>Your Cyrillic foundation is ready.</h1>'+
  '<p>You have practised all 33 letters, 11 syllables, tiny Russian words and twelve first phrases in small steps.</p>'+
  '<p>This is not a Russian proficiency certificate. Your full guided course now develops longer vocabulary, grammar, listening, reading, writing and conversation.</p>'+
  '<a href="#today" class="ms-primary ms-link">Continue to the full Russian course →</a></section>'+summary(state);
- return startHeader(state,step)+modes(state)+
+ return startHeader(state,step,s.phase!=='study'||!!s.test)+modes(state)+
  (s.test?fastPanel(state,s):s.phase==="study"?studyCard(step):
     questionCard(microQuestions(step).slice(0,modeInfo[state.mode].questions)[s.question],
       s.question,modeInfo[state.mode].questions,{...s,options:s.options[s.question]||[]},false))+
