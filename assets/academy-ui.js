@@ -1,5 +1,6 @@
 import {stages,units,activityModes,getUnit,getStage,academyLessonTotal} from "./academy-data.js";
 import {firstWordPacks} from "./first-words.js";
+import {dialogues} from "./dialogues.js";
 const KEY="shaira-academy-v1";
 const MS_DAY=86400000, STEPS=[1,3,7,14,30];
 const UI={
@@ -22,7 +23,7 @@ const val=(v,l)=>v?.[l]||v?.en||"";
 const wordKey=(u,w)=>u.id+":"+w.ru;
 const modeDone=(u,m)=>!!store.done[u.id+"/"+m];
 const wordPackUnit=p=>({id:p.id,words:p.words});
-const totalActivities=academyLessonTotal+firstWordPacks.length;
+const totalActivities=academyLessonTotal+firstWordPacks.length+dialogues.length;
 const unitDone=u=>activityModes.filter(m=>modeDone(u,m.id)).length;
 const pct=(done,total)=>Math.round(100*done/Math.max(1,total));
 const buttons=(opts,action)=>opts.map((opt,i)=>'<button type="button" class="aca-choice" data-aca="'+action+'" data-choice="'+esc(i)+'">'+esc(opt)+'</button>').join("");
@@ -72,7 +73,10 @@ function ensureSession(route,l){
   const [,tag,id,mode]=route.split("/");
   const u=getUnit(id);
   const pack=firstWordPacks.find(p=>p.id===id);
-  if(tag==="first-words"&&pack){
+  const dialogue=dialogues.find(d=>d.id===id);
+  if(tag==="dialogues"&&dialogue){
+    session={key:route,lang:l,mode:"dialogue",phase:"quiz",d:dialogue,answered:false,good:false,correct:dialogue.answer,show:false};
+  }else if(tag==="first-words"&&pack){
     const pseudo=wordPackUnit(pack);
     session={key:route,lang:l,u:pseudo,mode:"first-words",phase:"study",index:0,mistakes:0,answered:false,show:false,tasks:buildWordQuiz(pseudo,l,"words"),message:""};
   }else if(tag==="lesson"&&u&&activityModes.some(m=>m.id===mode)){
@@ -98,6 +102,7 @@ function overview(l){
   '<div class="aca-summary"><div><b>'+d+'/'+totalActivities+'</b><small>'+UI[l].total+'</small></div><div><b>⭐ '+store.points+'</b><small>'+UI[l].stars+'</small></div><div><b>'+memory.due.length+'</b><small>'+UI[l].due+'</small></div></div>'+
   '<section class="aca-path-info"><strong>🌟 '+UI[l].courseGuide+'</strong><p>'+UI[l].notice+'</p></section>'+
   '<a class="aca-review-call" href="#academy/first-words"><span>🧸</span><span><strong>'+tx("My first 120 Russian words","Unang 120 salita sa Ruso",l)+'</strong><small>'+tx("20 tiny picture-word themes, 6 words at a time","20 munting paksa, tig-6 na salita",l)+'</small></span><b>›</b></a>'+
+  '<a class="aca-review-call" href="#academy/dialogues"><span>💬</span><span><strong>'+tx("Russian conversation lab","Pagsasanay sa usapan sa Ruso",l)+'</strong><small>'+tx("20 situations: say it, listen, understand","20 sitwasyon: magsalita, makinig, umunawa",l)+'</small></span><b>›</b></a>'+
   '<div class="aca-stage-list">'+stages.map((stage,i)=>{
     const list=units.filter(x=>x.stage===stage.id), n=list.reduce((s,x)=>s+unitDone(x),0),max=list.length*activityModes.length;
     return '<a class="aca-stage-card" href="#academy/level/'+stage.id+'"><span class="aca-stage-index">'+(i+1)+'</span><span class="aca-stage-icon">'+stage.icon+'</span><span class="aca-stage-copy"><small>'+stage.label+'</small><strong>'+val(stage,l)+'</strong><span class="aca-track"><i style="width:'+pct(n,max)+'%"></i></span><em>'+n+'/'+max+'</em></span><span class="aca-chev">›</span></a>';
@@ -118,6 +123,23 @@ function firstWordsPage(route,l){
   if(s.phase==="quiz")return header+answersHtml(s,l,"words");
   return header+'<section class="aca-panel"><h2>'+UI[l].learnFirst+'</h2><div class="aca-word-grid">'+p.words.map(w=>
     '<div><span class="aca-emoji">'+w.icon+'</span><button class="aca-sound" data-aca="sound" data-text="'+esc(w.ru)+'">🔊</button><b lang="ru">'+esc(w.ru)+'</b><small>'+esc(val(w,l))+'</small></div>').join("")+'</div><button class="aca-cta aca-wide" data-aca="start-quiz">'+UI[l].testNow+' →</button></section>';
+}
+function dialoguesPage(route,l){
+  const id=route.split("/")[2];
+  if(!id)return '<a class="aca-back" href="#academy">← '+UI[l].back+'</a>'+
+    top("💬 "+UI[l].talk,tx("Russian conversation lab","Pagsasanay sa usapan sa Ruso",l),tx("Read each line, listen, repeat aloud and check meaning.","Basahin, pakinggan, ulitin nang malakas at suriin ang kahulugan.",l))+
+    '<div class="aca-units">'+dialogues.map(d=>'<a class="aca-unit-card" href="#academy/dialogues/'+d.id+'"><span class="aca-unit-icon">'+d.icon+'</span><span><small>'+getStage(d.stage).label+'</small><strong>'+esc(val(d.title,l))+'</strong><em>'+(store.done["dialogue/"+d.id+"/complete"]?UI[l].completed:UI[l].talk)+'</em></span><span class="aca-chev">›</span></a>').join("")+'</div>';
+  const d=dialogues.find(x=>x.id===id);if(!d)return dialoguesPage("academy/dialogues",l);
+  const s=ensureSession(route,l);
+  return '<a class="aca-back" href="#academy/dialogues">← '+UI[l].back+'</a>'+
+    top(d.icon+" "+getStage(d.stage).label,val(d.title,l),val(d.goal,l))+
+    '<section class="aca-panel"><h2>🗣️ '+UI[l].speak+'</h2><p class="aca-muted">'+UI[l].speechInfo+'</p>'+
+    '<div class="aca-dialogue">'+d.lines.map(line=>'<div class="aca-dialogue-line '+(line.who==="А"?"aca-speaker-a":"aca-speaker-b")+'"><b>'+line.who+'</b><div><strong lang="ru">'+esc(line.ru)+'</strong>'+(s.show?'<small>'+esc(val(line,l))+'</small>':"")+'</div><button class="aca-sound" data-aca="sound" data-text="'+esc(line.ru)+'">🔊</button></div>').join("")+'</div>'+
+    '<button class="aca-text-btn" data-aca="toggle-translation">'+(s.show?UI[l].hide:UI[l].show)+'</button></section>'+
+    '<section class="aca-task"><h2>'+UI[l].question+'</h2><p>'+esc(val(d.question,l))+'</p><div class="aca-choices">'+buttons(d.choices,"dialogue-answer")+'</div>'+
+    (s.answered?'<div class="aca-feedback '+(s.good?"aca-ok":"aca-not")+'" role="status"><strong>'+(s.good?UI[l].good:UI[l].tryAgain)+'</strong><p>'+(s.good?"⭐ +10":"")+'</p>'+
+    '<button data-aca="dialogue-next" class="aca-cta">'+(s.good?UI[l].studyNext:UI[l].retry)+' →</button></div>':"")+
+    '</section>';
 }
 function stagePage(id,l){
   const stage=getStage(id);if(!stage)return overview(l);
@@ -235,6 +257,7 @@ export function academyHtml(route,l="en"){
   if(!UI[l])l="en";
   if(route==="academy")return overview(l);
   if(route==="academy/review")return reviewPage(l);
+  if(route==="academy/dialogues"||route.startsWith("academy/dialogues/"))return dialoguesPage(route,l);
   if(route==="academy/first-words"||route.startsWith("academy/first-words/"))return firstWordsPage(route,l);
   const p=route.split("/");
   if(p[1]==="level")return stagePage(p[2],l);
@@ -289,6 +312,16 @@ export function handleAcademyAction(button,api){
   if(action==="sound"){api.speak(button.dataset.text||"");return;}
   if(!s)return;
   if(action==="toggle-translation"){s.show=!s.show;api.render();return;}
+  if(action==="dialogue-answer"&&s.mode==="dialogue"){
+    if(s.answered)return;
+    s.answered=true;s.good=s.d.choices[Number(button.dataset.choice)]===s.d.answer;
+    if(s.good)mark({id:"dialogue/"+s.d.id},"complete");
+    api.render();return;
+  }
+  if(action==="dialogue-next"&&s.mode==="dialogue"){
+    if(s.good)api.navigate("academy/dialogues");else{s.answered=false;api.render();}
+    return;
+  }
   if(action==="start-quiz"){
     s.phase="quiz";s.index=0;s.mistakes=0;s.answered=false;
     if(s.mode==="grammar")prepareChoices(s,l);
@@ -340,5 +373,5 @@ export function handleAcademySubmit(event,api){
 }
 export function academyStatistics(){
   const m=memoryDue();
-  return {units:units.length,firstWordPacks:firstWordPacks.length,activities:totalActivities,completed:Object.keys(store.done).length,knownWords:m.known.length,dueWords:m.due.length,points:store.points};
+  return {units:units.length,firstWordPacks:firstWordPacks.length,dialogues:dialogues.length,activities:totalActivities,completed:Object.keys(store.done).length,knownWords:m.known.length,dueWords:m.due.length,points:store.points};
 }
