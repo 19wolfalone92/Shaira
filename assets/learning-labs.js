@@ -272,6 +272,29 @@ export function labHtml(route,l="en"){
 }
 export function labAction(button,api){
  const a=button.dataset.lab,route=api.route(),l=api.language()==="tl"?"tl":"en";
+ if(a==="writer-key"||a==="writer-backspace"){
+   const input=document.getElementById("lp-studio-draft")||document.getElementById("lp-draft");
+   if(!input||typeof input.setRangeText!=="function")return;
+   const from=input.selectionStart??input.value.length,to=input.selectionEnd??from;
+   if(a==="writer-key")input.setRangeText(button.dataset.character||"",from,to,"end");
+   else if(from!==to)input.setRangeText("",from,to,"end");
+   else if(from>0)input.setRangeText("",from-1,from,"end");
+   const counter=document.getElementById(input.id==="lp-studio-draft"?"lp-studio-count":"lp-wordcount");
+   if(counter)counter.textContent=words(input.value)+" "+TXT[l].wordCount;
+   input.focus();return;
+ }
+ if(a==="listen-draft"){
+   const input=document.getElementById("lp-studio-draft")||document.getElementById("lp-draft");
+   if(input?.value.trim())api.speak(input.value.slice(0,1600));
+   else api.notice?.("Write a Russian draft first.");
+   return;
+ }
+ if(a==="review-writing"){
+   const id=route.split("/")[2],p=readingLibrary.find(x=>x.id===id);
+   const input=document.getElementById("lp-draft"),node=document.getElementById("lp-reading-writing-feedback");
+   if(p&&input&&node)node.innerHTML=writingFeedback({stage:p.stage},l,input.value);
+   return;
+ }
  if(a==="play-example"){api.speak(button.dataset.text||"");return;}
  if(a==="play-reading"){
    const id=route.split("/")[2],p=readingLibrary.find(x=>x.id===id);if(p)api.speak(p.text);return;
