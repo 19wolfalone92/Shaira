@@ -40,10 +40,10 @@ test("each unit contains authentic RU teaching material in both learner language
     assert.ok(u.question.choices.includes(u.question.answer),u.id+" correct answer");
   }
 });
-test("beginner and adult picture-word sets include 80 themes and 480 cards",()=>{
-  assert.equal(firstWordPacks.length,80);
-  assert.equal(firstWordPacks.flatMap(p=>p.words).length,480);
-  assert.equal(new Set(firstWordPacks.map(p=>p.id)).size,80);
+test("beginner and adult picture-word sets include 81 themes and 486 cards",()=>{
+  assert.equal(firstWordPacks.length,81);
+  assert.equal(firstWordPacks.flatMap(p=>p.words).length,486);
+  assert.equal(new Set(firstWordPacks.map(p=>p.id)).size,81);
   for(const p of firstWordPacks){
     assert.equal(p.words.length,6);
     assert.ok(p.title.en&&p.title.tl);
