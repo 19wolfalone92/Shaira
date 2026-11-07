@@ -124,7 +124,7 @@ function overview(l){
 function firstWordsPage(route,l){
   const packId=route.split("/")[2];
   if(!packId){
-    return '<a class="aca-back" href="#academy">← '+UI[l].back+'</a>'+top("🧸 Pre-A1",tx(firstWordPacks.length*6+" Russian word cards",firstWordPacks.length*6+" Russian word cards",l),tx("Learn six words at a time. Listen, read, repeat and test your recall.","Anim na salita bawat aralin. Makinig, bumasa, ulitin at alalahanin.",l))+
+    return '<a class="aca-back" href="#academy">← '+UI[l].back+'</a>'+top("Pre-A1 → B2",tx(firstWordPacks.length*6+" Russian word cards",firstWordPacks.length*6+" Russian word cards",l),tx("Learn six words at a time. Listen, read, repeat and test your recall.","Anim na salita bawat aralin. Makinig, bumasa, ulitin at alalahanin.",l))+
       '<div class="aca-units">'+firstWordPacks.map((p,i)=>
         '<a class="aca-unit-card" href="#academy/first-words/'+p.id+'"><span class="aca-unit-icon">'+p.icon+'</span><span><small>'+(i+1)+'/40</small><strong>'+esc(val(p.title,l))+'</strong><em>'+(modeDone(p,"words")?UI[l].completed:"6 "+UI[l].words)+'</em></span><span class="aca-chev">›</span></a>').join("")+'</div>';
   }
