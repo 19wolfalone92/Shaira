@@ -1,4 +1,5 @@
 import {stages,units,activityModes,getUnit,getStage,academyLessonTotal} from "./academy-data.js";
+import {firstWordPacks} from "./first-words.js";
 const KEY="shaira-academy-v1";
 const MS_DAY=86400000, STEPS=[1,3,7,14,30];
 const UI={
@@ -20,6 +21,8 @@ const tx=(en,tl,l)=>l==="tl"?tl:en;
 const val=(v,l)=>v?.[l]||v?.en||"";
 const wordKey=(u,w)=>u.id+":"+w.ru;
 const modeDone=(u,m)=>!!store.done[u.id+"/"+m];
+const wordPackUnit=p=>({id:p.id,words:p.words});
+const totalActivities=academyLessonTotal+firstWordPacks.length;
 const unitDone=u=>activityModes.filter(m=>modeDone(u,m.id)).length;
 const pct=(done,total)=>Math.round(100*done/Math.max(1,total));
 const buttons=(opts,action)=>opts.map((opt,i)=>'<button type="button" class="aca-choice" data-aca="'+action+'" data-choice="'+esc(i)+'">'+esc(opt)+'</button>').join("");
@@ -58,7 +61,8 @@ function schedule(u,w,correct,scheduled=true){
   persist();
 }
 function memoryDue(){
-  const map=new Map(units.flatMap(u=>u.words.map(w=>[wordKey(u,w),{u,w}])));
+  const all=units.concat(firstWordPacks.map(wordPackUnit));
+  const map=new Map(all.flatMap(u=>u.words.map(w=>[wordKey(u,w),{u,w}])));
   const known=Object.entries(store.memory).filter(([k,v])=>map.has(k)&&v&&v.seen>0).map(([k,v])=>({...map.get(k),record:v}));
   const due=known.filter(x=>Number(x.record.due)<=Date.now()).sort((a,b)=>a.record.due-b.record.due);
   return {known,due};
@@ -67,7 +71,11 @@ function ensureSession(route,l){
   if(session?.key===route&&session.lang===l)return session;
   const [,tag,id,mode]=route.split("/");
   const u=getUnit(id);
-  if(tag==="lesson"&&u&&activityModes.some(m=>m.id===mode)){
+  const pack=firstWordPacks.find(p=>p.id===id);
+  if(tag==="first-words"&&pack){
+    const pseudo=wordPackUnit(pack);
+    session={key:route,lang:l,u:pseudo,mode:"first-words",phase:"study",index:0,mistakes:0,answered:false,show:false,tasks:buildWordQuiz(pseudo,l,"words"),message:""};
+  }else if(tag==="lesson"&&u&&activityModes.some(m=>m.id===mode)){
     session={key:route,lang:l,u,mode,phase:"study",index:0,mistakes:0,answered:false,show:false,
       tasks:["words","listen"].includes(mode)?buildWordQuiz(u,l,mode):[],options:[],correct:"",message:""};
   }else if(route==="academy/review"){
@@ -87,13 +95,29 @@ function overview(l){
   const d=Object.keys(store.done).length;
   const memory=memoryDue();
   return '<div class="aca-hero"><div class="aca-stars" aria-hidden="true">✦ 🌷 ✦</div><span class="aca-overline">SHAIRA • RUSSIAN SCHOOL</span><h1>'+UI[l].title+'</h1><p>'+UI[l].intro+'</p><div class="aca-hero-badges"><span>🇷🇺 Pre-A1 → B2</span><span>✍️ '+units.length+' '+UI[l].word+' / '+units.length+' units</span></div></div>'+
-  '<div class="aca-summary"><div><b>'+d+'/'+academyLessonTotal+'</b><small>'+UI[l].total+'</small></div><div><b>⭐ '+store.points+'</b><small>'+UI[l].stars+'</small></div><div><b>'+memory.due.length+'</b><small>'+UI[l].due+'</small></div></div>'+
+  '<div class="aca-summary"><div><b>'+d+'/'+totalActivities+'</b><small>'+UI[l].total+'</small></div><div><b>⭐ '+store.points+'</b><small>'+UI[l].stars+'</small></div><div><b>'+memory.due.length+'</b><small>'+UI[l].due+'</small></div></div>'+
   '<section class="aca-path-info"><strong>🌟 '+UI[l].courseGuide+'</strong><p>'+UI[l].notice+'</p></section>'+
+  '<a class="aca-review-call" href="#academy/first-words"><span>🧸</span><span><strong>'+tx("My first 120 Russian words","Unang 120 salita sa Ruso",l)+'</strong><small>'+tx("20 tiny picture-word themes, 6 words at a time","20 munting paksa, tig-6 na salita",l)+'</small></span><b>›</b></a>'+
   '<div class="aca-stage-list">'+stages.map((stage,i)=>{
     const list=units.filter(x=>x.stage===stage.id), n=list.reduce((s,x)=>s+unitDone(x),0),max=list.length*activityModes.length;
     return '<a class="aca-stage-card" href="#academy/level/'+stage.id+'"><span class="aca-stage-index">'+(i+1)+'</span><span class="aca-stage-icon">'+stage.icon+'</span><span class="aca-stage-copy"><small>'+stage.label+'</small><strong>'+val(stage,l)+'</strong><span class="aca-track"><i style="width:'+pct(n,max)+'%"></i></span><em>'+n+'/'+max+'</em></span><span class="aca-chev">›</span></a>';
   }).join("")+'</div>'+
   '<a class="aca-review-call" href="#academy/review"><span>🧠</span><span><strong>'+UI[l].review+'</strong><small>'+UI[l].reviewInfo+'</small></span><b>'+memory.due.length+'</b></a>'+baseNav(l);
+}
+function firstWordsPage(route,l){
+  const packId=route.split("/")[2];
+  if(!packId){
+    return '<a class="aca-back" href="#academy">← '+UI[l].back+'</a>'+top("🧸 Pre-A1",tx("My first 120 Russian words","Unang 120 salita sa Ruso",l),tx("Learn 6 at a time, like our English app. Tap a picture, listen, repeat, then remember.","Anim na salita bawat aralin. Tingnan, pakinggan, ulitin at alalahanin.",l))+
+      '<div class="aca-units">'+firstWordPacks.map((p,i)=>
+        '<a class="aca-unit-card" href="#academy/first-words/'+p.id+'"><span class="aca-unit-icon">'+p.icon+'</span><span><small>'+(i+1)+'/20</small><strong>'+esc(val(p.title,l))+'</strong><em>'+(modeDone(p,"words")?UI[l].completed:"6 "+UI[l].words)+'</em></span><span class="aca-chev">›</span></a>').join("")+'</div>';
+  }
+  const p=firstWordPacks.find(x=>x.id===packId);if(!p)return firstWordsPage("academy/first-words",l);
+  const s=ensureSession(route,l);
+  const header='<a class="aca-back" href="#academy/first-words">← '+UI[l].back+'</a>'+top(p.icon+" Pre-A1",val(p.title,l),tx("Look, say and remember.","Tingnan, sabihin at tandaan.",l));
+  if(s.phase==="done")return header+'<div class="aca-celebrate">🌟<h2>'+UI[l].finish+'</h2><a class="aca-cta aca-link" href="#academy/first-words">'+UI[l].studyNext+' →</a></div>';
+  if(s.phase==="quiz")return header+answersHtml(s,l,"words");
+  return header+'<section class="aca-panel"><h2>'+UI[l].learnFirst+'</h2><div class="aca-word-grid">'+p.words.map(w=>
+    '<div><span class="aca-emoji">'+w.icon+'</span><button class="aca-sound" data-aca="sound" data-text="'+esc(w.ru)+'">🔊</button><b lang="ru">'+esc(w.ru)+'</b><small>'+esc(val(w,l))+'</small></div>').join("")+'</div><button class="aca-cta aca-wide" data-aca="start-quiz">'+UI[l].testNow+' →</button></section>';
 }
 function stagePage(id,l){
   const stage=getStage(id);if(!stage)return overview(l);
@@ -211,6 +235,7 @@ export function academyHtml(route,l="en"){
   if(!UI[l])l="en";
   if(route==="academy")return overview(l);
   if(route==="academy/review")return reviewPage(l);
+  if(route==="academy/first-words"||route.startsWith("academy/first-words/"))return firstWordsPage(route,l);
   const p=route.split("/");
   if(p[1]==="level")return stagePage(p[2],l);
   if(p[1]==="unit")return unitPage(p[2],l);
@@ -238,14 +263,15 @@ function correctOne(s,input,l,api){
 }
 function moveNext(s,l,api){
   s.answered=false;s.message="";
-  if(["words","listen","review"].includes(s.mode)){
+  if(["words","first-words","listen","review"].includes(s.mode)){
     s.index++;
     if(s.index>=s.tasks.length){
       if(s.mistakes>0){
         s.phase="study";s.index=0;s.mistakes=0;
         if(s.mode==="review")s.phase="quiz";
       }else{
-        if(s.mode==="words"||(s.mode==="listen"&&speechAvailable()))mark(s.u,s.mode);
+        if(s.mode==="first-words")mark(s.u,"words");
+        else if(s.mode==="words"||(s.mode==="listen"&&speechAvailable()))mark(s.u,s.mode);
         s.phase="done";
       }
     }
@@ -268,12 +294,12 @@ export function handleAcademyAction(button,api){
     if(s.mode==="grammar")prepareChoices(s,l);
     api.render();return;
   }
-  if(action==="answer" && (["words","listen","review"].includes(s.mode))){
+  if(action==="answer" && (["words","first-words","listen","review"].includes(s.mode))){
     if(s.answered)return;
     const x=s.tasks[s.index],selected=x.choices[Number(button.dataset.choice)];
     s.good=selected===x.correct;s.correct=x.correct;s.answered=true;
     if(!s.good)s.mistakes++;
-    if(s.mode==="words")schedule(x.u,x.w,s.good,true);
+    if(s.mode==="words"||s.mode==="first-words")schedule(x.u,x.w,s.good,true);
     if(s.mode==="review")schedule(x.u,x.w,s.good,s.scheduled);
     api.render();return;
   }
@@ -314,5 +340,5 @@ export function handleAcademySubmit(event,api){
 }
 export function academyStatistics(){
   const m=memoryDue();
-  return {units:units.length,activities:academyLessonTotal,completed:Object.keys(store.done).length,knownWords:m.known.length,dueWords:m.due.length,points:store.points};
+  return {units:units.length,firstWordPacks:firstWordPacks.length,activities:totalActivities,completed:Object.keys(store.done).length,knownWords:m.known.length,dueWords:m.due.length,points:store.points};
 }
