@@ -38,7 +38,8 @@ test("210 real guided study days are connected to authored learning material, no
    const d=makeDay(i);
    assert.equal(d.number,i+1);
    assert.equal(d.stage,stages[Math.floor(i/42)].id);
-   const expected=2+(i>=14&&[0,4].includes(i%7)?1:0)+(i%42===41?1:0);
+   const caseDay=i%7===1&&((i>=42&&i<84&&Math.floor((i-42)/7)>=2)||(i>=84&&i<126));
+   const expected=2+(i>=14&&[0,4].includes(i%7)?1:0)+(i%42===41?1:0)+(caseDay?1:0);
    assert.equal(d.tasks.length,expected,i+" task count");
    assert.ok(d.intro.en&&d.intro.tl&&d.intro.note?.en&&d.intro.note?.tl);
    assert.ok(d.voiceLine&&/[\u0400-\u052F]/u.test(d.voiceLine));
@@ -58,6 +59,7 @@ test("210 real guided study days are connected to authored learning material, no
      if(t.kind==="handbook")assert.ok(grammarHandbook.some(x=>x.id===t.key));
      if(t.kind==="studio")assert.ok(units.some(x=>x.id===t.key));
      if(t.kind==="checkpoint")assert.equal(t.key,d.stage);
+     if(t.kind==="case-quiz")assert.equal(t.href,"#academy/cases/quiz");
      if(t.kind==="unit"||t.kind==="speak"||t.kind==="listen")
        assert.ok(units.some(x=>t.key.startsWith(x.id+"/")),i+" "+t.id);
    }
@@ -67,7 +69,7 @@ test("210 real guided study days are connected to authored learning material, no
  assert.equal(makeDay(12).tasks[0].href,"#lesson/first-cases");
  assert.equal(makeDay(13).tasks[1].kind,"grammar");
  for(const stage of stages)assert.equal(Array.from({length:210},(_,i)=>makeDay(i)).filter(x=>x.stage===stage.id).length,42);
- for(const kind of ["legacy","pack","unit","handbook","grammar","reading","writing","dialogue","speak","listen","studio","checkpoint"])
+ for(const kind of ["legacy","pack","unit","handbook","grammar","reading","writing","dialogue","speak","listen","studio","checkpoint","case-quiz"])
    assert.ok(countByKind[kind]>0,"step kind is exercised: "+kind);
  assert.ok(usedPacks.size>=30,"broad word packs across the course");
  assert.equal(usedUnits.size,32);
