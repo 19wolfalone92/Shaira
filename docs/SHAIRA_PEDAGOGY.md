@@ -129,3 +129,13 @@ The application is now fixed to **English for all navigation, prompts, grammar n
 The teaching bank now contains 486 Russian-English vocabulary cards across 81 themes; 35 original levelled reading passages with contextual questions; 45 independent writing tasks; 30 role-play conversations; and 30 audio-first synthetic-Russian listening activities. Listening checks ask English questions with English choices, while the spoken Russian stays hidden until an answer. Revealing the transcript changes the attempt into reading-only practice. At eligible daily lessons this is a separate practice-evidence gate, with an accessible reading fallback when audio is unavailable.
 
 **Pedagogical limitation:** The spoken audio is browser TTS. Authentic speakers, accent and speed variety, delayed-response listening, spontaneous conversation assessment, speech feedback and competent essay correction remain necessary for independently verifiable B2.
+
+## Adaptive multi-format practice and adult communication simulations
+
+The Variety Lab deliberately alternates thirteen practice modes so that learners cannot rely only on repeated multiple-choice recognition. It scores Russian spellings and written forms, asks for word order, tests grammar and comprehension, checks Russian words from audio when TTS exists, and supplies useful error explanations. Questions are selected from hand-authored vocabulary, 240 verb forms, 288 noun-case forms, 40 sentence patterns, 40 error-correction models, and the graded text/grammar libraries. The system retains due and failed attempts locally; a weekly fresh 9/12 (including two productive answers) is needed in the guided route.
+
+The Verb Lab supplies explicit English-guided tables for 24 selected verbs and allows voice playback of each person/tense form. This is a starter morphology corpus, not complete aspect/motion teaching.
+
+Fifteen interactive adult scenarios provide three decisions each and an alternate reply based on the learner's chosen Russian sentence. English explanations explain the intended model. This is guided pragmatic practice, not natural-language generation or free-speaking evaluation.
+
+Authentic Russian recordings and independent language assessment remain required for validated B2.
