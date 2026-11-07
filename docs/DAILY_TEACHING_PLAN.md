@@ -1,12 +1,12 @@
 # SHAIRA — Daily Russian Teacher
-## Adult first-language English/Filipino · measurable daily study routine · v1
+## Adult learner · English-only interface · measurable daily study routine · v0.5.0
 
 **Purpose:** Make daily Russian practice a learner experience rather than a list of disconnected lessons. This system draws on the owner's \`English_Child\` teacher-path idea but was redesigned for **an adult**, not a preschool child.
 
 ### What is shipped
 - \`#today\` is the default first screen, with an accessible five-tab bottom navigation (Today, Academy, Review, Write, Settings).
 - **210 guided study sessions**: 42 for each of the five CEFR-*target* stages Pre-A1, A1, A2, B1, B2. The course tracks completed *sessions*, not calendar dates or hours spent. **It does not certify B2.**
-- The **first 14 sessions** have authored bilingual beginner guidance: 13 original alphabet/reading/first-grammar foundation lessons, then a checkpoint. The lesson works include 13 themed vocabulary packs and mini-exercises.
+- The **first 14 sessions** have authored bilingual beginner guidance: 13 original alphabet/reading/first-grammar foundation lessons, then a checkpoint. The lesson works include 13 themed vocabulary packs and mini-exercises. The language of instruction is now fixed to English.
 - Subsequent sessions use a **seven-day adult teaching cycle** with context-specific authored reading, grammar, vocabulary, dialogue, spoken practice and writing.
 - **Every session contains** two linked real exercises, one randomly-positioned-choice grammar microcheck with bilingual feedback, one exact-model Russian spelling task with an onscreen Cyrillic keyboard and optional TTS, and a spoken phrase to practise aloud (self-attested; not graded).
 - **Spaced vocabulary recall** is always accessible from Today and Review and the UI displays words due.
@@ -102,3 +102,12 @@ The **last study day** of each stage includes a mandatory independent 10-questio
 At A1/A2, specific daily grammar days additionally include a **10-item declension lab** covering all six Russian noun cases. Its bank contains 24 nouns with 288 explicit singular/plural forms, including animate masculine/feminine nouns, neuter, third-declension and some irregular plurals. The latest adaptive session must score at least 8/10 after starting the daily session. All outcomes are backed up privately.
 
 Other independent phonology, authentic listening and free-writing feedback require continued development. See [B2_CURRICULUM_MAP.md](B2_CURRICULUM_MAP.md) and official TORFL requirements.
+
+
+## English-first practice expansion
+
+Every direction, navigation label, question, explanation and feedback message now renders in English. Russian appears only where the student reads, hears, spells or writes the target language.
+
+The existing daily route now draws from **486 vocabulary cards**, **35 graded readings**, **45 independent writing tasks** and **30 adult dialogues**. Speaking/listening days include a new English-guided Russian listening scenario from a bank of 30. Its Russian transcript remains hidden until answering. A learner who opens the transcript before answering is in reading mode, **not scored listening**. The audio uses browser TTS, not native recordings; the app redirects to reading when device audio is unavailable.
+
+At each step, the target is productive comprehension and practice rather than completing counters. English-only instructions are a usability requirement, not a statement that Russian passages themselves should be translated or hidden permanently.
