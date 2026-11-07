@@ -93,3 +93,8 @@ The **Grammar Trainer** offers 20 independently authored contextual four-choice 
 The **Writing Portfolio** contains six original assignments per stage (30 in total), with an adult situation, a Russian model opening, a recommended length and a self-edit reminder. Format-only checks do not score correctness. All drafts and lab records are included in local JSON backup/restore. This supports independent practice, but a fully self-sufficient B2 claim remains premature without native audio, teacher-grade feedback, broader vocabulary, novel assessments and real speaker validation.
 
 **User-experience principles:** a calm, reading-first mobile design instead of a preschool visual style; compact daily-learning choices; visible starting point; progress without artificial streak pressure; large iPhone touch targets; no subscriptions or hidden paid dependencies. Actual Safari device checks and independent linguistic review are still required.
+
+
+## Offline grammatical reference (added)
+
+The handbook contains **30 bilingual rules** from Cyrillic and stress to six cases, verb aspect, motion, adverbial participles, relative clauses and B2 argument structure, each with four Russian examples and a common mistake. It complements, but cannot substitute for, a full morphology textbook, many independent practice contexts and review by a qualified native speaker. The handbook is offline, searchable through its topic menu, and uses device Russian TTS if present.
