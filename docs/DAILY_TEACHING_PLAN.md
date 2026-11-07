@@ -91,3 +91,14 @@ This is a **major functional daily-teaching expansion**, not a claim that all 7 
 - Existing exercises provide the real student work: \`assets/lessons.js\`, \`academy-ui.js\`, \`learning-labs.js\`, \`grammar-drills.js\`, \`reading-library.js\`, \`writing-tasks.js\`, \`grammar-handbook.js\`, \`first-words.js\`, \`dialogues.js\`.
 - Existing backed-up \`shaira-daily-v1\` is validated and restored through \`assets/backup.js\`. All daily assets cached offline in \`sw.js\`.
 - \`tests/daily-path.test.mjs\` validates all 210 plans and actual mastery gating. Work on a feature branch, run \`npm run check\`, verify Pages and iPhone before release.
+
+
+## Extended sequential learning: 32 studios, 5 level reviews and case practice
+
+The first daily programme now includes **32 genuinely author-written grammar/content studios**, each with a bilingual explanation, typical pitfall, three worked Russian contextual examples, two nontrivial questions, and one independent Cyrillic reconstruction. Lessons are ordered throughout the 210 daily sessions and the stage material progresses from vowel sounds to causality and B2-style argumentation.
+
+The **last study day** of each stage includes a mandatory independent 10-question stage review that uses a previously unseen Russian passage and written Russian responses. The most recent result must be at least 8/10, including correct productive writing and reading comprehension. The learner cannot advance in the guided route on the basis of an old best score alone. This is a brief instructional checkpoint, not proof of CEFR certification.
+
+At A1/A2, specific daily grammar days additionally include a **10-item declension lab** covering all six Russian noun cases. Its bank contains 24 nouns with 288 explicit singular/plural forms, including animate masculine/feminine nouns, neuter, third-declension and some irregular plurals. The latest adaptive session must score at least 8/10 after starting the daily session. All outcomes are backed up privately.
+
+Other independent phonology, authentic listening and free-writing feedback require continued development. See [B2_CURRICULUM_MAP.md](B2_CURRICULUM_MAP.md) and official TORFL requirements.
