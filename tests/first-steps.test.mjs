@@ -5,7 +5,7 @@ import {FIRST_STEPS,FIRST_LETTERS,FIRST_GROUPS,FIRST_PHRASES,
  MICRO_TOTAL,modeInfo,microQuestions,microStepAt} from "../assets/first-steps-data.js";
 import {readMicro,changeMicroMode,needsMicroStart,finishMicroRung,microSkipRungs,
  recordMicroMistake,matchesMicroAnswer,microNormal,MICRO_KEY} from "../assets/first-steps-engine.js";
-import {firstStepsHtml,firstStepsAction,firstStepsSubmit,firstStepsInput,firstStepsHomePreview} from "../assets/first-steps-ui.js";
+import {firstStepsHtml,firstStepsAction,firstStepsSubmit,firstStepsInput,firstStepsHomePreview,microCelebrationPending} from "../assets/first-steps-ui.js";
 import {buildBackup,restoreBackup} from "../assets/backup.js";
 const db=()=>{const m=new Map();return{getItem:k=>m.get(k)??null,setItem:(k,v)=>m.set(k,String(v)),
  removeItem:k=>m.delete(k),entries:()=>[...m]}};
@@ -160,6 +160,7 @@ test("English-first micro UI finishes actual first-letter practice and allows op
   assert.match(initial,/RUSSIAN FROM ABSOLUTE ZERO/);
   assert.match(initial,/One new letter: А/);
   assert.match(initial,/Gentle/);
+  assert.match(initial,/micro-trace/);
   assert.match(initial,/78/);
   assert.match(firstStepsHomePreview(),/Start with absolute zero/);
   firstStepsAction({dataset:{micro:"start"}},api);
@@ -178,6 +179,7 @@ test("English-first micro UI finishes actual first-letter practice and allows op
   assert.match(firstStepsHtml(),/one tiny step/i);
   firstStepsAction({dataset:{micro:"next"}},api);
   assert.match(firstStepsHtml(),/One new letter: М/);
+  assert.match(firstStepsHtml(),/Clear drawing/);
   firstStepsAction({dataset:{micro:"mode",value:"challenge"}},api);
   assert.equal(readMicro(storage).mode,"challenge");
   assert.match(firstStepsHtml(),/4 checks/);
@@ -213,7 +215,7 @@ test("optional UI fast-track is hidden at the beginning and verifies six choices
 test("new iPhone student routing, curriculum links, CSS and offline precache all include micro-stairs",()=>{
  const get=p=>readFileSync(new URL("../"+p,import.meta.url),"utf8");
  const app=get("assets/app.js"),academy=get("assets/academy-ui.js"),sw=get("sw.js");
- assert.match(app,/needsMicroStart\(\)\?firstStepsHtml\(\):todayHtml/);
+ assert.match(app,/needsMicroStart\(\)\|\|microCelebrationPending\(\)/);
  assert.match(app,/route==="academy\/first-steps"/);
  assert.match(app,/firstStepsSubmit/);
  assert.match(app,/firstStepsInput/);
