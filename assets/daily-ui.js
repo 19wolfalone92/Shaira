@@ -69,7 +69,7 @@ const TXT={
 };
 const esc=x=>String(x??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const text=(v,l)=>typeof v==="string"?v:v?.[l]||v?.en||"";
-const audioAvailable=()=>typeof window!=="undefined"&&"speechSynthesis" in window;
+const audioAvailable=()=>typeof window!=="undefined"&&"speechSynthesis" in window&&typeof SpeechSynthesisUtterance!=="undefined";
 const letters=["ё й ц у к е н г ш щ з х ъ","ф ы в а п р о л д ж э","я ч с м и т ь б ю"];
 let ephemeral={index:-1,quiz:"",spell:"",entered:"",revealed:false,success:0};
 const stateMessage=(k,l)=>TXT[l][k]||k;
@@ -107,17 +107,17 @@ function studyTasks(day,summary,l){
  const firstUnfinished=summary.steps.find(s=>!s.complete);
  return '<section class="daily-task-area"><h2>'+TXT[l].yourPath+'</h2>'+
   '<div class="daily-task-list">'+summary.steps.map((step,i)=>{
-    const href=step.kind==="listen"&&!audioAvailable()?"#academy/lesson/"+step.unitId+"/read":step.href;
+    const href=["listen","audio"].includes(step.kind)&&!audioAvailable()?"#academy/lesson/"+step.unitId+"/read":step.href;
     return '<div class="daily-task '+(step.complete?"daily-task-done":"")+'"><span class="daily-task-number">'+(step.complete?"✓":i+1)+'</span>'+
       '<div class="daily-task-info"><strong>'+esc(text(step.title,l))+'</strong><small>'+step.minutes+' '+TXT[l].minutes+
       ' · '+TXT[l][step.complete?"done":"notDone"]+'</small>'+
-      (step.kind==="listen"&&!audioAvailable()?'<p class="daily-warning">'+TXT[l].fallback+'</p>':"")+
+      (["listen","audio"].includes(step.kind)&&!audioAvailable()?'<p class="daily-warning">'+TXT[l].fallback+'</p>':"")+
       (step.kind==="handbook"&&!step.complete?'<p class="daily-caution">'+TXT[l].handbookInfo+'</p>':"")+
       '</div><div class="daily-task-actions"><a href="'+esc(href)+'">'+TXT[l].mission+' ↗</a>'+
       (step.kind==="handbook"&&!step.complete?'<button type="button" data-daily="confirm-reference" data-id="'+esc(step.id)+'">'+TXT[l].handbookConfirm+'</button>':"")+
       '</div></div>';
   }).join("")+'</div>'+
-  (firstUnfinished?'<a class="daily-primary daily-resume" href="'+esc(firstUnfinished.kind==="listen"&&!audioAvailable()?"#academy/lesson/"+firstUnfinished.unitId+"/read":firstUnfinished.href)+'">'+TXT[l].resume+' →</a>':"")+'</section>';
+  (firstUnfinished?'<a class="daily-primary daily-resume" href="'+esc(["listen","audio"].includes(firstUnfinished.kind)&&!audioAvailable()?"#academy/lesson/"+firstUnfinished.unitId+"/read":firstUnfinished.href)+'">'+TXT[l].resume+' →</a>':"")+'</section>';
 }
 function dailyKeyboard(l){
  return '<details class="daily-keyboard"><summary>⌨ '+TXT[l].keyboard+'</summary><div class="daily-board">'+

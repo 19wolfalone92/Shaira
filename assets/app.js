@@ -5,6 +5,7 @@ import {todayHtml,todayPreview,todayAction,todaySubmit,todayInput} from "./daily
 import {labHtml,labAction,labInput,labStats} from "./learning-labs.js";
 import {masteryHtml,masteryAction,masterySubmit} from "./mastery-ui.js";
 import {caseHtml,caseAction,caseSubmit} from "./case-trainer.js";
+import {listeningHtml,listeningAction} from "./listening-ui.js";
 
 const STORAGE_KEY = "shaira-progress-v1";
 const dictionary = {
@@ -65,7 +66,7 @@ const dictionary = {
 function loadState() {
   try {
     const raw = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
-    return { language: raw.language === "tl" ? "tl" : "en",
+    return { language: "en",
       completed: Array.isArray(raw.completed) ? raw.completed.filter(id => lessons.some(l => l.id === id)) : [] };
   } catch { return { language:"en", completed:[] }; }
 }
@@ -81,8 +82,8 @@ const handwritingSentences = ["Это дом.","Меня зовут Шаира."
 let drawingCleanup = null;
 
 const el = document.getElementById("app");
-const phrase = key => dictionary[state.language][key] || key;
-const loc = value => typeof value === "string" ? value : (value?.[state.language] || value?.en || "");
+const phrase = key => dictionary.en[key] || key;
+const loc = value => typeof value === "string" ? value : (value?.en || "");
 const escapeHtml = value => String(value ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const progressPercent = () => Math.round(state.completed.length / lessons.length * 100);
 
@@ -107,12 +108,12 @@ function currentRoute() {
   if (hash.startsWith("lesson/") && lessons.some(l => l.id === hash.slice(7))) return hash;
   return hash === "academy" || hash.startsWith("academy/") ? hash : ["home","today","review","write","settings"].includes(hash) ? hash : "today";
 }
-function speak(text) {
+function speak(text,rate=0.78) {
   if (!("speechSynthesis" in window)) { showToast(phrase("audioUnavailable")); return; }
   window.speechSynthesis.cancel();
   const utterance = new SpeechSynthesisUtterance(text);
   utterance.lang = "ru-RU";
-  utterance.rate = 0.78;
+  utterance.rate = Math.min(1.2,Math.max(0.5,Number(rate)||0.78));
   const voices = window.speechSynthesis.getVoices();
   const russian = voices.find(v => v.lang.toLowerCase().startsWith("ru"));
   if (russian) utterance.voice = russian;
@@ -132,7 +133,7 @@ function header() {
 function home() {
   const a=academyStatistics(),labs=labStats();
   const first=lessons.find(l=>!state.completed.includes(l.id));
-  const l=state.language, fil=l==="tl";
+  const l="en", fil=false;
   const headline=fil?"Kumusta, Shaira. Simulan natin ang Ruso.":"Shaira, Russian starts here.";
   const detail=fil?"Isang kumpletong landas sa pagbabasa, pagsulat at pakikipag-usap. Magsimula sa alpabeto at umusad sa sariling bilis.":
     "Learn to read, write and communicate in Russian. Start with Cyrillic and build your skills at your own pace.";
@@ -141,8 +142,8 @@ function home() {
     ["Alphabet and first syllables","Essential vocabulary","Grammar and reading","Independent writing"];
   const routeCards=[
     {href:first?"#lesson/"+first.id:"#academy/first-words",icon:"Аа",heading:sectionsText[0],sub:fil?"33 titik • tunog at baybay":"33 letters • sounds and spelling"},
-    {href:"#academy/first-words",icon:"01",heading:sectionsText[1],sub:fil?"240 salita • mga praktikal na paksa":"240 words • practical topics"},
-    {href:"#academy/lab",icon:"✳",heading:sectionsText[2],sub:fil?"100 tanong • 20 mahabang teksto":"100 questions • 20 graded texts"},
+    {href:"#academy/first-words",icon:"01",heading:sectionsText[1],sub:"486 words • practical topics"},
+    {href:"#academy/lab",icon:"✳",heading:sectionsText[2],sub:"100 grammar questions • 35 graded texts"},
     {href:"#academy/writing",icon:"✎",heading:sectionsText[3],sub:fil?"Sulat • mga draft • rebisyon":"Writing • drafts • revision"}
   ];
   return todayPreview(l)+'<section class="adult-welcome"><div class="adult-welcome-copy"><span class="adult-eyebrow">SHAIRA · LEARN RUSSIAN</span><h1>'+headline+'</h1><p>'+detail+'</p>'+
@@ -226,9 +227,7 @@ function settingsPage() {
   const academy = academyStatistics();
   const labs = labStats();
   return `<div class="page-intro"><span class="eyebrow">⚙ ${phrase("settings")}</span><h1>${phrase("settings")}</h1></div>
-    <section class="settings-card"><h2>${phrase("language")}</h2><p>${phrase("langInfo")}</p><div class="lang-switch" role="group" aria-label="${phrase("language")}">
-      <button type="button" data-action="language" data-value="en" class="${state.language==="en"?"selected":""}" aria-pressed="${state.language==="en"}">🇬🇧 English</button>
-      <button type="button" data-action="language" data-value="tl" class="${state.language==="tl"?"selected":""}" aria-pressed="${state.language==="tl"}">🇵🇭 Filipino</button></div></section>
+    <section class="settings-card"><h2>Language of instruction</h2><p><strong>English</strong> is used for navigation, lesson instructions, explanations, and feedback. Russian is shown as the language to learn, read, type, and speak.</p></section>
     <section class="settings-card"><h2>${phrase("progress")}</h2><p>${state.completed.length}/${lessons.length} ${phrase("completed")}. ${phrase("local")}</p>
       <button type="button" class="danger-button" data-action="reset">${phrase("reset")}</button></section>
     <section class="settings-card"><h2>🎓 ${state.language==="tl"?"Pag-usad sa Akademya":"Academy progress"}</h2><p>${academy.completed}/${academy.activities} ${state.language==="tl"?"gawaing nasanay":"activities practised"} · ${academy.knownWords} ${state.language==="tl"?"salitang napag-aralan":"studied words"} · ${academy.dueWords} ${state.language==="tl"?"dapat balikan":"due to review"} · ${labs.grammarAttempts} ${state.language==="tl"?"pagsubok sa gramatika":"grammar sessions"} · ${labs.readingsPassed} ${state.language==="tl"?"tekstong nabasa":"reading checks passed"}</p></section>
@@ -240,9 +239,9 @@ function render() {
   if (drawingCleanup) { drawingCleanup(); drawingCleanup = null; }
   const route = currentRoute();
   if(!route.startsWith("academy/lesson/") || !route.endsWith("/speak"))stopSpeakingRehearsal();
-  const page = route==="academy/cases"||route.startsWith("academy/cases/") ? caseHtml(route,state.language) : route==="academy/mastery"||route.startsWith("academy/mastery/")||route.startsWith("academy/checkpoint/") ? masteryHtml(route,state.language) : route === "today" ? todayHtml(state.language) : route === "home" ? home() : route === "academy/lab" || route.startsWith("academy/grammar") || route.startsWith("academy/library") || route.startsWith("academy/writing") || route.startsWith("academy/handbook") ? labHtml(route,state.language) : route.startsWith("academy") ? academyHtml(route,state.language) : route === "review" ? reviewPage() : route === "write" ? writePage() :
+  const page = route==="academy/listening"||route.startsWith("academy/listening/") ? listeningHtml(route) : route==="academy/cases"||route.startsWith("academy/cases/") ? caseHtml(route,state.language) : route==="academy/mastery"||route.startsWith("academy/mastery/")||route.startsWith("academy/checkpoint/") ? masteryHtml(route,state.language) : route === "today" ? todayHtml(state.language) : route === "home" ? home() : route === "academy/lab" || route.startsWith("academy/grammar") || route.startsWith("academy/library") || route.startsWith("academy/writing") || route.startsWith("academy/handbook") ? labHtml(route,state.language) : route.startsWith("academy") ? academyHtml(route,state.language) : route === "review" ? reviewPage() : route === "write" ? writePage() :
     route === "settings" ? settingsPage() : lessonPage(route.slice(7));
-  document.documentElement.lang = state.language === "tl" ? "fil" : "en";
+  document.documentElement.lang = "en";
   document.title = "Shaira · Learn Russian";
   el.innerHTML = `${header()}<main id="main-content" class="main-content">${page}<footer class="footer">${phrase("footer")}</footer></main>${navBar(route)}<div id="toast" class="toast" role="status" hidden></div>`;
   if (route === "write") initializeCanvas();
@@ -284,6 +283,8 @@ function initializeCanvas() {
   drawingCleanup = () => {canvas.removeEventListener("pointerdown",down);canvas.removeEventListener("pointermove",move);canvas.removeEventListener("pointerup",up);canvas.removeEventListener("pointercancel",up);};
 }
 document.addEventListener("click", event => {
+  const listenButton=event.target.closest("[data-listening]");
+  if(listenButton){listeningAction(listenButton,{language:()=>state.language,route:currentRoute,render,speak,navigate,notice:showToast});return;}
   const caseButton=event.target.closest("[data-case]");
   if(caseButton){caseAction(caseButton,{language:()=>state.language,route:currentRoute,render,speak,navigate,notice:showToast});return;}
   const masteryButton=event.target.closest("[data-mastery]");
@@ -313,7 +314,7 @@ document.addEventListener("click", event => {
   else if (action === "write-mode") {writingMode=["letters","words","sentences"].includes(button.dataset.value)?button.dataset.value:"letters";letterIndex=0;render();}
   else if (action === "letter-case") {lowerCase=!lowerCase;render();}
   else if (action === "clear-canvas") {const canvas=document.getElementById("writing-canvas");canvas?.getContext("2d")?.clearRect(0,0,canvas.width,canvas.height);}
-  else if (action === "language") { state.language=button.dataset.value === "tl" ? "tl" : "en"; save();feedback=null;render(); }
+
   else if (action === "export-backup") { try {downloadBackup();}catch(error){showToast(String(error.message||error));} }
   else if (action === "import-backup") { document.getElementById("backup-file")?.click(); }
   else if (action === "reset") { if (window.confirm(phrase("resetConfirm"))) {state.completed=[];save();render();} }

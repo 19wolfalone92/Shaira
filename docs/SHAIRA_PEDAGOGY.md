@@ -1,7 +1,7 @@
 # SHAIRA — Russian from zero to B2: teacher's syllabus
 
 ## Learner and teaching philosophy
-Shaira is a beginner who reads English and/or Filipino/Tagalog. The app is an **adult-friendly** companion for an iPhone, inspired by the separate English_Child application's structured, beginner-first route. Do not assume that she can already read Russian or type Cyrillic. No mandatory payment, advertisements, account or paid AI APIs. Every learning explanation and curated translation is bilingual EN/Filipino.
+Shaira is a beginner who reads English. The app is an **adult-friendly** companion for an iPhone, inspired by the separate English_Child application's structured, beginner-first route. Do not assume that she can already read Russian or type Cyrillic. No mandatory payment, advertisements, account or paid AI APIs. The learner-facing interface and instructions are now English-only; Russian is the target language. Legacy Filipino translations remain in the source for backwards compatibility.
 
 **The route labels Pre-A1 through B2 describe content targets, NOT an achieved or officially tested CEFR level.** Even completing every exercise cannot prove B2: independent testing must check spontaneous conversation, authentic reading, listening and extended writing.
 
@@ -120,3 +120,12 @@ Every one of the 32 thematic units now has a separate detailed adult study card 
 At the end of each 42-session teaching stage, a separate ten-item review uses a new levelled text and asks the learner to produce Russian writing as well as answer grammar and comprehension questions. Passing a short review requires >=8/10, >=1 correct typed answer, >=1 correct reading answer and current-session timing. The result is evidence of practice, **not** an external assessment of all five TORFL skills.
 
 There is now also a dedicated Russian noun **declension trainer** with 24 noun paradigms covering 6 cases × 2 numbers = 288 explicitly enumerated forms. It teaches nominative, genitive, dative, accusative, instrumental and prepositional alongside gender, animacy and irregular plural patterns. Ten novel form prompts are chosen adaptively; answered forms and scores are saved locally, including portable backup. At selected A1/A2 days an 8/10 fresh case session is mandatory.
+
+
+## English-first course expansion — learner comprehension
+
+The application is now fixed to **English for all navigation, prompts, grammar notes, answer explanations and app settings**. A legacy saved Filipino preference is ignored, while language progress and drafts remain intact.
+
+The teaching bank now contains 486 Russian-English vocabulary cards across 81 themes; 35 original levelled reading passages with contextual questions; 45 independent writing tasks; 30 role-play conversations; and 30 audio-first synthetic-Russian listening activities. Listening checks ask English questions with English choices, while the spoken Russian stays hidden until an answer. Revealing the transcript changes the attempt into reading-only practice. At eligible daily lessons this is a separate practice-evidence gate, with an accessible reading fallback when audio is unavailable.
+
+**Pedagogical limitation:** The spoken audio is browser TTS. Authentic speakers, accent and speed variety, delayed-response listening, spontaneous conversation assessment, speech feedback and competent essay correction remain necessary for independently verifiable B2.

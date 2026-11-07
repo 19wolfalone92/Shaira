@@ -1,13 +1,13 @@
 # Shaira — production handoff for ChatGPT Work
 
 ## Project goal
-Build a friendly, effective, iPhone-first Russian learning app for a complete beginner. Student-facing explanations must be available in **English or Filipino/Tagalog**. The learner should gain **Russian literacy and grammar**, not merely memorise conversation phrases. Keep basic functionality free, independent of paid APIs, and usable offline when practical.
+Build a friendly, effective, iPhone-first Russian learning app for a complete beginner. Student-facing interface, instructional prompts, explanations and feedback MUST be **English-only** by explicit user instruction (November 7, 2026); the app retains older bilingual source data as dormant compatibility content. The learner should gain **Russian literacy and grammar**, not merely memorise conversation phrases. Keep basic functionality free, independent of paid APIs, and usable offline when practical.
 
 ## Current baseline (as of 2026-10-30)
 - Source: repository `19wolfalone92/Shaira`, default branch `main`.
 - Technology: dependency-free static PWA (ES modules + CSS), responsive iPhone layout.
 - 13 functioning micro-lessons in 4 paths: Cyrillic alphabet (all 33 letters), reading/spelling, everyday language, elementary grammar.
-- EN/Filipino switch, Russian speech via Web Speech API where supported, built-in Cyrillic keyboard, freehand canvas, multiple-choice/typing/dictation checks, progress in localStorage.
+- English-only student UI, Russian speech via Web Speech API where supported, built-in Cyrillic keyboard, freehand canvas, multiple-choice/typing/dictation checks, progress in localStorage.
 - Service worker caches first-party static files for offline use; PNG icons for iOS and PWA installability.
 - GitHub Actions: `Verify Shaira` checks content and UI smoke tests; `Publish Shaira PWA` is prepared for GitHub Pages.
 - No external APIs, analytics, cloud database, accounts, advertising, or secrets.
@@ -123,3 +123,15 @@ The user explicitly prioritised genuine daily learning across ALL skills, analog
 - Offline assets: studio-lessons.js, stage-checkpoints.js, mastery-engine.js, mastery-ui.js, mastery.css, declension-tables.js, case-trainer.js, case-trainer.css.
 - Tests: mastery.test.mjs and cases.test.mjs, plus original daily-path.test.mjs and all smoke tests.
 - Actual TORFL-II/B2 still requires much deeper lexical, authentic listening and independently graded spontaneous speaking/writing. Read docs/B2_CURRICULUM_MAP.md.
+
+
+## November 7, 2026 — English-first expanded learning release (v0.5.0)
+
+- The learner-facing language is now **English** on all routes, including settings, exercise instructions and explanations. Loading a legacy Filipino language setting or restoring a Filipino-tagged JSON backup normalises to English; Russian texts and forms remain Russian.
+- Extended the existing 40 vocabulary packs with **41 new adult-themed six-word packs**, total **81×6=486** Russian/English cards. Preserved old IDs and progress; staged topics now include advanced argumentation and professional communication.
+- Added **15 longer Russian graded reading texts** with EN reading guides, glossaries and 30 fresh context comprehension items: **35 total graded passages**.
+- Added **15 original adult writing prompts**, from introductory messages to balanced B2-style policy essays: **45 total tasks**.
+- Added **10 new practical dialogue scenes**, including formal business and nuanced discussion: **30 dialogue scenes** total.
+- Added **30 English-guided audio-first listening scenarios** (6 per study stage); Russian transcript is hidden until after answering, with a reading-only reveal action that does not count as listening. Uses browser Russian TTS and explicitly does not claim native audio.
+- Integrated listening into eligible speaking/listening daily study days; unavailable-TTS fallback redirects to reading without labelling it as a listening grade. Backups include validated listening history. Offline shell includes every new asset.
+- QA tests cover language lock, all new material, 210 daily references, listening grading, backup and browser degradation. Actual proficiency B2 remains unproven and requires authentic recorded audio and independent writing/oral evaluation.

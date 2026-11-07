@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { sections, lessons, alphabet, keyboardRows } from "../assets/lessons.js";
 
-test("main interface completes a lesson, switches language, and opens writing canvas", () => {
+test("main interface completes a lesson, keeps English instructions and opens writing canvas", () => {
   const source = readFileSync(new URL("../assets/app.js", import.meta.url), "utf8")
     .replace(/^import .*?;$/gm, "");
   const events = {}, windowEvents = {}, storage = new Map();
@@ -49,8 +49,10 @@ test("main interface completes a lesson, switches language, and opens writing ca
   const caseHtml=()=>"<section>Cases</section>";
   const caseAction=()=>{};
   const caseSubmit=()=>false;
-  const run = new Function("sections","lessons","alphabet","keyboardRows","document","window","location","navigator","localStorage","academyStatistics","labStats","stopSpeakingRehearsal","todayHtml","todayPreview","todayAction","todaySubmit","todayInput","masteryHtml","masteryAction","masterySubmit","caseHtml","caseAction","caseSubmit",source);
-  run(sections,lessons,alphabet,keyboardRows,document,window,location,navigator,localStorage,academyStatistics,labStats,stopSpeakingRehearsal,todayHtml,todayPreview,todayAction,todaySubmit,todayInput,masteryHtml,masteryAction,masterySubmit,caseHtml,caseAction,caseSubmit);
+  const listeningHtml=()=>"<section>Listening</section>";
+  const listeningAction=()=>{};
+  const run = new Function("sections","lessons","alphabet","keyboardRows","document","window","location","navigator","localStorage","academyStatistics","labStats","stopSpeakingRehearsal","todayHtml","todayPreview","todayAction","todaySubmit","todayInput","masteryHtml","masteryAction","masterySubmit","caseHtml","caseAction","caseSubmit","listeningHtml","listeningAction",source);
+  run(sections,lessons,alphabet,keyboardRows,document,window,location,navigator,localStorage,academyStatistics,labStats,stopSpeakingRehearsal,todayHtml,todayPreview,todayAction,todaySubmit,todayInput,masteryHtml,masteryAction,masterySubmit,caseHtml,caseAction,caseSubmit,listeningHtml,listeningAction);
   const click=(action,props={})=>events.click({target:{closest:selector=>selector==="[data-action]"?{dataset:{action,...props}}:null}});
   assert.match(app.innerHTML,/Your learning path/);
   click("open-lesson",{id:"vowels"});
@@ -64,8 +66,9 @@ test("main interface completes a lesson, switches language, and opens writing ca
   assert.deepEqual(JSON.parse(storage.get("shaira-progress-v1")).completed, ["vowels"]);
   click("finish-lesson");
   click("language",{value:"tl"});
-  assert.match(app.innerHTML,/Kumusta, Shaira/);
-  assert.equal(document.documentElement.lang, "fil");
+  assert.match(app.innerHTML,/Shaira, Russian starts here/);
+  assert.doesNotMatch(app.innerHTML,/Kumusta, Shaira/);
+  assert.equal(document.documentElement.lang, "en");
   location.hash="#write";windowEvents.hashchange();
   assert.match(app.innerHTML,/writing-canvas/);
   assert.ok(canvas.width >= 300);

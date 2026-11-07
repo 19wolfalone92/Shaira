@@ -107,13 +107,14 @@ function overview(l){
   return '<div class="aca-hero"><div class="aca-stars" aria-hidden="true">А Б В</div><span class="aca-overline">SHAIRA · LANGUAGE ACADEMY</span><h1>'+UI[l].title+'</h1><p>'+UI[l].intro+'</p><div class="aca-hero-badges"><span>🇷🇺 Pre-A1 → B2</span><span>✍️ '+units.length+' '+UI[l].word+' / '+units.length+' units</span></div></div>'+
   '<div class="aca-summary"><div><b>'+d+'/'+totalActivities+'</b><small>'+UI[l].total+'</small></div><div><b>⭐ '+store.points+'</b><small>'+UI[l].stars+'</small></div><div><b>'+memory.due.length+'</b><small>'+UI[l].due+'</small></div></div>'+
   '<section class="aca-path-info"><strong>🌟 '+UI[l].courseGuide+'</strong><p>'+UI[l].notice+'</p></section>'+
-  '<a class="aca-review-call" href="#academy/first-words"><span>Аа</span><span><strong>'+tx("240 themed Russian word cards","240 tematikong salita sa Ruso",l)+'</strong><small>'+tx("40 practical topics, six words each","40 praktikal na paksa, tig-6 na salita",l)+'</small></span><b>›</b></a>'+
+  '<a class="aca-review-call" href="#academy/first-words"><span>Аа</span><span><strong>'+tx(firstWordPacks.length*6+" Russian word cards",firstWordPacks.length*6+" Russian word cards",l)+'</strong><small>'+tx(firstWordPacks.length+" practical topics · 6 words each",firstWordPacks.length+" practical topics · 6 words each",l)+'</small></span><b>›</b></a>'+
   '<a class="aca-review-call" href="#academy/dialogues"><span>💬</span><span><strong>'+tx("Russian conversation lab","Pagsasanay sa usapan sa Ruso",l)+'</strong><small>'+tx("20 situations: say it, listen, understand","20 sitwasyon: magsalita, makinig, umunawa",l)+'</small></span><b>›</b></a>'+
+  '<a class="aca-review-call" href="#academy/listening"><span>🔊</span><span><strong>'+tx("Russian listening practice","Russian listening practice",l)+'</strong><small>'+tx("30 audio-first listening situations with English comprehension checks","30 audio listening situations",l)+'</small></span><b>›</b></a>'+
   '<a class="aca-review-call" href="#academy/cases"><span>А</span><span><strong>'+tx("Russian noun cases","Mga kaso ng pangngalan sa Ruso",l)+'</strong><small>'+tx("288 singular and plural forms · six cases · typed practice","288 anyong isahan at maramihan · 6 na kaso · pagsusulat",l)+'</small></span><b>›</b></a>'+ 
   '<a class="aca-review-call" href="#academy/mastery"><span>▥</span><span><strong>'+tx("Complete Russian course","Kumpletong kurso sa Ruso",l)+'</strong><small>'+tx("32 structured chapters, productive practice and stage review exams","32 magkakasunod na paksa, pagsasanay at pagsusuri sa antas",l)+'</small></span><b>›</b></a>'+ 
   '<a class="aca-review-call" href="#academy/handbook"><span>А</span><span><strong>'+tx("Russian grammar handbook","Manwal sa gramatikang Ruso",l)+'</strong><small>'+tx("30 explained rules and example patterns from Cyrillic through B2","30 tuntunin at halimbawa mula Cyrillic hanggang B2",l)+'</small></span><b>›</b></a>'+
-  '<a class="aca-review-call" href="#academy/writing"><span>✎</span><span><strong>'+tx("Writing portfolio","Portfolio ng pagsusulat",l)+'</strong><small>'+tx("30 guided assignments · saved private drafts","30 gawaing pagsulat · pribadong mga draft",l)+'</small></span><b>›</b></a>'+
-  '<a class="aca-review-call" href="#academy/lab"><span>✳</span><span><strong>'+tx("Grammar and reading studio","Pagsasanay sa gramatika at pagbasa",l)+'</strong><small>'+tx("100 grammar drills · 20 graded texts · independent writing","100 pagsasanay sa gramatika · 20 teksto · sariling pagsulat",l)+'</small></span><b>›</b></a>'+
+  '<a class="aca-review-call" href="#academy/writing"><span>✎</span><span><strong>'+tx("Writing portfolio","Portfolio ng pagsusulat",l)+'</strong><small>'+tx("45 guided assignments · saved private drafts","45 guided assignments · saved private drafts",l)+'</small></span><b>›</b></a>'+
+  '<a class="aca-review-call" href="#academy/lab"><span>✳</span><span><strong>'+tx("Grammar and reading studio","Pagsasanay sa gramatika at pagbasa",l)+'</strong><small>'+tx("100 grammar drills · 35 graded texts · independent writing","100 grammar drills · 35 graded texts · independent writing",l)+'</small></span><b>›</b></a>'+
   '<div class="aca-stage-list">'+stages.map((stage,i)=>{
     const list=units.filter(x=>x.stage===stage.id), n=list.reduce((s,x)=>s+unitDone(x),0),max=list.length*activityModes.length;
     return '<a class="aca-stage-card" href="#academy/level/'+stage.id+'"><span class="aca-stage-index">'+(i+1)+'</span><span class="aca-stage-icon">'+stage.icon+'</span><span class="aca-stage-copy"><small>'+stage.label+'</small><strong>'+val(stage,l)+'</strong><span class="aca-track"><i style="width:'+pct(n,max)+'%"></i></span><em>'+n+'/'+max+'</em></span><span class="aca-chev">›</span></a>';
@@ -121,28 +122,46 @@ function overview(l){
   '<a class="aca-review-call" href="#academy/review"><span>🧠</span><span><strong>'+UI[l].review+'</strong><small>'+UI[l].reviewInfo+'</small></span><b>'+memory.due.length+'</b></a>'+baseNav(l);
 }
 function firstWordsPage(route,l){
-  const packId=route.split("/")[2];
-  if(!packId){
-    return '<a class="aca-back" href="#academy">← '+UI[l].back+'</a>'+top("🧸 Pre-A1",tx("240 essential Russian word cards","240 tematikong salita sa Ruso",l),tx("Learn six words at a time. Listen, read, repeat and test your recall.","Anim na salita bawat aralin. Makinig, bumasa, ulitin at alalahanin.",l))+
-      '<div class="aca-units">'+firstWordPacks.map((p,i)=>
-        '<a class="aca-unit-card" href="#academy/first-words/'+p.id+'"><span class="aca-unit-icon">'+p.icon+'</span><span><small>'+(i+1)+'/40</small><strong>'+esc(val(p.title,l))+'</strong><em>'+(modeDone(p,"words")?UI[l].completed:"6 "+UI[l].words)+'</em></span><span class="aca-chev">›</span></a>').join("")+'</div>';
+  const path=route.split("/"),packId=path[2];
+  const groupOf=p=>{
+    const i=firstWordPacks.indexOf(p);
+    return i<20?"basics":i<40?"everyday":p.stage||"everyday";
+  };
+  const categories=[["basics","Start here"],["everyday","Everyday"],["starter","Foundation"],["a1","A1"],["a2","A2"],["b1","B1"],["b2","B2"]];
+  if(!packId||packId==="group"){
+    const requested=packId==="group"?path[3]:"basics";
+    const selected=categories.some(x=>x[0]===requested)?requested:"basics";
+    const packs=firstWordPacks.filter(p=>groupOf(p)===selected);
+    const tabs='<nav class="aca-vocab-tabs" aria-label="Vocabulary level">'+categories.map(([id,title])=>
+      '<a href="#academy/first-words/group/'+id+'" class="'+(selected===id?'selected':'')+'" '+(selected===id?'aria-current="page"':'')+'>'+title+'</a>').join("")+'</nav>';
+    return '<a class="aca-back" href="#academy">← '+UI[l].back+'</a>'+
+      top("Pre-A1 → B2",firstWordPacks.length*6+" Russian word cards","Choose a topic level. Learn six Russian words at a time, hear the sound, then test your recall.")+
+      tabs+'<div class="aca-units">'+packs.map((p,i)=>
+        '<a class="aca-unit-card" href="#academy/first-words/'+p.id+'"><span class="aca-unit-icon">'+p.icon+'</span><span><small>'+(i+1)+'/'+packs.length+' · '+(p.stage?p.stage.toUpperCase():"START")+'</small><strong>'+esc(val(p.title,l))+'</strong><em>'+(modeDone(p,"words")?UI[l].completed:"6 "+UI[l].words)+'</em></span><span class="aca-chev">›</span></a>').join("")+'</div>';
   }
   const p=firstWordPacks.find(x=>x.id===packId);if(!p)return firstWordsPage("academy/first-words",l);
   const s=ensureSession(route,l);
-  const header='<a class="aca-back" href="#academy/first-words">← '+UI[l].back+'</a>'+top(p.icon+" Pre-A1",val(p.title,l),tx("Look, say and remember.","Tingnan, sabihin at tandaan.",l));
-  if(s.phase==="done")return header+'<div class="aca-celebrate">🌟<h2>'+UI[l].finish+'</h2><a class="aca-cta aca-link" href="#academy/first-words">'+UI[l].studyNext+' →</a></div>';
+  const header='<a class="aca-back" href="#academy/first-words/group/'+groupOf(p)+'">← '+UI[l].back+'</a>'+top(p.icon+" "+(p.stage?p.stage.toUpperCase():"Pre-A1"),val(p.title,l),tx("Look, say and remember.","Tingnan, sabihin at tandaan.",l));
+  if(s.phase==="done")return header+'<div class="aca-celebrate">🌟<h2>'+UI[l].finish+'</h2><a class="aca-cta aca-link" href="#academy/first-words/group/'+groupOf(p)+'">'+UI[l].studyNext+' →</a></div>';
   if(s.phase==="quiz")return header+answersHtml(s,l,"words");
   return header+'<section class="aca-panel"><h2>'+UI[l].learnFirst+'</h2><div class="aca-word-grid">'+p.words.map(w=>
     '<div><span class="aca-emoji">'+w.icon+'</span><button class="aca-sound" data-aca="sound" data-text="'+esc(w.ru)+'">🔊</button><b lang="ru">'+esc(w.ru)+'</b><small>'+esc(val(w,l))+'</small></div>').join("")+'</div><button class="aca-cta aca-wide" data-aca="start-quiz">'+UI[l].testNow+' →</button></section>';
 }
 function dialoguesPage(route,l){
-  const id=route.split("/")[2];
-  if(!id)return '<a class="aca-back" href="#academy">← '+UI[l].back+'</a>'+
-    top("💬 "+UI[l].talk,tx("Russian conversation lab","Pagsasanay sa usapan sa Ruso",l),tx("Read each line, listen, repeat aloud and check meaning.","Basahin, pakinggan, ulitin nang malakas at suriin ang kahulugan.",l))+
-    '<div class="aca-units">'+dialogues.map(d=>'<a class="aca-unit-card" href="#academy/dialogues/'+d.id+'"><span class="aca-unit-icon">'+d.icon+'</span><span><small>'+getStage(d.stage).label+'</small><strong>'+esc(val(d.title,l))+'</strong><em>'+(store.done["dialogue/"+d.id+"/complete"]?UI[l].completed:UI[l].talk)+'</em></span><span class="aca-chev">›</span></a>').join("")+'</div>';
+  const parts=route.split("/"),id=parts[2];
+  if(!id||id==="group"){
+    const stage=stages.some(s=>s.id===parts[3])?parts[3]:"starter";
+    const tabs='<nav class="aca-vocab-tabs" aria-label="Dialogue level">'+stages.map(s=>
+      '<a href="#academy/dialogues/group/'+s.id+'" class="'+(stage===s.id?'selected':'')+'" '+(stage===s.id?'aria-current="page"':'')+'>'+s.label+'</a>').join("")+'</nav>';
+    const items=dialogues.filter(d=>d.stage===stage);
+    return '<a class="aca-back" href="#academy">← '+UI[l].back+'</a>'+
+      top("💬 "+UI[l].talk,"30 Russian conversations","Read a Russian exchange, hear each line, practise speaking aloud, and answer an English comprehension question.")+
+      tabs+'<div class="aca-units">'+items.map(d=>
+        '<a class="aca-unit-card" href="#academy/dialogues/'+d.id+'"><span class="aca-unit-icon">'+d.icon+'</span><span><small>'+getStage(d.stage).label+'</small><strong>'+esc(val(d.title,l))+'</strong><em>'+(store.done["dialogue/"+d.id+"/complete"]?UI[l].completed:UI[l].talk)+'</em></span><span class="aca-chev">›</span></a>').join("")+'</div>';
+  }
   const d=dialogues.find(x=>x.id===id);if(!d)return dialoguesPage("academy/dialogues",l);
   const s=ensureSession(route,l);
-  return '<a class="aca-back" href="#academy/dialogues">← '+UI[l].back+'</a>'+
+  return '<a class="aca-back" href="#academy/dialogues/group/'+d.stage+'">← '+UI[l].back+'</a>'+
     top(d.icon+" "+getStage(d.stage).label,val(d.title,l),val(d.goal,l))+
     '<section class="aca-panel"><h2>🗣️ '+UI[l].speak+'</h2><p class="aca-muted">'+UI[l].speechInfo+'</p>'+
     '<div class="aca-dialogue">'+d.lines.map(line=>'<div class="aca-dialogue-line '+(line.who==="А"?"aca-speaker-a":"aca-speaker-b")+'"><b>'+line.who+'</b><div><strong lang="ru">'+esc(line.ru)+'</strong>'+(s.show?'<small>'+esc(val(line,l))+'</small>':"")+'</div><button class="aca-sound" data-aca="sound" data-text="'+esc(line.ru)+'">🔊</button></div>').join("")+'</div>'+

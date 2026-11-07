@@ -1,3 +1,4 @@
+import {extraWritingTasks} from "./extra-writing-tasks.js";
 // Original guided writing portfolio for adult learner Shaira.
 // Sample openings are examples, never automatic essay keys.
 const task=(id,stage,title,brief,model,check)=>({id,stage,
@@ -65,5 +66,6 @@ task("balanced-technology","b2",["Technology and education","Teknolohiya at eduk
 task("compare-work-models","b2",["Comparative policy brief","Paghahambing ng mga patakaran"],["Compare two ways of organising work, and recommend one with caveats.","Ihambing ang dalawang paraan ng trabaho at magmungkahi nang may kondisyon."],
 "С одной стороны, гибкий график повышает самостоятельность. С другой стороны, координация становится сложнее.",["Use paired connectives, precise claims and justified conclusions.","Gumamit ng magkapares na pangdugtong, tiyak na pahayag at makatwirang konklusyon."])
 ];
+writingTasks.push(...extraWritingTasks);
 export const writingForStage=id=>writingTasks.filter(x=>x.stage===id);
 export const writingWordTargets={starter:[10,25],a1:[35,60],a2:[75,110],b1:[120,180],b2:[180,250]};

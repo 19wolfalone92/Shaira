@@ -5,6 +5,7 @@ const LABS="shaira-labs-v1";
 const DAILY="shaira-daily-v1";
 const MASTERY="shaira-mastery-v1";
 const CASES="shaira-case-practice-v1";
+const LISTENING="shaira-listening-v1";
 export const BACKUP_FORMAT="shaira-learning-backup";
 export const BACKUP_VERSION=1;
 function object(x){return x!==null&&typeof x==="object"&&!Array.isArray(x);}
@@ -12,7 +13,7 @@ function safeObj(x){if(!object(x))return {};const o=Object.create(null);for(cons
 function cleanProgress(x){
   if(!object(x))return {language:"en",completed:[]};
   const completed=Array.isArray(x.completed)?[...new Set(x.completed.filter(v=>typeof v==="string"&&v.length<90))].slice(0,1000):[];
-  return {language:x.language==="tl"?"tl":"en",completed};
+  return {language:"en",completed};
 }
 function cleanAcademy(x){
   if(!object(x))return {done:{},memory:{},drafts:{},points:0};
@@ -146,6 +147,17 @@ function cleanCasePractice(x){
  }
  return {items,sessions};
 }
+function cleanListening(x){
+  const items=Object.create(null);
+  const clips=safeObj(safeObj(x).items);
+  for(const [id,v] of Object.entries(clips).slice(0,100)){
+    if(!/^audio-[a-z0-9-]{1,60}$/.test(id)||!object(v))continue;
+    const attempts=Number(v.attempts),last=Number(v.last);
+    if(!Number.isInteger(attempts)||attempts<0||attempts>100000||!Number.isFinite(last)||last<0)continue;
+    items[id]={attempts,last,passed:v.passed===true,lastPassed:v.lastPassed===true};
+  }
+  return {items};
+}
 function parseExisting(storage,key){
   try{return JSON.parse(storage.getItem(key)||"{}");}
   catch{return {};}
@@ -158,7 +170,8 @@ export function buildBackup(storage=globalThis.localStorage){
     labs:cleanLabs(parseExisting(storage,LABS)),
     daily:cleanDaily(parseExisting(storage,DAILY)),
     mastery:cleanMastery(parseExisting(storage,MASTERY)),
-    cases:cleanCasePractice(parseExisting(storage,CASES))
+    cases:cleanCasePractice(parseExisting(storage,CASES)),
+    listening:cleanListening(parseExisting(storage,LISTENING))
   };
 }
 export function readBackup(json){
@@ -166,11 +179,11 @@ export function readBackup(json){
   let data;try{data=JSON.parse(json);}catch{throw new Error("Invalid JSON backup.");}
   if(!object(data)||data.format!==BACKUP_FORMAT||data.version!==BACKUP_VERSION)throw new Error("Not a compatible Shaira backup.");
   if(!object(data.legacy)||!object(data.academy))throw new Error("The backup is missing required progress data.");
-  return {legacy:cleanProgress(data.legacy),academy:cleanAcademy(data.academy),labs:cleanLabs(data.labs),daily:cleanDaily(data.daily),mastery:cleanMastery(data.mastery),cases:cleanCasePractice(data.cases)};
+  return {legacy:cleanProgress(data.legacy),academy:cleanAcademy(data.academy),labs:cleanLabs(data.labs),daily:cleanDaily(data.daily),mastery:cleanMastery(data.mastery),cases:cleanCasePractice(data.cases),listening:cleanListening(data.listening)};
 }
 export function restoreBackup(json,storage=globalThis.localStorage){
   const parsed=readBackup(json); // do all validation before changing device state
-  const beforeLegacy=storage.getItem(LEGACY),beforeAcademy=storage.getItem(ACADEMY),beforeLabs=storage.getItem(LABS),beforeDaily=storage.getItem(DAILY),beforeMastery=storage.getItem(MASTERY),beforeCases=storage.getItem(CASES);
+  const beforeLegacy=storage.getItem(LEGACY),beforeAcademy=storage.getItem(ACADEMY),beforeLabs=storage.getItem(LABS),beforeDaily=storage.getItem(DAILY),beforeMastery=storage.getItem(MASTERY),beforeCases=storage.getItem(CASES),beforeListening=storage.getItem(LISTENING);
   try{
     storage.setItem(LEGACY,JSON.stringify(parsed.legacy));
     storage.setItem(ACADEMY,JSON.stringify(parsed.academy));
@@ -178,6 +191,7 @@ export function restoreBackup(json,storage=globalThis.localStorage){
     storage.setItem(DAILY,JSON.stringify(parsed.daily));
     storage.setItem(MASTERY,JSON.stringify(parsed.mastery));
     storage.setItem(CASES,JSON.stringify(parsed.cases));
+    storage.setItem(LISTENING,JSON.stringify(parsed.listening));
   }catch(error){
     try{
       if(beforeLegacy===null)storage.removeItem?.(LEGACY);else storage.setItem(LEGACY,beforeLegacy);
@@ -186,6 +200,7 @@ export function restoreBackup(json,storage=globalThis.localStorage){
       if(beforeDaily===null)storage.removeItem?.(DAILY);else storage.setItem(DAILY,beforeDaily);
       if(beforeMastery===null)storage.removeItem?.(MASTERY);else storage.setItem(MASTERY,beforeMastery);
       if(beforeCases===null)storage.removeItem?.(CASES);else storage.setItem(CASES,beforeCases);
+      if(beforeListening===null)storage.removeItem?.(LISTENING);else storage.setItem(LISTENING,beforeListening);
     }catch{}
     throw new Error("Could not write backup to this device: "+error.message);
   }

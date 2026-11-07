@@ -3,6 +3,7 @@
 import {stages,units} from "./academy-data.js";
 import {firstWordPacks} from "./first-words.js";
 import {dialogues} from "./dialogues.js";
+import {listeningForStage} from "./listening-clips.js";
 import {grammarDrills} from "./grammar-drills.js";
 import {grammarHandbook} from "./grammar-handbook.js";
 import {readingLibrary} from "./reading-library.js";
@@ -38,11 +39,13 @@ export function makeDay(index){
  const within=index%DAYS_PER_STAGE,week=Math.floor(within/7),weekday=within%7;
  const stageUnits=group(units,level);
  const unit=selected(stageUnits,week*2+(weekday>=4?1:0));
- const pack=selected(firstWordPacks,levelNo*8+week*2+(weekday>=5?1:0));
+ const packBase=[0,15,27,43,64][levelNo];
+ const pack=selected(firstWordPacks,packBase+week*2+(weekday>=5?1:0));
  const stageDialogues=group(dialogues,level);
+ const audioClip=listeningForStage(level)[week];
  const dialogue=selected(stageDialogues,week);
- const passage=selected(group(readingLibrary,level),week);
- const writing=selected(group(writingTasks,level),week);
+ const passage=selected(group(readingLibrary,level),week+(week>=3?1:0));
+ const writing=selected(group(writingTasks,level),week+(week>=3?3:0));
  const handbook=selected(group(grammarHandbook,level),week);
  const stageDrills=group(grammarDrills,level);
  const openingQuizOrder=[11,0,2,1,5,6,7,18,8,19,17,18,13,9];
@@ -84,6 +87,8 @@ export function makeDay(index){
        "Listen and identify Russian words","Makinig at kilalanin ang salita",10,{key:unit.id+"/listen",fallback:unit.id+"/read",unitId:unit.id}));
      tasks.push(task("speak:"+unit.id,"speak","#academy/lesson/"+unit.id+"/speak",
        "Speak and compare with the model","Magsalita at ihambing sa modelo",12,{key:unit.id+"/speak"}));
+     if(audioClip)tasks.push(task("audio:"+audioClip.id,"audio","#academy/listening/"+audioClip.id,
+       "Hear a new Russian situation: "+audioClip.title,"Listen and answer in English",10,{key:audioClip.id,fallback:unit.id+"/read",unitId:unit.id}));
    }else if(weekday===3){
      tasks.push(task("reading:"+passage.id,"reading","#academy/library/"+passage.id,
        "Read and understand: "+passage.title.en,"Basahin at unawain: "+passage.title.tl,18,{key:passage.id}));
@@ -156,9 +161,10 @@ export function snapshot(storage=globalThis.localStorage){
  const academy=parse(storage,"shaira-academy-v1");
  const labs=parse(storage,"shaira-labs-v1");
  const legacy=parse(storage,"shaira-progress-v1");
+ const listenings=parse(storage,"shaira-listening-v1");
  const mastery=loadMastery(storage);
  const cases=parse(storage,"shaira-case-practice-v1");
- return {academy,labs,legacy,mastery,cases};
+ return {academy,labs,legacy,mastery,cases,listenings};
 }
 export function stepComplete(step,state,snap,audioAvailable=true){
  const t=Number(state.startedAt)||0;
@@ -184,6 +190,11 @@ export function stepComplete(step,state,snap,audioAvailable=true){
    const row=safeRecord(safeRecord(snap.mastery).checkpoints)[step.key];
    return Number(row?.last)>=t&&row?.lastPassed===true&&
      Number(row?.lastScore)>=8&&Number(row?.correctTyped)>=1&&Number(row?.correctReading)>=1;
+ }
+ if(step.kind==="audio"){
+   if(!audioAvailable)return Number(done[step.fallback])>=t;
+   const record=safeRecord(safeRecord(snap.listenings).items)[step.key];
+   return Number(record?.last)>=t&&record?.lastPassed===true;
  }
  if(step.kind==="case-quiz"){
    const sessions=Array.isArray(snap.cases?.sessions)?snap.cases.sessions:[];

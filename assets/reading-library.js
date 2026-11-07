@@ -1,3 +1,4 @@
+import {extraReadings} from "./extra-readings.js";
 // Original graded adult Russian texts; content is for practice, not CEFR certification.
 // Translations are concise reading guides; they do not replace word-by-word study.
 const pair=(en,tl)=>({en,tl});
@@ -148,4 +149,5 @@ item("education-technology","b2","🎓",["Digital tools and independent learning
 ["Why is learning outside the interface important?","Bakit mahalagang mag-aral sa labas ng interface?",["чтобы применять знания самостоятельно","чтобы не читать правила","чтобы заменить всё видео","чтобы забыть ошибки"],"чтобы применять знания самостоятельно","Real communication requires unprompted use of knowledge.","Kailangan gamitin ang kaalaman nang mag-isa sa tunay na sitwasyon."]],
 ["Write a critical essay on AI in education including limitations and practical safeguards.","Sumulat ng kritikal na sanaysay tungkol sa AI sa edukasyon na may mga limitasyon at pag-iingat."])
 ];
+readingLibrary.push(...extraReadings);
 export const readingsForStage=stage=>readingLibrary.filter(p=>p.stage===stage);
