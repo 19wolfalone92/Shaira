@@ -162,7 +162,7 @@ function home() {
     {href:"#academy/search",icon:"⌕",heading:"Search your Russian course",sub:"English / Russian · offline index across all lessons"}
   ];
   return (needsMicroStart()?firstStepsHomePreview():todayPreview(l))+'<section class="adult-welcome"><div class="adult-welcome-copy"><span class="adult-eyebrow">SHAIRA · LEARN RUSSIAN</span><h1>'+headline+'</h1><p>'+detail+'</p>'+
-     '<a class="adult-cta" href="'+routeCards[0].href+'">'+(fil?"Simulan ang unang aralin":"Start the first lesson")+' →</a></div><div class="adult-russian" aria-hidden="true">Я</div></section>'+
+     '<a class="adult-cta" href="'+(needsMicroStart()?"#today":routeCards[0].href)+'">'+(needsMicroStart()?"Begin with one letter":(fil?"Simulan ang unang aralin":"Start the first lesson"))+' →</a></div><div class="adult-russian" aria-hidden="true">Я</div></section>'+
    '<section class="adult-progress"><h2>'+summaryTitle+'</h2><div class="adult-progress-row"><span><strong>'+state.completed.length+'</strong><small>/'+lessons.length+' '+(fil?"panimulang aralin":"foundation lessons")+'</small></span>'+
    '<span><strong>'+a.completed+'</strong><small>/'+a.activities+' '+(fil?"pagsasanay":"course activities")+'</small></span>'+
    '<span><strong>'+labs.readingsPassed+'</strong><small>/'+labs.readingsTotal+' '+(fil?"teksto":"reading texts")+'</small></span></div>'+
