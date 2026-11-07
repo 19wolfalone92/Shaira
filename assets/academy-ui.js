@@ -103,6 +103,7 @@ function overview(l){
   '<section class="aca-path-info"><strong>🌟 '+UI[l].courseGuide+'</strong><p>'+UI[l].notice+'</p></section>'+
   '<a class="aca-review-call" href="#academy/first-words"><span>Аа</span><span><strong>'+tx("120 essential Russian words","120 mahalagang salita sa Ruso",l)+'</strong><small>'+tx("20 practical word topics, 6 words each","20 praktikal na paksa, tig-6 na salita",l)+'</small></span><b>›</b></a>'+
   '<a class="aca-review-call" href="#academy/dialogues"><span>💬</span><span><strong>'+tx("Russian conversation lab","Pagsasanay sa usapan sa Ruso",l)+'</strong><small>'+tx("20 situations: say it, listen, understand","20 sitwasyon: magsalita, makinig, umunawa",l)+'</small></span><b>›</b></a>'+
+  '<a class="aca-review-call" href="#academy/writing"><span>✎</span><span><strong>'+tx("Writing portfolio","Portfolio ng pagsusulat",l)+'</strong><small>'+tx("30 guided assignments · saved private drafts","30 gawaing pagsulat · pribadong mga draft",l)+'</small></span><b>›</b></a>'+
   '<a class="aca-review-call" href="#academy/lab"><span>✳</span><span><strong>'+tx("Grammar and reading studio","Pagsasanay sa gramatika at pagbasa",l)+'</strong><small>'+tx("100 grammar drills · 20 graded texts · independent writing","100 pagsasanay sa gramatika · 20 teksto · sariling pagsulat",l)+'</small></span><b>›</b></a>'+
   '<div class="aca-stage-list">'+stages.map((stage,i)=>{
     const list=units.filter(x=>x.stage===stage.id), n=list.reduce((s,x)=>s+unitDone(x),0),max=list.length*activityModes.length;
