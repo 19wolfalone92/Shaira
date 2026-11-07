@@ -47,8 +47,12 @@ function randomOrder(n){const a=Array.from({length:n},(_,i)=>i);for(let i=a.leng
 function buildWordQuiz(u,l,mode,reviewItems){
   const all=reviewItems||u.words.map(w=>({u,w}));
   return all.map(({u:unit,w})=>{
-    const distractors=(reviewItems?reviewItems.map(x=>x.w):unit.words).filter(x=>x.ru!==w.ru && val(x,l)!==val(w,l));
-    const choices=[w,...distractors.slice(0,Math.min(3,distractors.length))].map(x=>val(x,l));
+    const pool=reviewItems ? reviewItems.map(x=>x.w).concat(units.flatMap(x=>x.words),firstWordPacks.flatMap(x=>x.words)) : unit.words;
+    const seen=new Set([val(w,l)]);
+    const distractors=[];
+    for(const d of pool){if(d.ru===w.ru||seen.has(val(d,l)))continue;seen.add(val(d,l));distractors.push(d);if(distractors.length>=12)break;}
+    const chosen=randomOrder(distractors.length).slice(0,3).map(i=>distractors[i]);
+    const choices=[w,...chosen].map(x=>val(x,l));
     const order=randomOrder(choices.length);
     return {u:unit,w,choices:order.map(i=>choices[i]),correct:val(w,l)};
   });
