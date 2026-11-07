@@ -58,3 +58,13 @@ No dependencies or API keys. Use Node.js 20+ to run `npm run check`. A local HTT
 All lessons and drafts live in browser localStorage only. Use Settings → **Export progress** to save a private JSON file, and import on another device (import **replaces** existing local data). No cloud account, sync or tracking. Clear browser data only after exporting anything important.
 
 © 2026 Shaira learning project.
+
+## New: Variety Lab, Verb Lab and interactive Russian scenarios
+
+**Variety Lab** offers **13 different exercise formats** in each 12-question round: Russian–English recognition, English–Russian recall, typed Russian words, grammar, noun-case endings, conjugation, word-order assembly, sentence translation, proofreading, reading comprehension, four-pair matching, Russian audio identification and synthetic-voice dictation. Questions are sampled from curated material and prioritise unseen, due and previously failed items. The latest mixed-skills session must score at least **9/12, including two productive correct answers**, at each weekly review in the guided route.
+
+**Verb Lab** includes **24 selected verbs** with 240 explicitly written Russian present and past forms and optional spoken examples.
+
+**Choose Your Response** is a library of **15 interactive adult scenarios** with 45 situational decisions, varied scripted replies and English explanations. Scenarios cover conversations with neighbours, shops, work, travel, repairs and nuanced arguments. These model real-life language but are not live AI conversations.
+
+All these modules work without paid APIs and keep exercise history locally. Backups now include the mixed-task review schedule and scenario scores. The Russian TTS depends on device capabilities; no native human audio or automatic pronunciation grading is claimed. The course still cannot certify B2.
