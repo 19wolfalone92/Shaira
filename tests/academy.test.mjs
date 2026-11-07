@@ -40,10 +40,10 @@ test("each unit contains authentic RU teaching material in both learner language
     assert.ok(u.question.choices.includes(u.question.answer),u.id+" correct answer");
   }
 });
-test("beginner picture-word sets preserve 20 themes, 120 unique teaching entries",()=>{
-  assert.equal(firstWordPacks.length,20);
-  assert.equal(firstWordPacks.flatMap(p=>p.words).length,120);
-  assert.equal(new Set(firstWordPacks.map(p=>p.id)).size,20);
+test("beginner and adult picture-word sets preserve 40 themes and 240 cards",()=>{
+  assert.equal(firstWordPacks.length,40);
+  assert.equal(firstWordPacks.flatMap(p=>p.words).length,240);
+  assert.equal(new Set(firstWordPacks.map(p=>p.id)).size,40);
   for(const p of firstWordPacks){
     assert.equal(p.words.length,6);
     assert.ok(p.title.en&&p.title.tl);
