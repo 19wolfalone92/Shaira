@@ -1,7 +1,7 @@
 import {
   GUIDED_STUDY_DAYS,makeDay,beginDay,readDayState,snapshot,dayStatus,
   markQuick,addMistake,markReference,changeGoal,finishDay,skillsReport,
-  normalizedRussian,wordTotal
+  normalizedRussian,wordTotal,skillOverview
 } from "./daily-plan.js";
 import {goals} from "./daily-content.js";
 
@@ -158,9 +158,17 @@ function miniExercises(day,summary,l){
     '</article></section>';
 }
 function progressHistory(state,l){
- const report=skillsReport(state);
+ const report=skillsReport(state),skills=skillOverview(snapshot());
+ const skillsNames=l==="tl"?{words:"Mga salita",grammar:"Gramatika",listen:"Pakikinig",reading:"Pagbasa",writing:"Pagsulat",speaking:"Pagsasalita"}:
+   {words:"Vocabulary",grammar:"Grammar",listen:"Listening practice",reading:"Reading",writing:"Writing drafts",speaking:"Speaking practice"};
+ const skillBar='<h3 class="daily-skill-title">'+(l==="tl"?"Iyong anim na kasanayan":"Your six language skills")+'</h3>'+
+   '<div class="daily-skill-grid">'+skills.map(row=>'<div><div><strong>'+skillsNames[row.id]+'</strong><span>'+row.count+'/'+row.total+'</span></div>'+
+   '<i><em style="width:'+Math.min(100,Math.round(100*row.count/Math.max(1,row.total)))+'%"></em></i></div>').join("")+'</div>'+
+   '<p class="daily-hint">'+(l==="tl"?"Bilang lamang ito ng nasanay at nasubukang gawain. Ang pagsasalita at mga draft ay hindi awtomatikong sinusuri.":
+      "These figures show practice coverage, not proficiency. Speaking and free writing are not automatically assessed.")+'</p>';
  return '<section class="daily-history"><h2>'+TXT[l].recent+'</h2><div class="daily-levels">'+report.stageRows.map(r=>
   '<div><strong>'+r.label+'</strong><span>'+r.days+'/'+r.total+'</span><i><em style="width:'+Math.round(100*r.days/r.total)+'%"></em></i></div>').join("")+'</div>'+
+  skillBar+
   (report.days?'<p class="daily-hint">'+TXT[l].history+': '+state.finished.slice(-5).map(r=>
    '<span class="daily-date">'+esc(r.date)+' · '+(r.day+1)+'</span>').join(" ")+'</p>':"")+
   (report.grammarNeedsPractice?'<p class="daily-guidance">✳ '+TXT[l].grammarFocus+'</p>':"")+
