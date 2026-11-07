@@ -71,3 +71,40 @@ test("old compatible backups without lab data restore with an empty lab record",
   restoreBackup(JSON.stringify(old),target);
   assert.deepEqual(Object.keys(JSON.parse(target.getItem("shaira-labs-v1")).drafts),[]);
 });
+
+test("guided daily course index, learner goals and completed session history survive export/import",()=>{
+ const from=memory({
+   "shaira-daily-v1":JSON.stringify({
+     index:24,startedAt:1800000000000,startedDate:"2027-01-15",goal:60,
+     marks:{"24:handbook:pronouns":true},
+     challenges:{"24":{quiz:true,spell:false,oral:true,wrongQuiz:2,wrongSpell:1}},
+     finished:[{day:23,stage:"starter",date:"2027-01-14",completedAt:1799900000000,wrongQuiz:1,wrongSpell:0}]
+   })
+ });
+ const backup=buildBackup(from),target=memory();
+ assert.equal(backup.daily.index,24);
+ restoreBackup(JSON.stringify(backup),target);
+ const result=JSON.parse(target.getItem("shaira-daily-v1"));
+ assert.equal(result.goal,60);
+ assert.equal(result.finished[0].day,23);
+ assert.equal(result.challenges["24"].wrongQuiz,2);
+ assert.equal(result.marks["24:handbook:pronouns"],true);
+});
+test("daily backup validation rejects impossible stages, oversized marks and malicious keys",()=>{
+ const from=memory();
+ const backup=JSON.stringify({
+  format:BACKUP_FORMAT,version:1,legacy:{},academy:{},labs:{},
+  daily:{
+    index:900,goal:500,startedAt:-10,
+    finished:[{day:333,stage:"b2",date:"2027-01-14"},{day:17,stage:"starter",date:"2027-01-14",wrongQuiz:1}],
+    marks:JSON.parse('{"__proto__":true,"day:handbook:gender":true}'),
+    challenges:{"777":{quiz:true},"17":{quiz:true,spell:false,oral:false,wrongQuiz:99999,wrongSpell:1}}
+  }
+ });
+ const result=restoreBackup(backup,from).daily;
+ assert.equal(result.index,0);
+ assert.equal(result.goal,40);
+ assert.equal(result.finished.length,1);
+ assert.equal(result.challenges["17"].wrongQuiz,0);
+ assert.equal(Object.prototype.hasOwnProperty.call(result.marks,"__proto__"),false);
+});
