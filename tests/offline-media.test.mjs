@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {readFileSync} from "node:fs";
+import {createContext,runInContext} from "node:vm";
 import {FIRST_STEPS,microAudioId} from "../assets/first-steps-data.js";
 import {SOUND_PAIRS} from "../assets/phonetics-content.js";
 import {listeningClips} from "../assets/listening-clips.js";
@@ -45,4 +46,41 @@ test("leaving speaking practice before microphone permission resolves releases t
   Object.defineProperty(globalThis,"navigator",own);
   globalThis.MediaRecorder=original;
  }
+});
+
+test("preparing an update keeps the current cache until the new worker activates",async()=>{
+ const handlers=new Map(),previous="shaira-static-v21",saved=new Set([previous]);
+ let claimed=false;
+ const self={
+  registration:{scope:"https://example.test/Shaira/"},
+  addEventListener:(type,listener)=>handlers.set(type,listener),
+  clients:{claim:async()=>{claimed=true;}},
+  skipWaiting:()=>assert.fail("A running page must finish with its current worker.")
+ };
+ const caches={
+  open:async name=>({
+   addAll:async requests=>{
+    assert.ok(requests.length>75);
+    assert.ok(requests.every(request=>request.cache==="reload"));
+    saved.add(name);
+   }
+  }),
+  keys:async()=>[...saved],
+  delete:async name=>saved.delete(name)
+ };
+ const context=createContext({self,caches,URL,Request,importScripts:()=>runInContext(
+  readFileSync(new URL("../assets/audio/cache-list.js",import.meta.url),"utf8"),context
+ )});
+ runInContext(readFileSync(new URL("../sw.js",import.meta.url),"utf8"),context);
+ let work;
+ handlers.get("install")({waitUntil:promise=>{work=promise;}});
+ await work;
+ assert.equal(saved.size,2);
+ assert.equal(saved.has(previous),true);
+ assert.equal(claimed,false);
+ handlers.get("activate")({waitUntil:promise=>{work=promise;}});
+ await work;
+ assert.equal(saved.size,1);
+ assert.equal(saved.has(previous),false);
+ assert.equal(claimed,true);
 });

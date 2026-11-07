@@ -255,7 +255,7 @@ function settingsPage() {
     <section class="settings-card"><h2>💾 ${state.language==="tl"?"I-save at ibalik ang pag-usad":"Export and restore progress"}</h2><p>${state.language==="tl"?"I-save ang progreso at mga draft sa isang pribadong JSON file. Ang pag-import ay papalit sa kasalukuyang pag-usad sa device na ito.":"Save your lessons and writing drafts in a private JSON file. Import replaces progress on this device. Keep this file private."}</p><div class="backup-buttons"><button class="secondary-button" type="button" data-action="export-backup">📤 ${state.language==="tl"?"I-export":"Export progress"}</button><button class="secondary-button" type="button" data-action="import-backup">📥 ${state.language==="tl"?"I-import":"Import backup"}</button></div><input id="backup-file" type="file" accept=".json,application/json" hidden aria-label="Shaira JSON backup"></section>
     <section class="settings-card"><h2>📱 ${phrase("install")}</h2><p><strong>iPhone or iPad</strong> · Open Shaira in Safari, tap Share, then Add to Home Screen.</p>
       <p><strong>Android</strong> · Open Shaira in Chrome, open the menu, then choose Add to Home screen or Install app.</p></section>
-    <section class="settings-card"><h2>☁ ${phrase("offline")}</h2><p>${phrase("offlineInfo")}</p><p id="offline-status" role="status">${escapeHtml(offlineStatus)}</p><small>Shaira 0.9.0</small></section>`;
+    <section class="settings-card"><h2>☁ ${phrase("offline")}</h2><p>${phrase("offlineInfo")}</p><p id="offline-status" role="status">${escapeHtml(offlineStatus)}</p><small>Shaira 0.9.1</small></section>`;
 }
 function render(focusSelector) {
   if (drawingCleanup) { drawingCleanup(); drawingCleanup = null; }
@@ -406,24 +406,25 @@ if(needsMicroStart())enrolInMicroPath();
 render();
 if("serviceWorker" in navigator){
   window.addEventListener("load",async()=>{
-    const workers=navigator.serviceWorker,alreadyInstalled=!!workers.controller;
-    workers.addEventListener("controllerchange",()=>{
-      if(alreadyInstalled)showToast("A Shaira update is ready. Refresh when you finish this activity.");
-    });
+    const workers=navigator.serviceWorker;
+    const updateMessage="A Shaira update is ready. Close all Shaira tabs and reopen the app.";
     setOfflineStatus("Downloading lessons and audio for offline use…");
     try{
       const registration=await workers.register("./sw.js",{updateViaCache:"none"});
       function watch(){
         const worker=registration.installing;
         worker?.addEventListener("statechange",()=>{
-          if(worker.state==="redundant"&&!registration.active)
+          if(worker.state==="installed"&&workers.controller){
+            setOfflineStatus(updateMessage);
+            showToast(updateMessage);
+          }else if(worker.state==="redundant"&&!registration.active)
             setOfflineStatus("Offline download could not finish. Reopen Shaira while connected.");
         });
       }
       watch();
       registration.addEventListener("updatefound",watch);
       await workers.ready;
-      setOfflineStatus("Ready to study offline on this device.");
+      setOfflineStatus(registration.waiting?updateMessage:"Ready to study offline on this device.");
     }catch{setOfflineStatus("Offline download could not start in this browser.");}
   });
 }else setOfflineStatus("This browser does not support offline installation.");

@@ -8,7 +8,7 @@ An adult-first, free-to-use mobile PWA for **Shaira** to practise Russian **ever
 
 The 78 First Steps include Russian audio for letters, syllables, words and phrases. Reopen any completed step from **Review a past step**. Shaira suggests steps to revisit based on earlier errors and keeps the current position in the course. The optional fast-track now includes three short Cyrillic answers and three recognition checks.
 
-All 30 listening situations and 30 sound contrasts use built-in synthetic Russian audio. Answer buttons unlock after playback. **Settings → Offline lessons** shows when the download is ready. Guided study offers a reading alternative when audio is unavailable, with progress recorded as reading. Other spoken examples still use the device’s Russian voice.
+All 30 listening situations and 30 sound contrasts use built-in synthetic Russian audio. Answer buttons unlock after playback. **Settings → Offline lessons** shows when the download is ready. An update takes effect after all Shaira windows close and the app is reopened. Guided study offers a reading alternative when audio is unavailable, with progress recorded as reading. Other spoken examples still use the device’s Russian voice.
 
 Audio was generated locally with [Piper Denis](https://huggingface.co/rhasspy/piper-voices/blob/main/ru/ru_RU/denis/medium/MODEL_CARD) (CC0 training dataset). To regenerate the packaged clips, run `scripts/build-audio.py` with Python, Piper, FFmpeg, Node.js and the Denis model plus its adjacent JSON. The app uses the generated assets directly.
 
