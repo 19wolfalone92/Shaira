@@ -34,7 +34,7 @@ export function makeDay(index){
  const stage=stageOf(index),level=stage.id,levelNo=stages.indexOf(stage);
  const within=index%DAYS_PER_STAGE,week=Math.floor(within/7),weekday=within%7;
  const stageUnits=group(units,level);
- const unit=selected(stageUnits,week);
+ const unit=selected(stageUnits,week+(weekday===5?1:weekday===6?2:0));
  const pack=selected(firstWordPacks,levelNo*8+week*2+(weekday>=5?1:0));
  const stageDialogues=group(dialogues,level);
  const dialogue=selected(stageDialogues,week);
