@@ -33,7 +33,7 @@ export const SEARCH_ENTRIES=[
  ...grammarDrills.map(p=>item("drill:"+p.id,"grammar",p.instruction.en,p.context.en,
    p.choices.join(" ")+" "+p.explanation.en,"#academy/grammar/"+p.stage,p.stage)),
  ...readingLibrary.map(p=>item("reading:"+p.id,"reading",p.title.en,p.guide.en,
-   p.text+" "+p.glossary.map(x=>x.ru+" "+x.en).join(" "),"#academy/library/"+p.id,p.stage)),
+   p.text+" "+p.task.en+" "+p.glossary.map(x=>x.ru+" "+x.en).join(" "),"#academy/library/"+p.id,p.stage)),
  ...writingTasks.map(p=>item("writing:"+p.id,"writing",p.title.en,p.brief.en,
    p.model+" "+p.check.en,"#academy/writing/task/"+p.id,p.stage)),
  ...dialogues.map(p=>item("dialogue:"+p.id,"dialogues",p.title.en,p.goal.en,
