@@ -3,6 +3,7 @@ import {grammarDrills,drillsForStage} from "./grammar-drills.js";
 import {readingLibrary,readingsForStage} from "./reading-library.js";
 import {writingTasks,writingForStage,writingWordTargets} from "./writing-tasks.js";
 import {grammarHandbook,handbookForStage} from "./grammar-handbook.js";
+import {inspectRussianDraft} from "./writing-coach.js";
 
 const KEY="shaira-labs-v1";
 const TXT={
@@ -209,12 +210,23 @@ function writingStudioPage(id,l){
  '<div class="lp-advice">'+b("This self-check checks formatting only, not grammar, meaning, idiomatic style or CEFR level.","Ang self-check ay sa anyo lamang, hindi sa gramatika, kahulugan, estilo o CEFR.",l)+'</div></section>';
 }
 function writingFeedback(task,l,text){
- const e=getWritingEvaluation(text,task,l);
- return '<section class="lp-selfcheck"><h3>'+b("Self-editing checklist","Listahan sa sariling pag-eedit",l)+'</h3>'+
- '<p>'+e.count+' '+TXT[l].wordCount+' · '+b("suggested","iminumungkahi",l)+' '+e.range.join("–")+'</p><ul>'+
- e.checks.map(x=>'<li><strong>'+ (x.pass?"✓":"○") +'</strong> '+esc(x.label)+'</li>').join("")+'</ul>'+
- '<p>'+b("Review case endings, aspect, coherence and factual accuracy yourself. A teacher or skilled speaker should review your longer texts.","Suriin ang mga hulihan, aspekto, pagkakaugnay at katotohanan. Magpasuri sa guro o bihasang tagapagsalita.",l)+'</p></section>';
+ const r=inspectRussianDraft(text,task.stage);
+ const items=r.findings.slice(0,15).map(f=>'<li><strong lang="ru">'+esc(f.found)+'</strong> → <b lang="ru">'+esc(f.suggestion)+'</b><p>'+esc(f.explanation)+'</p></li>').join("");
+ return '<section class="lp-selfcheck"><h3>✦ English-guided Writing Coach</h3>'+
+  '<p><strong>'+r.wordCount+'</strong> Russian words · '+r.sentences+' sentence fragments · '+r.paragraphs+' paragraphs · '+r.uniqueWords+' distinct Russian word forms</p>'+
+  '<p><strong>Current learning focus:</strong> '+esc(r.focus)+'</p>'+
+  '<ul>'+r.checks.map(c=>'<li><strong>'+(c.pass?"✓":"○")+'</strong> '+esc(c.label)+'</li>').join("")+'</ul>'+
+  (r.findings.length?'<h4>Specific phrases worth checking ('+r.findings.length+')</h4><ul class="lp-coach-errors">'+items+'</ul>':
+    '<p>No matching errors found in the limited pattern list. This does <strong>not</strong> mean the grammar is correct.</p>')+
+  (r.suggestions.length?'<h4>Next revision steps</h4><ol class="lp-coach-suggestions">'+r.suggestions.map(x=>'<li>'+esc(x)+'</li>').join("")+'</ol>':'')+
+  '<p class="lp-coach-warning">'+esc(r.warning)+'</p>'+
+  '<p>Ask a qualified Russian speaker to review meaning, word choice, aspect, cases and argument quality in longer work.</p></section>';
 }
+const russianWriterKeyboard=()=>'<details class="lp-writer-keyboard"><summary>⌨ On-screen Russian keyboard</summary>'+
+ ['ё й ц у к е н г ш щ з х ъ','ф ы в а п р о л д ж э','я ч с м и т ь б ю'].map(row=>
+ '<div>'+row.split(" ").map(k=>'<button type="button" data-lab="writer-key" data-character="'+k+'">'+k+'</button>').join("")+'</div>').join("")+
+ '<div><button type="button" class="lp-space" data-lab="writer-key" data-character=" ">Space</button>'+
+ '<button type="button" data-lab="writer-backspace">⌫</button></div></details>';
 function handbookMenu(l){
  return link("academy/lab","← "+TXT[l].go)+
   top("АБВ · GRAMMAR",b("Russian grammar handbook","Manwal sa gramatikang Ruso",l),
