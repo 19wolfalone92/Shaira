@@ -39,7 +39,7 @@ function studyCard(step){
      ':</strong> '+esc(trans)+'</div>'+
    '<p>'+esc(step.tip)+'</p>';
  return '<section class="ms-study"><div class="ms-section-label">1 · LEARN ONE TINY THING</div>'+
- '<h2>'+esc(hidden?'A tiny Russian check':step.title)+'</h2><p>'+esc(step.description)+'</p>'+
+ '<h2>'+esc(step.title)+'</h2><p>'+esc(step.description)+'</p>'+
  detail+
  '<div class="ms-study-buttons"><button type="button" data-micro="hear" class="ms-outline" '+
  (hasAudio()?"":"disabled")+' aria-label="Listen to the Russian model">🔊 Hear it</button>'+
@@ -87,7 +87,7 @@ function startHeader(state,step,hidden=false){
  '<p>No Russian knowledge is required. We will teach <strong>one new letter</strong>, then a sound, a syllable, a tiny word and finally short phrases. You choose the pace.</p>'+
  '<div class="ms-progress-numbers"><strong>'+state.index+' / '+MICRO_TOTAL+'</strong><span>tiny steps completed</span></div>'+
  '<div class="ms-progress"><i style="width:'+pct+'%"></i></div>'+
- (step?'<p class="ms-next">Next: <b>'+esc(step.title)+'</b> · about 2–5 minutes</p>':"")+
+ (step?'<p class="ms-next">Next: <b>'+esc(hidden?'A tiny Russian check':step.title)+'</b> · about 2–5 minutes</p>':"")+
  '</section>';
 }
 function modes(state){
