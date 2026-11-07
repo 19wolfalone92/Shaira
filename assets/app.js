@@ -1,6 +1,7 @@
 import { sections, lessons, alphabet, keyboardRows } from "./lessons.js";
 import { academyHtml, handleAcademyAction, handleAcademySubmit, academyStatistics } from "./academy-ui.js";
 import { downloadBackup, restoreBackup } from "./backup.js";
+import {labHtml,labAction,labInput,labStats} from "./learning-labs.js";
 
 const STORAGE_KEY = "shaira-progress-v1";
 const dictionary = {
@@ -203,13 +204,14 @@ function writePage() {
 }
 function settingsPage() {
   const academy = academyStatistics();
+  const labs = labStats();
   return `<div class="page-intro"><span class="eyebrow">⚙ ${phrase("settings")}</span><h1>${phrase("settings")}</h1></div>
     <section class="settings-card"><h2>${phrase("language")}</h2><p>${phrase("langInfo")}</p><div class="lang-switch" role="group" aria-label="${phrase("language")}">
       <button type="button" data-action="language" data-value="en" class="${state.language==="en"?"selected":""}" aria-pressed="${state.language==="en"}">🇬🇧 English</button>
       <button type="button" data-action="language" data-value="tl" class="${state.language==="tl"?"selected":""}" aria-pressed="${state.language==="tl"}">🇵🇭 Filipino</button></div></section>
     <section class="settings-card"><h2>${phrase("progress")}</h2><p>${state.completed.length}/${lessons.length} ${phrase("completed")}. ${phrase("local")}</p>
       <button type="button" class="danger-button" data-action="reset">${phrase("reset")}</button></section>
-    <section class="settings-card"><h2>🎓 ${state.language==="tl"?"Pag-usad sa Akademya":"Academy progress"}</h2><p>${academy.completed}/${academy.activities} ${state.language==="tl"?"gawaing nasanay":"activities practised"} · ${academy.knownWords} ${state.language==="tl"?"salitang napag-aralan":"studied words"} · ${academy.dueWords} ${state.language==="tl"?"dapat balikan":"due to review"}</p></section>
+    <section class="settings-card"><h2>🎓 ${state.language==="tl"?"Pag-usad sa Akademya":"Academy progress"}</h2><p>${academy.completed}/${academy.activities} ${state.language==="tl"?"gawaing nasanay":"activities practised"} · ${academy.knownWords} ${state.language==="tl"?"salitang napag-aralan":"studied words"} · ${academy.dueWords} ${state.language==="tl"?"dapat balikan":"due to review"} · ${labs.grammarAttempts} ${state.language==="tl"?"pagsubok sa gramatika":"grammar sessions"} · ${labs.readingsPassed} ${state.language==="tl"?"tekstong nabasa":"reading checks passed"}</p></section>
     <section class="settings-card"><h2>💾 ${state.language==="tl"?"I-save at ibalik ang pag-usad":"Export and restore progress"}</h2><p>${state.language==="tl"?"I-save ang progreso at mga draft sa isang pribadong JSON file. Ang pag-import ay papalit sa kasalukuyang pag-usad sa device na ito.":"Save your lessons and writing drafts in a private JSON file. Import replaces progress on this device. Keep this file private."}</p><div class="backup-buttons"><button class="secondary-button" type="button" data-action="export-backup">📤 ${state.language==="tl"?"I-export":"Export progress"}</button><button class="secondary-button" type="button" data-action="import-backup">📥 ${state.language==="tl"?"I-import":"Import backup"}</button></div><input id="backup-file" type="file" accept=".json,application/json" hidden aria-label="Shaira JSON backup"></section>
     <section class="settings-card"><h2>📱 ${phrase("install")}</h2><p>${phrase("installInfo")}</p></section>
     <section class="settings-card"><h2>☁ ${phrase("offline")}</h2><p>${phrase("offlineInfo")}</p></section>`;
@@ -217,7 +219,7 @@ function settingsPage() {
 function render() {
   if (drawingCleanup) { drawingCleanup(); drawingCleanup = null; }
   const route = currentRoute();
-  const page = route === "home" ? home() : route.startsWith("academy") ? academyHtml(route,state.language) : route === "review" ? reviewPage() : route === "write" ? writePage() :
+  const page = route === "home" ? home() : route === "academy/lab" || route.startsWith("academy/grammar") || route.startsWith("academy/library") ? labHtml(route,state.language) : route.startsWith("academy") ? academyHtml(route,state.language) : route === "review" ? reviewPage() : route === "write" ? writePage() :
     route === "settings" ? settingsPage() : lessonPage(route.slice(7));
   document.documentElement.lang = state.language === "tl" ? "fil" : "en";
   document.title = "Shaira · Learn Russian";
@@ -261,6 +263,8 @@ function initializeCanvas() {
   drawingCleanup = () => {canvas.removeEventListener("pointerdown",down);canvas.removeEventListener("pointermove",move);canvas.removeEventListener("pointerup",up);canvas.removeEventListener("pointercancel",up);};
 }
 document.addEventListener("click", event => {
+  const labButton=event.target.closest("[data-lab]");
+  if(labButton){labAction(labButton,{language:()=>state.language,route:currentRoute,render,speak,navigate,notice:showToast});return;}
   const academyButton=event.target.closest("[data-aca]");
   if(academyButton){handleAcademyAction(academyButton,{language:()=>state.language,route:currentRoute,render,speak,navigate});return;}
   const button=event.target.closest("[data-action]");
@@ -297,6 +301,7 @@ document.addEventListener("click", event => {
     input.focus();
   }
 });
+document.addEventListener("input", event => {labInput(event,{language:()=>state.language});});
 document.addEventListener("submit", event => {
   if(handleAcademySubmit(event,{language:()=>state.language,route:currentRoute,render,speak}))return;
   if (event.target.id !== "answer-form") return;
