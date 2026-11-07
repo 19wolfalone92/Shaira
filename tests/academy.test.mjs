@@ -118,3 +118,21 @@ test("academy routes, two teaching languages, exercises and writing panels rende
     globalThis.window=prevWindow;
   }
 });
+
+test("a single due review word still has four distinct options; answers cannot be guessed by default",async()=>{
+  const oldLocal=globalThis.localStorage,oldWindow=globalThis.window;
+  const storage=new Map();
+  storage.set("shaira-academy-v1",JSON.stringify({
+    done:{},drafts:{},points:0,memory:{"fw-01:кошка":{stage:0,due:1,seen:1,correct:1}}
+  }));
+  globalThis.localStorage={getItem:k=>storage.get(k)||null,setItem:(k,v)=>storage.set(k,v)};
+  globalThis.window={speechSynthesis:{cancel(){},speak(){},getVoices(){return []}}};
+  try{
+    const mod=await import("../assets/academy-ui.js?one-due="+Math.random());
+    const html=mod.academyHtml("academy/review","en");
+    const options=[...html.matchAll(/data-aca="answer" data-choice="\d+"[^>]*>([^<]+)</g)].map(m=>m[1]);
+    assert.equal(options.length,4);
+    assert.equal(new Set(options).size,4);
+    assert.ok(options.includes("cat"));
+  }finally{globalThis.localStorage=oldLocal;globalThis.window=oldWindow;}
+});
