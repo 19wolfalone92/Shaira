@@ -54,8 +54,10 @@ test("main interface completes a lesson, keeps English instructions and opens wr
   const mixerHtml=()=>"<section>Practice mixer</section>";
   const mixerAction=()=>{};
   const mixerSubmit=()=>false;
-  const run = new Function("sections","lessons","alphabet","keyboardRows","document","window","location","navigator","localStorage","academyStatistics","labStats","stopSpeakingRehearsal","todayHtml","todayPreview","todayAction","todaySubmit","todayInput","masteryHtml","masteryAction","masterySubmit","caseHtml","caseAction","caseSubmit","listeningHtml","listeningAction","mixerHtml","mixerAction","mixerSubmit",source);
-  run(sections,lessons,alphabet,keyboardRows,document,window,location,navigator,localStorage,academyStatistics,labStats,stopSpeakingRehearsal,todayHtml,todayPreview,todayAction,todaySubmit,todayInput,masteryHtml,masteryAction,masterySubmit,caseHtml,caseAction,caseSubmit,listeningHtml,listeningAction,mixerHtml,mixerAction,mixerSubmit);
+  const verbHtml=()=>"<section>Verb Lab</section>";
+  const verbAction=()=>{};
+  const run = new Function("sections","lessons","alphabet","keyboardRows","document","window","location","navigator","localStorage","academyStatistics","labStats","stopSpeakingRehearsal","todayHtml","todayPreview","todayAction","todaySubmit","todayInput","masteryHtml","masteryAction","masterySubmit","caseHtml","caseAction","caseSubmit","listeningHtml","listeningAction","mixerHtml","mixerAction","mixerSubmit","verbHtml","verbAction",source);
+  run(sections,lessons,alphabet,keyboardRows,document,window,location,navigator,localStorage,academyStatistics,labStats,stopSpeakingRehearsal,todayHtml,todayPreview,todayAction,todaySubmit,todayInput,masteryHtml,masteryAction,masterySubmit,caseHtml,caseAction,caseSubmit,listeningHtml,listeningAction,mixerHtml,mixerAction,mixerSubmit,verbHtml,verbAction);
   const click=(action,props={})=>events.click({target:{closest:selector=>selector==="[data-action]"?{dataset:{action,...props}}:null}});
   assert.match(app.innerHTML,/Your learning path/);
   click("open-lesson",{id:"vowels"});
