@@ -64,3 +64,9 @@
 .ms-out-link{display:inline-block;text-decoration:none;color:#6d53a8;font-size:12px;margin:12px 10px;font-weight:850;line-height:1.6}
 @media(min-width:620px){.ms-examples{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:365px){.ms-info,.ms-quiz,.ms-result,.ms-stage{padding:14px 11px}.ms-stage-top{flex-wrap:wrap}.ms-checklink{max-width:none}.ms-options button{padding:12px 9px}}
+
+.ms-keyboard{border:1px solid #e4dbea;border-radius:10px;padding:10px;margin:13px 0}
+.ms-keyboard summary{font-size:12px;font-weight:800;color:#655391;cursor:pointer;margin-bottom:9px}
+.ms-keyboard>div{display:flex;justify-content:center;gap:3px;margin:4px 0}
+.ms-keyboard button{flex:1;min-width:0;min-height:36px;font-size:15px;color:#514369;background:white;border:1px solid #e2d9ef;border-radius:6px;padding:7px 0}
+.ms-keyboard button.ms-key-space{flex:5}
