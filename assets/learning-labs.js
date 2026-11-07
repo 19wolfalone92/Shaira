@@ -3,6 +3,7 @@ import {grammarDrills,drillsForStage} from "./grammar-drills.js";
 import {readingLibrary,readingsForStage} from "./reading-library.js";
 import {writingTasks,writingForStage,writingWordTargets} from "./writing-tasks.js";
 import {grammarHandbook,handbookForStage} from "./grammar-handbook.js";
+import {inspectRussianDraft} from "./writing-coach.js";
 
 const KEY="shaira-labs-v1";
 const TXT={
@@ -67,7 +68,10 @@ const listStages=(path,l)=>'<div class="lp-level-grid">'+stages.map(s=>{
 function overview(l){
   return back(l)+top("SHAIRA · STUDY",TXT[l].home,TXT[l].intro)+
   '<div class="lp-advice">'+esc(TXT[l].introAdvice)+'</div>'+
-  '<div class="lp-paths"><a href="#academy/scenarios"><span>💬</span><div><strong>Interactive Russian roleplay</strong><p>15 adult situations with context-sensitive responses and branching dialogue outcomes.</p></div><b>›</b></a>'+
+  '<div class="lp-paths"><a href="#academy/search"><span>⌕</span><div><strong>Search all Russian learning materials</strong><p>Find Russian and English words, grammar topics, verb forms, texts and dialogues.</p></div><b>›</b></a>'+
+  '<a href="#academy/coach"><span>◎</span><div><strong>Your Personal Study Coach</strong><p>Find what to practise next across seven language skills.</p></div><b>›</b></a>'+
+  '<a href="#academy/sounds"><span>🔊</span><div><strong>Russian Sounds & Phonetics</strong><p>30 sound contrasts for adult listening, reading and pronunciation practice.</p></div><b>›</b></a>'+
+  '<a href="#academy/scenarios"><span>💬</span><div><strong>Interactive Russian roleplay</strong><p>15 adult situations with context-sensitive responses and branching dialogue outcomes.</p></div><b>›</b></a>'+
   '<a href="#academy/verbs"><span>Я</span><div><strong>Russian Verb Lab</strong><p>Learn 240 authentic conjugated forms and hear each verb pattern.</p></div><b>›</b></a>'+ 
   '<a href="#academy/mix"><span>✦</span><div><strong>Variety Lab</strong><p>13 different formats, adaptive practice and targeted review of mistakes.</p></div><b>›</b></a>'+
   '<a href="#academy/grammar"><span>✳</span><div><strong>'+TXT[l].grammar+'</strong><p>'+TXT[l].grammarDesc+'</p></div><b>›</b></a>'+
@@ -149,7 +153,10 @@ function readingPage(id,l){
  const writing='<section class="lp-writing"><h2>✍️ '+TXT[l].writing+'</h2><p>'+esc(loc(p.task,l))+'</p><div class="lp-writing-label">'+TXT[l].target+': '+({starter:"10–25",a1:"35–60",a2:"75–110",b1:"120–180",b2:"180–250"}[p.stage])+' '+TXT[l].wordCount+'</div>'+
  '<label for="lp-draft">'+TXT[l].prompt+'</label><textarea id="lp-draft" rows="8" lang="ru" spellcheck="true" placeholder="'+TXT[l].draft+'">'+esc(data.drafts[p.id]||"")+'</textarea>'+
  '<div class="lp-writing-actions"><span id="lp-wordcount">'+words(data.drafts[p.id]||"")+' '+TXT[l].wordCount+'</span><button type="button" class="lp-primary" data-lab="save-writing">'+TXT[l].save+'</button></div>'+
- '<p class="lp-muted">'+TXT[l].note+'</p><details><summary>'+TXT[l].tips+'</summary><p>'+TXT[l].selfCheck+'</p></details></section>';
+ '<div class="lp-writing-actions"><button type="button" class="lp-secondary" data-lab="review-writing">✦ Review with Writing Coach</button>'+
+ '<button type="button" class="lp-secondary" data-lab="listen-draft">🔊 Hear my Russian draft</button></div>'+
+ russianWriterKeyboard()+'<div id="lp-reading-writing-feedback" aria-live="polite"></div>'+
+ '<p class="lp-muted">Pattern-based suggestions are not automatic correction or an exam grade.</p><details><summary>'+TXT[l].tips+'</summary><p>'+TXT[l].selfCheck+'</p></details></section>';
  const glossary='<section class="lp-gloss"><h2>'+TXT[l].showGlossary+'</h2><div>'+p.glossary.map(w=>
   '<div><strong lang="ru">'+esc(w.ru)+'</strong><span>'+esc(loc(w,l))+'</span></div>').join("")+'</div></section>';
  return nav+'<article class="lp-text"><div><h2>'+TXT[l].readText+'</h2><button type="button" data-lab="play-reading" class="lp-sound">🔊 '+TXT[l].listen+'</button></div>'+
@@ -162,7 +169,7 @@ function readingPage(id,l){
 function writingMenu(l){
  return link("academy/lab","← "+TXT[l].go)+
   top("✎ "+b("WRITE IN RUSSIAN","SUMULAT SA RUSO",l),b("Writing portfolio","Portfolio ng pagsusulat",l),
-    b("30 original assignments from the first sentences to structured B2 essays. Save, revise and compare models.","30 gawain mula unang pangungusap hanggang sanaysay sa B2. I-save, baguhin at ihambing ang modelo.",l))+
+    b("45 guided writing assignments from short notes to structured B2 essays. Save, revise and compare models.","30 gawain mula unang pangungusap hanggang sanaysay sa B2. I-save, baguhin at ihambing ang modelo.",l))+
   stages.map(stage=>{
     const tasks=writingForStage(stage.id);
     const done=tasks.filter(t=>String(data.drafts["portfolio:"+t.id]||"").trim().length>0).length;
@@ -204,17 +211,29 @@ function writingStudioPage(id,l){
  '<textarea id="lp-studio-draft" lang="ru" spellcheck="true" rows="10" placeholder="'+TXT[l].draft+'">'+esc(content)+'</textarea>'+
  '<div class="lp-writing-actions"><span id="lp-studio-count">'+ev.count+' '+TXT[l].wordCount+'</span>'+
  '<button type="button" data-lab="save-studio" class="lp-primary">'+TXT[l].save+'</button></div>'+
- '<button type="button" class="lp-secondary" data-lab="review-studio">'+b("Check format and revise","Suriin ang anyo at baguhin",l)+'</button>'+
+ '<button type="button" class="lp-secondary" data-lab="review-studio">✦ Review with Writing Coach</button>'+
+ '<button type="button" class="lp-secondary" data-lab="listen-draft">🔊 Hear my Russian draft</button>'+russianWriterKeyboard()+
  '<div id="lp-studio-feedback" aria-live="polite"></div>'+
- '<div class="lp-advice">'+b("This self-check checks formatting only, not grammar, meaning, idiomatic style or CEFR level.","Ang self-check ay sa anyo lamang, hindi sa gramatika, kahulugan, estilo o CEFR.",l)+'</div></section>';
+ '<div class="lp-advice">The Writing Coach offers selected grammar-pattern hints and structural suggestions. It cannot grade meaning, fluency, style or CEFR level.</div></section>';
 }
 function writingFeedback(task,l,text){
- const e=getWritingEvaluation(text,task,l);
- return '<section class="lp-selfcheck"><h3>'+b("Self-editing checklist","Listahan sa sariling pag-eedit",l)+'</h3>'+
- '<p>'+e.count+' '+TXT[l].wordCount+' · '+b("suggested","iminumungkahi",l)+' '+e.range.join("–")+'</p><ul>'+
- e.checks.map(x=>'<li><strong>'+ (x.pass?"✓":"○") +'</strong> '+esc(x.label)+'</li>').join("")+'</ul>'+
- '<p>'+b("Review case endings, aspect, coherence and factual accuracy yourself. A teacher or skilled speaker should review your longer texts.","Suriin ang mga hulihan, aspekto, pagkakaugnay at katotohanan. Magpasuri sa guro o bihasang tagapagsalita.",l)+'</p></section>';
+ const r=inspectRussianDraft(text,task.stage);
+ const items=r.findings.slice(0,15).map(f=>'<li><strong lang="ru">'+esc(f.found)+'</strong> → <b lang="ru">'+esc(f.suggestion)+'</b><p>'+esc(f.explanation)+'</p></li>').join("");
+ return '<section class="lp-selfcheck"><h3>✦ English-guided Writing Coach</h3>'+
+  '<p><strong>'+r.wordCount+'</strong> Russian words · '+r.sentences+' sentence fragments · '+r.paragraphs+' paragraphs · '+r.uniqueWords+' distinct Russian word forms</p>'+
+  '<p><strong>Current learning focus:</strong> '+esc(r.focus)+'</p>'+
+  '<ul>'+r.checks.map(c=>'<li><strong>'+(c.pass?"✓":"○")+'</strong> '+esc(c.label)+'</li>').join("")+'</ul>'+
+  (r.findings.length?'<h4>Specific phrases worth checking ('+r.findings.length+')</h4><ul class="lp-coach-errors">'+items+'</ul>':
+    '<p>No matching errors found in the limited pattern list. This does <strong>not</strong> mean the grammar is correct.</p>')+
+  (r.suggestions.length?'<h4>Next revision steps</h4><ol class="lp-coach-suggestions">'+r.suggestions.map(x=>'<li>'+esc(x)+'</li>').join("")+'</ol>':'')+
+  '<p class="lp-coach-warning">'+esc(r.warning)+'</p>'+
+  '<p>Ask a qualified Russian speaker to review meaning, word choice, aspect, cases and argument quality in longer work.</p></section>';
 }
+const russianWriterKeyboard=()=>'<details class="lp-writer-keyboard"><summary>⌨ On-screen Russian keyboard</summary>'+
+ ['ё й ц у к е н г ш щ з х ъ','ф ы в а п р о л д ж э','я ч с м и т ь б ю'].map(row=>
+ '<div>'+row.split(" ").map(k=>'<button type="button" data-lab="writer-key" data-character="'+k+'">'+k+'</button>').join("")+'</div>').join("")+
+ '<div><button type="button" class="lp-space" data-lab="writer-key" data-character=" ">Space</button>'+
+ '<button type="button" data-lab="writer-backspace">⌫</button></div></details>';
 function handbookMenu(l){
  return link("academy/lab","← "+TXT[l].go)+
   top("АБВ · GRAMMAR",b("Russian grammar handbook","Manwal sa gramatikang Ruso",l),
@@ -256,6 +275,29 @@ export function labHtml(route,l="en"){
 }
 export function labAction(button,api){
  const a=button.dataset.lab,route=api.route(),l=api.language()==="tl"?"tl":"en";
+ if(a==="writer-key"||a==="writer-backspace"){
+   const input=document.getElementById("lp-studio-draft")||document.getElementById("lp-draft");
+   if(!input||typeof input.setRangeText!=="function")return;
+   const from=input.selectionStart??input.value.length,to=input.selectionEnd??from;
+   if(a==="writer-key")input.setRangeText(button.dataset.character||"",from,to,"end");
+   else if(from!==to)input.setRangeText("",from,to,"end");
+   else if(from>0)input.setRangeText("",from-1,from,"end");
+   const counter=document.getElementById(input.id==="lp-studio-draft"?"lp-studio-count":"lp-wordcount");
+   if(counter)counter.textContent=words(input.value)+" "+TXT[l].wordCount;
+   input.focus();return;
+ }
+ if(a==="listen-draft"){
+   const input=document.getElementById("lp-studio-draft")||document.getElementById("lp-draft");
+   if(input?.value.trim())api.speak(input.value.slice(0,1600));
+   else api.notice?.("Write a Russian draft first.");
+   return;
+ }
+ if(a==="review-writing"){
+   const id=route.split("/")[2],p=readingLibrary.find(x=>x.id===id);
+   const input=document.getElementById("lp-draft"),node=document.getElementById("lp-reading-writing-feedback");
+   if(p&&input&&node)node.innerHTML=writingFeedback({stage:p.stage},l,input.value);
+   return;
+ }
  if(a==="play-example"){api.speak(button.dataset.text||"");return;}
  if(a==="play-reading"){
    const id=route.split("/")[2],p=readingLibrary.find(x=>x.id===id);if(p)api.speak(p.text);return;

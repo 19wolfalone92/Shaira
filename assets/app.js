@@ -9,6 +9,9 @@ import {listeningHtml,listeningAction} from "./listening-ui.js";
 import {mixerHtml,mixerAction,mixerSubmit} from "./practice-ui.js";
 import {verbHtml,verbAction} from "./verb-ui.js";
 import {scenariosHtml,scenariosAction} from "./scenario-ui.js";
+import {phoneticsHtml,phoneticsAction} from "./phonetics-ui.js";
+import {coachHtml} from "./study-coach.js";
+import {courseSearchHtml,courseSearchInput,courseSearchAction} from "./course-search-ui.js";
 
 const STORAGE_KEY = "shaira-progress-v1";
 const dictionary = {
@@ -150,7 +153,10 @@ function home() {
     {href:"#academy/writing",icon:"✎",heading:sectionsText[3],sub:fil?"Sulat • mga draft • rebisyon":"Writing • drafts • revision"},
     {href:"#academy/mix",icon:"✦",heading:"Variety Lab",sub:"13 varied task types · adaptive review"},
     {href:"#academy/verbs",icon:"Я",heading:"Russian Verb Lab",sub:"24 verbs · 240 present and past forms"},
-    {href:"#academy/scenarios",icon:"💬",heading:"Interactive conversations",sub:"15 adult roleplay missions"}
+    {href:"#academy/scenarios",icon:"💬",heading:"Interactive conversations",sub:"15 adult roleplay missions"},
+    {href:"#academy/sounds",icon:"🔊",heading:"Russian phonetics",sub:"30 sound contrasts · 60 listening targets"},
+    {href:"#academy/coach",icon:"◎",heading:"Personal study coach",sub:"Skill progress · recommended next practice"},
+    {href:"#academy/search",icon:"⌕",heading:"Search your Russian course",sub:"English / Russian · offline index across all lessons"}
   ];
   return todayPreview(l)+'<section class="adult-welcome"><div class="adult-welcome-copy"><span class="adult-eyebrow">SHAIRA · LEARN RUSSIAN</span><h1>'+headline+'</h1><p>'+detail+'</p>'+
      '<a class="adult-cta" href="'+routeCards[0].href+'">'+(fil?"Simulan ang unang aralin":"Start the first lesson")+' →</a></div><div class="adult-russian" aria-hidden="true">Я</div></section>'+
@@ -245,7 +251,7 @@ function render() {
   if (drawingCleanup) { drawingCleanup(); drawingCleanup = null; }
   const route = currentRoute();
   if(!route.startsWith("academy/lesson/") || !route.endsWith("/speak"))stopSpeakingRehearsal();
-  const page = route==="academy/scenarios"||route.startsWith("academy/scenarios/") ? scenariosHtml(route) : route==="academy/verbs"||route.startsWith("academy/verbs/") ? verbHtml(route) : route==="academy/mix"||route.startsWith("academy/mix/") ? mixerHtml(route) : route==="academy/listening"||route.startsWith("academy/listening/") ? listeningHtml(route) : route==="academy/cases"||route.startsWith("academy/cases/") ? caseHtml(route,state.language) : route==="academy/mastery"||route.startsWith("academy/mastery/")||route.startsWith("academy/checkpoint/") ? masteryHtml(route,state.language) : route === "today" ? todayHtml(state.language) : route === "home" ? home() : route === "academy/lab" || route.startsWith("academy/grammar") || route.startsWith("academy/library") || route.startsWith("academy/writing") || route.startsWith("academy/handbook") ? labHtml(route,state.language) : route.startsWith("academy") ? academyHtml(route,state.language) : route === "review" ? reviewPage() : route === "write" ? writePage() :
+  const page = route==="academy/search" ? courseSearchHtml() : route==="academy/coach" ? coachHtml() : route==="academy/sounds"||route.startsWith("academy/sounds/") ? phoneticsHtml(route) : route==="academy/scenarios"||route.startsWith("academy/scenarios/") ? scenariosHtml(route) : route==="academy/verbs"||route.startsWith("academy/verbs/") ? verbHtml(route) : route==="academy/mix"||route.startsWith("academy/mix/") ? mixerHtml(route) : route==="academy/listening"||route.startsWith("academy/listening/") ? listeningHtml(route) : route==="academy/cases"||route.startsWith("academy/cases/") ? caseHtml(route,state.language) : route==="academy/mastery"||route.startsWith("academy/mastery/")||route.startsWith("academy/checkpoint/") ? masteryHtml(route,state.language) : route === "today" ? todayHtml(state.language) : route === "home" ? home() : route === "academy/lab" || route.startsWith("academy/grammar") || route.startsWith("academy/library") || route.startsWith("academy/writing") || route.startsWith("academy/handbook") ? labHtml(route,state.language) : route.startsWith("academy") ? academyHtml(route,state.language) : route === "review" ? reviewPage() : route === "write" ? writePage() :
     route === "settings" ? settingsPage() : lessonPage(route.slice(7));
   document.documentElement.lang = "en";
   document.title = "Shaira · Learn Russian";
@@ -289,6 +295,10 @@ function initializeCanvas() {
   drawingCleanup = () => {canvas.removeEventListener("pointerdown",down);canvas.removeEventListener("pointermove",move);canvas.removeEventListener("pointerup",up);canvas.removeEventListener("pointercancel",up);};
 }
 document.addEventListener("click", event => {
+  const searchButton=event.target.closest("[data-search]");
+  if(searchButton){courseSearchAction(searchButton);return;}
+  const soundButton=event.target.closest("[data-sound]");
+  if(soundButton){phoneticsAction(soundButton,{route:currentRoute,render,speak,notice:showToast});return;}
   const scenarioButton=event.target.closest("[data-scenario]");
   if(scenarioButton){scenariosAction(scenarioButton,{route:currentRoute,render,speak,notice:showToast});return;}
   const verbButton=event.target.closest("[data-verb]");
@@ -341,7 +351,7 @@ document.addEventListener("click", event => {
     input.focus();
   }
 });
-document.addEventListener("input", event => {if(todayInput(event))return;labInput(event,{language:()=>state.language});});
+document.addEventListener("input", event => {if(courseSearchInput(event))return;if(todayInput(event))return;labInput(event,{language:()=>state.language});});
 document.addEventListener("submit", event => {
   if(mixerSubmit(event,{route:currentRoute,render,speak,notice:showToast}))return;
   if(caseSubmit(event,{language:()=>state.language,route:currentRoute,render,speak,navigate,notice:showToast}))return;
@@ -354,6 +364,7 @@ document.addEventListener("submit", event => {
   if (value) checkAnswer(value);
 });
 document.addEventListener("change", async event => {
+  if(courseSearchInput(event))return;
   if(event.target.id!=="backup-file")return;
   const file=event.target.files?.[0];
   if(!file)return;

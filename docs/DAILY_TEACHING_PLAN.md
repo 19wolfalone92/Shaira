@@ -117,3 +117,7 @@ At each step, the target is productive comprehension and practice rather than co
 After the first two weeks, the final lesson of each seven-session teaching cycle includes a twelve-question Variety Lab round, sampled from up to thirteen modalities. To count as completed, the latest round must have at least nine correct answers and at least two correct productive Russian answers (typed words, conjugated forms, written sentences or ordered words). Earlier scores cannot automatically unlock later study days. Errors and due questions return for spaced repetition.
 
 A separate Verb Lab documents 240 manually enumerated verb forms in English-guided tables. A separate library of 15 adult role-play situations includes 45 decisions with different scripted outcomes. The latter is not a substitute for spontaneous conversation with a native speaker.
+
+## v0.7 phonetics in every stage
+
+The listening/speaking-focused weekly day now includes one of six stage-appropriate sound contrasts; 30 unique exercises span the five stages. Success requires a fresh audio-based correct choice, or a completed real reading activity when the Russian voice engine is unavailable. The Personal Study Coach guides review of weak or incomplete exercise areas. The Writing Coach supports editing without falsely certifying free writing.

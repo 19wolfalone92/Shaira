@@ -145,3 +145,7 @@ The user explicitly prioritised genuine daily learning across ALL skills, analog
 - Each weekly guided revision now requires a fresh mixed round >=9/12, with >=2 correct productive written/order tasks.
 - Offline PWA assets, smoke/integration and content tests, backward-compatible sanitised JSON backup now cover new modules and scenario scores.
 - English-only learner instructions remain mandatory. Native-speaker audio, intelligent semantic essay grading, accent evaluation and independent B2 proficiency verification remain absent.
+
+## November 7, 2026 — comprehensive v0.7 addition
+
+Added 30 curated phonetic contrasts / 60 audio targets (real audio-first grading where browser TTS exists), a weekly sound activity across all 210 guided sessions, an English offline Writing Coach with 29 narrowly scoped grammar patterns and structural hints in both writing studios, and an explicit seven-skill Personal Study Coach based on actual local learning records. Added 800+ entry English/Russian search across all course libraries and new deep links in home, Academy and Practice Centre. Updated offline cache and sanitized backup for phonetics progress. This is not native-speaker audio or automatic free-text grading. See docs/V07_COMPLETE_SKILLS.md.

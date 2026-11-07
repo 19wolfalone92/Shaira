@@ -4,6 +4,7 @@ import {stages,units} from "./academy-data.js";
 import {firstWordPacks} from "./first-words.js";
 import {dialogues} from "./dialogues.js";
 import {listeningForStage} from "./listening-clips.js";
+import {soundForStage} from "./phonetics-content.js";
 import {grammarDrills} from "./grammar-drills.js";
 import {grammarHandbook} from "./grammar-handbook.js";
 import {readingLibrary} from "./reading-library.js";
@@ -43,6 +44,7 @@ export function makeDay(index){
  const pack=selected(firstWordPacks,packBase+week*2+(weekday>=5?1:0));
  const stageDialogues=group(dialogues,level);
  const audioClip=listeningForStage(level)[week];
+ const soundPair=soundForStage(level)[week];
  const dialogue=selected(stageDialogues,week);
  const passage=selected(group(readingLibrary,level),week+(week>=3?1:0));
  const writing=selected(group(writingTasks,level),week+(week>=3?3:0));
@@ -113,6 +115,11 @@ export function makeDay(index){
        "Re-read and answer without hints","Basahin muli at sumagot nang walang tulong",15,{key:passage.id}));
    }
  }
+ if(weekday===2&&soundPair){
+   tasks.push(task("sound:"+soundPair.id,"sound","#academy/sounds/"+soundPair.id,
+      "Hear Russian sounds: "+soundPair.focus,"Distinguish Russian sound pairs",10,
+      {key:soundPair.id,fallback:unit.id+"/read",unitId:unit.id}));
+ }
  if(index>=14&&(weekday===0||weekday===4)){
    const skill=studioForUnit(unit.id);
    if(skill)tasks.unshift(task("studio:"+unit.id,"studio","#academy/mastery/"+unit.id,
@@ -170,7 +177,8 @@ export function snapshot(storage=globalThis.localStorage){
  const mastery=loadMastery(storage);
  const cases=parse(storage,"shaira-case-practice-v1");
  const mixer=parse(storage,"shaira-mixed-practice-v1");
- return {academy,labs,legacy,mastery,cases,listenings,mixer};
+ const phonetics=parse(storage,"shaira-phonetics-v1");
+ return {academy,labs,legacy,mastery,cases,listenings,mixer,phonetics};
 }
 export function stepComplete(step,state,snap,audioAvailable=true){
  const t=Number(state.startedAt)||0;
@@ -202,6 +210,13 @@ export function stepComplete(step,state,snap,audioAvailable=true){
    const last=sessions.at(-1);
    return Number(last?.last)>=t&&last?.stage===step.key&&last?.passed===true&&
      Number(last?.score)>=9&&Number(last?.productive)>=2;
+ }
+ if(step.kind==="sound"){
+   if(!audioAvailable)return Number(done[step.fallback])>=t;
+   const items=safeRecord(snap.phonetics?.items);
+   const a=items[step.key+":0"],b=items[step.key+":1"];
+   const latest=Number(a?.last)>=Number(b?.last||0)?a:b;
+   return Number(latest?.last)>=t&&latest?.lastCorrect===true;
  }
  if(step.kind==="audio"){
    if(!audioAvailable)return Number(done[step.fallback])>=t;

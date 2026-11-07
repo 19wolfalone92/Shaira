@@ -10,6 +10,12 @@ An adult-first, free-to-use iPhone PWA for **Shaira** to practise Russian **ever
 
 See **[DAILY_TEACHING_PLAN.md](docs/DAILY_TEACHING_PLAN.md)** for the first two weeks and teaching cycle, and **[B2_CURRICULUM_MAP.md](docs/B2_CURRICULUM_MAP.md)** for the entire staged route and what still separates it from genuinely verified B2. Each of the five stages now ends with a separate, 10-question review requiring 8/10 plus successful writing and comprehension. These checkpoints measure only selected taught skills.
 
+## v0.7: a fuller independent Russian study environment
+
+**Four major study tools are now available:** **Hear the Difference** (30 real Russian sound contrasts / 60 possible listening targets), **Writing Coach** (29 specific pattern hints plus structural revision support across writing and reading activities), **Personal Study Coach** (seven factual practice indicators and individual next-action suggestions), and **Search all course materials** (800+ offline-searchable Russian/English entries with direct links). A Russian keyboard and spoken draft readback support adult written work. Phonetic practice is part of the daily route, with a reading fallback where device Russian TTS is unavailable. No free-writing grade, accent score or independent B2 certification is implied.
+
+Detailed release scope: **[V07_COMPLETE_SKILLS.md](docs/V07_COMPLETE_SKILLS.md)**.
+
 ## What actually works
 
 | Course area | Available material |

@@ -107,17 +107,17 @@ function studyTasks(day,summary,l){
  const firstUnfinished=summary.steps.find(s=>!s.complete);
  return '<section class="daily-task-area"><h2>'+TXT[l].yourPath+'</h2>'+
   '<div class="daily-task-list">'+summary.steps.map((step,i)=>{
-    const href=["listen","audio"].includes(step.kind)&&!audioAvailable()?"#academy/lesson/"+step.unitId+"/read":step.href;
+    const href=["listen","audio","sound"].includes(step.kind)&&!audioAvailable()?"#academy/lesson/"+step.unitId+"/read":step.href;
     return '<div class="daily-task '+(step.complete?"daily-task-done":"")+'"><span class="daily-task-number">'+(step.complete?"✓":i+1)+'</span>'+
       '<div class="daily-task-info"><strong>'+esc(text(step.title,l))+'</strong><small>'+step.minutes+' '+TXT[l].minutes+
       ' · '+TXT[l][step.complete?"done":"notDone"]+'</small>'+
-      (["listen","audio"].includes(step.kind)&&!audioAvailable()?'<p class="daily-warning">'+TXT[l].fallback+'</p>':"")+
+      (["listen","audio","sound"].includes(step.kind)&&!audioAvailable()?'<p class="daily-warning">'+TXT[l].fallback+'</p>':"")+
       (step.kind==="handbook"&&!step.complete?'<p class="daily-caution">'+TXT[l].handbookInfo+'</p>':"")+
       '</div><div class="daily-task-actions"><a href="'+esc(href)+'">'+TXT[l].mission+' ↗</a>'+
       (step.kind==="handbook"&&!step.complete?'<button type="button" data-daily="confirm-reference" data-id="'+esc(step.id)+'">'+TXT[l].handbookConfirm+'</button>':"")+
       '</div></div>';
   }).join("")+'</div>'+
-  (firstUnfinished?'<a class="daily-primary daily-resume" href="'+esc(["listen","audio"].includes(firstUnfinished.kind)&&!audioAvailable()?"#academy/lesson/"+firstUnfinished.unitId+"/read":firstUnfinished.href)+'">'+TXT[l].resume+' →</a>':"")+'</section>';
+  (firstUnfinished?'<a class="daily-primary daily-resume" href="'+esc(["listen","audio","sound"].includes(firstUnfinished.kind)&&!audioAvailable()?"#academy/lesson/"+firstUnfinished.unitId+"/read":firstUnfinished.href)+'">'+TXT[l].resume+' →</a>':"")+'</section>';
 }
 function dailyKeyboard(l){
  return '<details class="daily-keyboard"><summary>⌨ '+TXT[l].keyboard+'</summary><div class="daily-board">'+
