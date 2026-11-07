@@ -38,7 +38,8 @@ function persist(){
 }
 function mark(u,mode){
   const key=u.id+"/"+mode;
-  if(!store.done[key]){store.done[key]=Date.now();store.points+=10;persist();}
+  if(!store.done[key])store.points+=10;
+  store.done[key]=Date.now();persist();
 }
 const tokens=s=>String(s||"").trim().split(/\s+/).filter(Boolean);
 const standard=s=>String(s).toLocaleLowerCase("ru-RU").normalize("NFC").replace(/[«»"„”“!?.:,;—–\s]+/g," ").trim();
@@ -305,6 +306,7 @@ function moveNext(s,l,api){
       }else{
         if(s.mode==="first-words")mark(s.u,"words");
         else if(s.mode==="words"||(s.mode==="listen"&&speechAvailable()))mark(s.u,s.mode);
+        if(s.mode==="review"){store.lastReview=Date.now();persist();}
         s.phase="done";
       }
     }
