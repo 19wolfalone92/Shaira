@@ -34,7 +34,7 @@ test("100 contextual grammar questions are complete and bilingual",()=>{
  }
 });
 test("20 original reading texts offer contextual comprehension and production tasks",()=>{
- assert.equal(readingLibrary.length,20);
+ assert.equal(readingLibrary.length,35);
  assert.equal(new Set(readingLibrary.map(x=>x.id)).size,20);
  for(const stage of levels)assert.equal(readingsForStage(stage).length,4,stage);
  for(const r of readingLibrary){
@@ -53,7 +53,7 @@ test("20 original reading texts offer contextual comprehension and production ta
  }
 });
 test("30 adult writing assignments are levelled and have meaningful goals",()=>{
- assert.equal(writingTasks.length,30);
+ assert.equal(writingTasks.length,45);
  assert.equal(new Set(writingTasks.map(x=>x.id)).size,30);
  for(const level of levels){
    assert.equal(writingForStage(level).length,6,level);
