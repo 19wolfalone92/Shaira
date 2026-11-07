@@ -51,8 +51,15 @@ test("main interface completes a lesson, keeps English instructions and opens wr
   const caseSubmit=()=>false;
   const listeningHtml=()=>"<section>Listening</section>";
   const listeningAction=()=>{};
-  const run = new Function("sections","lessons","alphabet","keyboardRows","document","window","location","navigator","localStorage","academyStatistics","labStats","stopSpeakingRehearsal","todayHtml","todayPreview","todayAction","todaySubmit","todayInput","masteryHtml","masteryAction","masterySubmit","caseHtml","caseAction","caseSubmit","listeningHtml","listeningAction",source);
-  run(sections,lessons,alphabet,keyboardRows,document,window,location,navigator,localStorage,academyStatistics,labStats,stopSpeakingRehearsal,todayHtml,todayPreview,todayAction,todaySubmit,todayInput,masteryHtml,masteryAction,masterySubmit,caseHtml,caseAction,caseSubmit,listeningHtml,listeningAction);
+  const mixerHtml=()=>"<section>Practice mixer</section>";
+  const mixerAction=()=>{};
+  const mixerSubmit=()=>false;
+  const verbHtml=()=>"<section>Verb Lab</section>";
+  const verbAction=()=>{};
+  const scenariosHtml=()=>"<section>Roleplay</section>";
+  const scenariosAction=()=>{};
+  const run = new Function("sections","lessons","alphabet","keyboardRows","document","window","location","navigator","localStorage","academyStatistics","labStats","stopSpeakingRehearsal","todayHtml","todayPreview","todayAction","todaySubmit","todayInput","masteryHtml","masteryAction","masterySubmit","caseHtml","caseAction","caseSubmit","listeningHtml","listeningAction","mixerHtml","mixerAction","mixerSubmit","verbHtml","verbAction","scenariosHtml","scenariosAction",source);
+  run(sections,lessons,alphabet,keyboardRows,document,window,location,navigator,localStorage,academyStatistics,labStats,stopSpeakingRehearsal,todayHtml,todayPreview,todayAction,todaySubmit,todayInput,masteryHtml,masteryAction,masterySubmit,caseHtml,caseAction,caseSubmit,listeningHtml,listeningAction,mixerHtml,mixerAction,mixerSubmit,verbHtml,verbAction,scenariosHtml,scenariosAction);
   const click=(action,props={})=>events.click({target:{closest:selector=>selector==="[data-action]"?{dataset:{action,...props}}:null}});
   assert.match(app.innerHTML,/Your learning path/);
   click("open-lesson",{id:"vowels"});

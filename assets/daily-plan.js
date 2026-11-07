@@ -122,6 +122,11 @@ export function makeDay(index){
    tasks.push(task("cases:"+level,"case-quiz","#academy/cases/quiz",
     "Practise all six noun cases: 8/10","Magsanay sa anim na kaso: 8/10",12,{key:"cases"}));
  }
+ if(index>=14&&weekday===6){
+   tasks.push(task("mix:"+level,"mix","#academy/mix/"+level,
+      "Variety Lab: master 12 mixed questions (9 correct, 2 writing)",
+      "Variety Lab: 12 different Russian challenges",15,{key:level}));
+ }
  if(within===DAYS_PER_STAGE-1){
    const checkpoint=checkpointForStage(level);
    if(checkpoint)tasks.push(task("checkpoint:"+level,"checkpoint","#academy/checkpoint/"+level,
@@ -164,7 +169,8 @@ export function snapshot(storage=globalThis.localStorage){
  const listenings=parse(storage,"shaira-listening-v1");
  const mastery=loadMastery(storage);
  const cases=parse(storage,"shaira-case-practice-v1");
- return {academy,labs,legacy,mastery,cases,listenings};
+ const mixer=parse(storage,"shaira-mixed-practice-v1");
+ return {academy,labs,legacy,mastery,cases,listenings,mixer};
 }
 export function stepComplete(step,state,snap,audioAvailable=true){
  const t=Number(state.startedAt)||0;
@@ -190,6 +196,12 @@ export function stepComplete(step,state,snap,audioAvailable=true){
    const row=safeRecord(safeRecord(snap.mastery).checkpoints)[step.key];
    return Number(row?.last)>=t&&row?.lastPassed===true&&
      Number(row?.lastScore)>=8&&Number(row?.correctTyped)>=1&&Number(row?.correctReading)>=1;
+ }
+ if(step.kind==="mix"){
+   const sessions=Array.isArray(snap.mixer?.sessions)?snap.mixer.sessions:[];
+   const last=sessions.at(-1);
+   return Number(last?.last)>=t&&last?.stage===step.key&&last?.passed===true&&
+     Number(last?.score)>=9&&Number(last?.productive)>=2;
  }
  if(step.kind==="audio"){
    if(!audioAvailable)return Number(done[step.fallback])>=t;
