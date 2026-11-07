@@ -38,7 +38,8 @@ export function makeDay(index){
  const within=index%DAYS_PER_STAGE,week=Math.floor(within/7),weekday=within%7;
  const stageUnits=group(units,level);
  const unit=selected(stageUnits,week*2+(weekday>=4?1:0));
- const pack=selected(firstWordPacks,levelNo*8+week*2+(weekday>=5?1:0));
+ const packBase=[0,15,27,43,64][levelNo];
+ const pack=selected(firstWordPacks,packBase+week*2+(weekday>=5?1:0));
  const stageDialogues=group(dialogues,level);
  const dialogue=selected(stageDialogues,week);
  const passage=selected(group(readingLibrary,level),week);
