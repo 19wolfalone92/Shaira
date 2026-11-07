@@ -1,0 +1,85 @@
+
+/* Shaira Academy — iPhone-first, low-motion, readable Russian learning UI */
+.academy-shortcut{display:flex;align-items:center;gap:13px;text-decoration:none;color:#332c56;background:linear-gradient(105deg,#f3edff,#fff0f6);border:1px solid #e9dff7;border-radius:19px;padding:17px 15px;margin:20px 0 28px;box-shadow:0 5px 20px #7461bb13}
+.academy-shortcut-icon{display:grid;place-items:center;height:49px;width:49px;flex-shrink:0;border-radius:16px;background:#e8dcff;font-size:25px}
+.academy-shortcut span:nth-child(2){flex:1;min-width:0}.academy-shortcut strong{display:block;font-size:15px;line-height:1.35}.academy-shortcut small{display:block;margin-top:4px;color:#827493;line-height:1.4;font-size:11px}
+.academy-shortcut span:last-child{font-weight:800;color:#947bc4}
+.aca-hero{position:relative;overflow:hidden;border-radius:27px;background:linear-gradient(125deg,#7662d5,#9d70d5 51%,#dc93b8);padding:32px 25px;color:#fff;box-shadow:0 10px 28px #806ab529}
+.aca-hero h1{position:relative;z-index:1;font-size:clamp(28px,6.7vw,40px);line-height:1.13;letter-spacing:-.04em;max-width:480px;margin:16px 0 12px}
+.aca-hero p{max-width:465px;font-size:14px;line-height:1.6;color:#fceffc;position:relative;z-index:1}
+.aca-stars{position:absolute;right:-5px;top:-19px;transform:rotate(-20deg);font-size:76px;opacity:.28}
+.aca-overline{text-transform:uppercase;letter-spacing:.14em;font-size:10px;font-weight:800;color:#ffedc9}
+.aca-hero-badges{display:flex;flex-wrap:wrap;gap:8px;position:relative;z-index:1;margin-top:24px}
+.aca-hero-badges>span{font-size:11px;font-weight:750;border:1px solid #ffffff66;background:#ffffff24;padding:7px 10px;border-radius:99px}
+.aca-summary{display:flex;gap:10px;justify-content:space-between;margin:18px 0 24px}
+.aca-summary>div{flex:1;min-width:0;background:white;border:1px solid #eee8f6;border-radius:17px;padding:14px 10px;box-shadow:0 5px 17px #4432710b;text-align:center}
+.aca-summary b{display:block;font-size:20px;line-height:1.3;color:#6854bc;white-space:nowrap}
+.aca-summary small{display:block;color:#9185a5;font-size:10px;line-height:1.25;margin-top:5px}
+.aca-path-info{padding:16px 17px;border-radius:16px;background:#fff7e9;border:1px solid #ffecd1;color:#5a4669;margin-bottom:20px}
+.aca-path-info strong{font-size:12.5px;line-height:1.6}.aca-path-info p{font-size:11px;color:#8a7793;margin:9px 0 0}
+.aca-stage-list,.aca-units,.aca-activities{display:grid;gap:12px}
+.aca-stage-card,.aca-unit-card,.aca-mode{display:flex;align-items:center;gap:13px;min-width:0;text-decoration:none;color:#322d4f;background:white;border:1px solid #eee9fa;border-radius:19px;box-shadow:0 5px 18px #5949980b}
+.aca-stage-card{padding:17px 13px;position:relative}.aca-stage-index{position:absolute;left:8px;top:7px;font-weight:800;color:#d7c9ed;font-size:10px}
+.aca-stage-icon{width:47px;height:47px;display:grid;place-items:center;background:#f7f1ff;border-radius:16px;flex:none;font-size:24px}
+.aca-stage-copy{flex:1;min-width:0}.aca-stage-copy>small{font-size:11px;color:#8c7dc1;font-weight:850;display:block;margin-bottom:5px}.aca-stage-copy strong{font-size:15px;display:block;margin-bottom:9px}
+.aca-stage-copy em{font-style:normal;font-size:10px;color:#9387a0;display:block;text-align:right;margin-top:5px}
+.aca-track{height:7px;display:block;background:#f0eaf9;border-radius:99px;overflow:hidden}.aca-track i{height:100%;display:block;background:linear-gradient(90deg,#806adc,#d89ac7);border-radius:99px}
+.aca-chev{font-size:25px;color:#ae9ac4;flex:none;margin-left:auto}
+.aca-review-call{display:flex;align-items:center;gap:13px;background:#f4f9ed;border:1px solid #e3eccf;border-radius:17px;padding:17px;margin-top:21px;color:#416052;text-decoration:none}
+.aca-review-call>span:first-child{font-size:28px}.aca-review-call>span:nth-child(2){flex:1}.aca-review-call strong{display:block;font-size:14px}.aca-review-call small{display:block;color:#718375;font-size:11px;margin-top:5px;line-height:1.4}
+.aca-review-call>b{color:#53855c;background:#e0efd8;border-radius:10px;padding:7px 11px}
+.aca-mini-nav{display:flex;flex-wrap:wrap;gap:8px;margin:25px 0 8px}.aca-mini-nav a{border:1px solid #e6ddf6;text-decoration:none;padding:8px 10px;border-radius:11px;background:#f9f7ff;font-size:12px;font-weight:750;color:#6654aa}
+.aca-back{display:inline-block;color:#6955c2;font-size:12px;font-weight:800;text-decoration:none;padding:6px 0 12px}
+.aca-head{margin:9px 0 22px}.aca-kicker{font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:#8365c7;font-weight:800}
+.aca-head h1{margin:8px 0 10px;font-size:clamp(26px,6vw,36px);line-height:1.16;color:#332d53}
+.aca-head p{font-size:14px;color:#776d87;line-height:1.6;max-width:650px}
+.aca-unit-card{padding:15px 14px}.aca-unit-card>span:nth-child(2){flex:1;min-width:0}
+.aca-unit-icon{display:grid;place-items:center;border-radius:13px;width:49px;height:49px;background:#f4effc;font-size:23px;flex:none}
+.aca-unit-card small{display:block;color:#9182b9;font-size:11px;margin-bottom:5px}.aca-unit-card strong{display:block;font-size:15px}.aca-unit-card em{display:block;font-style:normal;color:#a198ac;font-size:10px;margin-top:6px}
+.aca-panel,.aca-task{border:1px solid #ece6f7;border-radius:20px;background:#fff;box-shadow:0 6px 19px #63539d0d;padding:19px 18px;margin:16px 0}
+.aca-panel h2,.aca-task h2{font-size:18px;color:#352c51;margin:0 0 13px}.aca-panel>p,.aca-task>p{color:#766e85;font-size:13px;line-height:1.7}
+.aca-example{background:#f8f5ff;border:1px solid #eee6fa;border-radius:15px;padding:17px 15px;display:flex;flex-direction:column;align-items:flex-start;gap:9px}
+.aca-example strong{color:#3b325f;font-size:22px;line-height:1.55;font-weight:750;overflow-wrap:anywhere}
+.aca-example small{color:#77718c;line-height:1.6;font-size:12px}
+.aca-sound{border:1px solid #e8def9;border-radius:12px;padding:8px 11px;background:#f4efff;color:#6e57b8;font-weight:800;font-size:12px;min-height:35px}
+.aca-glossary{display:grid;grid-template-columns:1fr;gap:8px}
+.aca-glossary>div{display:flex;align-items:center;gap:10px;border-bottom:1px solid #f2edf8;padding:9px 0;min-width:0}
+.aca-glossary strong{font-size:18px;min-width:100px;overflow-wrap:anywhere;color:#433c64}.aca-glossary span{font-size:12px;color:#776e8c;overflow-wrap:anywhere}
+.aca-section-title{font-size:19px;margin:25px 4px 15px}.aca-mode{padding:13px 14px;min-height:65px}
+.aca-mode>span:first-child{height:37px;width:37px;border-radius:12px;display:grid;place-items:center;background:#f2edfb;font-size:21px;flex:none}
+.aca-mode strong{font-size:14px;flex:1}.aca-check{color:#23956a;font-weight:850;border:1px solid #bfe3cd;padding:4px 8px;border-radius:99px}
+.aca-session-meter{height:6px;background:#f1eafc;border-radius:99px;margin:7px 0 20px;overflow:hidden}.aca-session-meter>span{height:100%;display:block;background:#8c74d7;transition:width .2s}
+.aca-word-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-bottom:18px}
+.aca-word-grid>div{display:flex;flex-direction:column;align-items:flex-start;gap:9px;padding:12px 11px;background:#f9f7ff;border:1px solid #f0eafa;border-radius:13px;min-width:0}
+.aca-word-grid b{font-size:19px;color:#483966;overflow-wrap:anywhere}.aca-word-grid small{font-size:11px;color:#7e7490;line-height:1.4}
+.aca-cta{border:0;background:linear-gradient(113deg,#7463d8,#a581db);padding:13px 17px;border-radius:13px;min-height:45px;color:#fff;font-size:13px;font-weight:850;cursor:pointer;box-shadow:0 6px 15px #8273c52a}
+.aca-wide{width:100%;margin-top:15px}.aca-link{display:inline-block;text-decoration:none;text-align:center}
+.aca-task-count{font-size:11px;font-weight:850;letter-spacing:.08em;color:#8a79c6}
+.aca-word-big{display:flex;align-items:center;justify-content:center;font-size:clamp(35px,8vw,51px);font-weight:750;color:#433765;line-height:1.35;text-align:center;min-height:125px;overflow-wrap:anywhere}
+.aca-task>.aca-sound{display:block;margin:0 auto 17px}.aca-task>.aca-cta{display:block;margin:0 auto 18px}
+.aca-choices{display:grid;gap:10px;margin-top:18px}
+.aca-choice{width:100%;text-align:left;padding:13px 14px;border:1px solid #e8e1f4;background:#fdfbff;color:#453c5e;border-radius:13px;font-size:14px;font-weight:650;min-height:46px}
+.aca-choice:hover,.aca-choice:focus-visible{border-color:#957edc;background:#f3edff}
+.aca-feedback{border-radius:14px;padding:14px;margin-top:15px;font-size:13px;line-height:1.5}
+.aca-feedback strong{display:block;margin-bottom:7px}.aca-feedback p{margin:5px 0 13px}.aca-feedback .aca-cta{margin-top:10px}
+.aca-ok{background:#eaf8ee;color:#1e7154}.aca-not{background:#fff1f5;color:#9e466a}
+.aca-muted{display:block;color:#8d8299!important;font-size:11px!important;line-height:1.55!important}
+.aca-reading{color:#382e59;font-size:17px;line-height:1.85;letter-spacing:.01em;background:#faf8ff;border-left:4px solid #a68be6;border-radius:13px;padding:21px 16px;margin:8px 0 16px}
+.aca-text-btn{border:none;background:transparent;color:#7058c7;text-decoration:underline;text-underline-offset:3px;padding:10px;font-size:12px;font-weight:750;margin:8px 0}
+.aca-translation,.aca-sample{padding:15px;background:#f4f2fc;color:#5a5078;border-radius:12px;font-size:13px}
+.aca-input-label{display:block;font-size:13px;font-weight:750;color:#483967;margin-bottom:10px}
+#aca-answer,#aca-draft{display:block;width:100%;background:white;color:#342d50;border:1px solid #ded5ed;border-radius:13px;padding:12px 13px;font-size:18px;line-height:1.55;outline-offset:3px}
+#aca-draft{font-size:16px;min-height:190px;resize:vertical}#aca-answer:focus-visible,#aca-draft:focus-visible{outline:3px solid #b99bea}
+.aca-board{background:#f7f4fb;border-radius:12px;padding:10px 4px;margin-top:14px}.aca-board>div{display:flex;gap:3px;justify-content:center;margin-bottom:4px}
+.aca-board button{flex:1;min-width:0;padding:0 1px;border:1px solid #e0d8ea;background:#fff;color:#554b68;border-radius:6px;box-shadow:0 2px 0 #e0d8ea;min-height:35px;font-size:14px}
+.aca-board .aca-space{flex:5;font-size:12px}
+.aca-draft-actions{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:12px}
+.aca-draft-actions small{color:#8d819a;font-size:11px}
+.aca-sample{margin:9px 0}.aca-sample strong{display:block;margin-bottom:10px;font-size:12px}
+.aca-sample p{margin:0;color:#5f5479;line-height:1.7}
+.aca-celebrate{text-align:center;border-radius:22px;background:linear-gradient(135deg,#fbf4ff,#fff2eb);border:1px solid #ecdcf4;padding:36px 22px;margin-top:20px}
+.aca-celebrate>div{font-size:43px}.aca-celebrate h2{font-size:25px;margin:16px 0 12px}.aca-celebrate p{color:#8a7998;font-size:12px;margin-bottom:24px}
+.aca-info{background:#fff8e8;color:#897145;padding:12px;border-radius:11px;font-size:12px}
+@media(min-width:700px){.aca-activities{grid-template-columns:repeat(2,1fr)}.aca-glossary{grid-template-columns:repeat(2,1fr)}.aca-word-grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:360px){.aca-summary b{font-size:17px}.aca-summary small{font-size:9px}.aca-hero{padding:25px 19px}.aca-word-grid{grid-template-columns:1fr 1fr}.aca-stage-card{gap:9px}.aca-stage-icon{width:38px;height:38px;font-size:20px}}
+@media(prefers-reduced-motion:reduce){.aca-session-meter>span{transition:none}}
