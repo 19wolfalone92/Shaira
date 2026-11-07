@@ -1,0 +1,87 @@
+/* Shaira — adult reading-first visual language, applied after legacy theme.
+   Quiet surfaces, clear hierarchy, high contrast and stable mobile layout. */
+:root{
+ --s-bg:#f9f8fc;--s-white:#ffffff;--s-ink:#29273b;--s-muted:#615e72;
+ --s-purple:#57469b;--s-tint:#f0edfa;--s-border:#e5e0eb;
+}
+body{background:var(--s-bg);color:var(--s-ink)}
+.topbar{background:#ffffffed;border-bottom:1px solid var(--s-border)}
+.brand-mark{background:#5a4b90;box-shadow:none;border-radius:12px}
+.brand{color:#2a2442}.brand-dot{color:#7a65a8}
+.brand-caption{font-size:11px;color:#6b6579}
+.top-counter{background:#f4f1fa;border-color:#e7e0ee;color:#57469b;box-shadow:none;text-decoration:none}
+.bottom-nav{background:#fff;border-top:1px solid var(--s-border);box-shadow:0 -2px 13px #20172a0b}
+.nav-item{border-radius:11px;color:#6a6475}
+.nav-item.active{background:#eeeaf8;color:#493b82}
+.nav-item>span{font-size:21px}
+.nav-item small{font-size:10.5px}
+.main-content{padding-top:21px}
+.adult-welcome{display:flex;position:relative;isolation:isolate;overflow:hidden;min-height:240px;border-radius:20px;border:1px solid #ddd6ea;background:#eae4f2;padding:26px 22px}
+.adult-welcome-copy{position:relative;z-index:2;max-width:510px}
+.adult-eyebrow{font-size:10px;font-weight:900;letter-spacing:.13em;color:#69578b}
+.adult-welcome h1{color:#292140;font-size:clamp(27px,6.6vw,41px);line-height:1.12;margin:18px 0 13px;max-width:390px}
+.adult-welcome p{color:#4f4960;line-height:1.6;font-size:14px;max-width:430px;margin-bottom:20px}
+.adult-russian{position:absolute;right:0;top:-55px;pointer-events:none;z-index:1;font-size:320px;font-weight:850;line-height:1;color:#5c4a9512;transform:rotate(-10deg)}
+.adult-cta{display:inline-block;padding:12px 17px;background:#57469b;color:white;border-radius:11px;text-decoration:none;font-weight:850;font-size:13px;line-height:1.5;min-height:44px;box-sizing:border-box}
+.adult-progress{background:white;border:1px solid var(--s-border);padding:17px 18px;border-radius:17px;margin:16px 0 25px}
+.adult-progress h2{font-size:16px;margin:0 0 16px}
+.adult-progress-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+.adult-progress-row>span{display:block;border-left:2px solid #dfd7ee;padding-left:10px;min-width:0}
+.adult-progress-row strong{display:block;color:#4d4080;font-size:22px;line-height:1.15}
+.adult-progress-row small{display:block;font-size:10px;line-height:1.4;color:#676074;overflow-wrap:anywhere;margin-top:7px}
+.adult-muted{font-size:11px;line-height:1.5;color:#6f687b;margin:15px 0 0}
+.adult-heading{font-size:20px;margin:5px 1px 14px}
+.adult-route-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.adult-route-grid>a{display:flex;align-items:flex-start;gap:10px;padding:16px 12px;border:1px solid var(--s-border);border-radius:16px;text-decoration:none;background:white;color:var(--s-ink);min-width:0;box-shadow:0 2px 9px #3a28540a}
+.adult-route-grid>a>span{border-radius:11px;width:36px;height:36px;display:grid;place-items:center;background:#f3f0fa;color:#544483;font-size:15px;font-weight:900;flex:none}
+.adult-route-grid>a>div{flex:1;min-width:0}
+.adult-route-grid strong{display:block;font-size:13.5px;line-height:1.4}
+.adult-route-grid small{display:block;margin-top:6px;font-size:10.5px;color:#6d6679;line-height:1.4}
+.adult-route-grid b{color:#8e82a8;font-size:20px}
+.adult-course-link{display:flex;gap:12px;align-items:center;border-radius:14px;padding:17px 16px;background:#4d3f82;color:white;text-decoration:none;margin:15px 0 27px}
+.adult-course-link>span{width:34px;height:34px;border:1px solid #ffffff55;border-radius:10px;display:grid;place-items:center;flex:none;font-size:19px}
+.adult-course-link>div{flex:1}
+.adult-course-link strong{font-size:14px;display:block;line-height:1.35}
+.adult-course-link small{display:block;font-size:11px;color:#e8dff7;margin-top:4px;line-height:1.5}
+.adult-foundations{border:1px solid var(--s-border);border-radius:15px;background:white;padding:0 12px 15px}
+.adult-foundations>summary{padding:19px 7px;display:flex;justify-content:space-between;align-items:center;gap:12px;cursor:pointer;list-style-position:inside}
+.adult-foundations>summary strong{font-size:14px;line-height:1.4}
+.adult-foundations>summary span{white-space:nowrap;color:#75668c;font-size:12px;font-weight:750}
+.adult-foundations .course-section{box-shadow:none;border-radius:13px}
+.adult-foundations .course-icon{background:#f3f0f8}
+.adult-foundations .lesson-row:hover{background:#f7f5fb}
+.aca-hero{border:1px solid #ddd5e8;border-radius:19px;background:#e9e4f2;color:#2e2842;box-shadow:none}
+.aca-hero h1{color:#29233c}
+.aca-hero p{color:#555061}
+.aca-overline{color:#69548d}
+.aca-hero-badges>span{background:#fff8;border:1px solid #dcd5e7;color:#463d57}
+.aca-stars{opacity:.11;color:#443876;font-size:72px;right:14px;top:18px;transform:none}
+.aca-summary>div,.aca-stage-card,.aca-unit-card,.aca-mode,.aca-panel,.aca-task,.settings-card,.write-card,.course-section{box-shadow:none;border:1px solid var(--s-border)}
+.aca-path-info{background:#f3f0f8;border-color:#ded8ea}
+.aca-stage-icon,.aca-unit-icon,.aca-mode>span:first-child{background:#f4f1f9}
+.aca-stage-copy strong,.aca-head h1{color:#29283c}
+.aca-stage-copy small,.aca-kicker{color:#66549a}
+.aca-review-call{background:white;border-color:var(--s-border);color:#322d44}
+.aca-review-call>span:first-child{min-width:30px;font-size:22px;color:#55418b;font-weight:800}
+.aca-review-call small{color:#656073}
+.aca-review-call b{color:#564184;background:#f3eff9}
+.aca-cta,.primary-button{background:#57469b;box-shadow:none}
+.aca-cta:hover,.primary-button:hover,.adult-cta:hover{background:#46367f}
+.aca-choices button,.aca-choice{min-height:46px}
+.aca-word-grid>div{background:#faf8fd;border-color:#e8e2ef}
+.aca-word-grid .aca-emoji{font-size:23px;opacity:.85}
+.aca-celebrate{background:#f6f2fb;border-color:#e6dced}
+.aca-reading{background:#f9f7fc;border-left-color:#8571a9;color:#27253b}
+.aca-dialogue-line{background:#f9f7fc;border-color:#ece7f4}
+.aca-speaker-b{background:#f4f5fa;border-color:#e4e7ee}
+.aca-example{background:#faf8fe;border-color:#e9e2f0}
+.aca-glossary>div{border-color:#ede8f2}
+.lp-level,.lp-question,.lp-text,.lp-gloss,.lp-writing,.lp-result,.lp-shelf,.lp-paths>a{box-shadow:none}
+.footer{color:#7c7284}
+button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,summary:focus-visible{outline:3px solid #987cc8;outline-offset:3px}
+@media(min-width:650px){.adult-route-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.adult-route-grid>a{display:block}.adult-route-grid>a>div{margin-top:11px}.adult-route-grid>a>b{display:none}}
+@media(max-width:380px){.adult-welcome{padding:22px 18px}.adult-route-grid>a{padding:13px 10px;gap:7px}.adult-route-grid>a>span{width:30px;height:32px}.adult-progress{padding:14px 12px}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+
+/* Adult vocabulary cards remain easy to scan without outsized decorative emoji. */
+.aca-word-grid .aca-emoji{font-size:21px;font-weight:800;color:#675484;opacity:1}

@@ -1,6 +1,7 @@
 import {stages,units,activityModes,getUnit,getStage,academyLessonTotal} from "./academy-data.js";
 import {firstWordPacks} from "./first-words.js";
 import {dialogues} from "./dialogues.js";
+import {startPrivateRecording,stopPrivateRecording,discardPrivateRecording,isRecordingSupported} from "./speaking-recorder.js";
 const KEY="shaira-academy-v1";
 const MS_DAY=86400000, STEPS=[1,3,7,14,30];
 const UI={
@@ -98,11 +99,13 @@ function baseNav(l){
 function overview(l){
   const d=Object.keys(store.done).length;
   const memory=memoryDue();
-  return '<div class="aca-hero"><div class="aca-stars" aria-hidden="true">✦ 🌷 ✦</div><span class="aca-overline">SHAIRA • RUSSIAN SCHOOL</span><h1>'+UI[l].title+'</h1><p>'+UI[l].intro+'</p><div class="aca-hero-badges"><span>🇷🇺 Pre-A1 → B2</span><span>✍️ '+units.length+' '+UI[l].word+' / '+units.length+' units</span></div></div>'+
+  return '<div class="aca-hero"><div class="aca-stars" aria-hidden="true">А Б В</div><span class="aca-overline">SHAIRA · LANGUAGE ACADEMY</span><h1>'+UI[l].title+'</h1><p>'+UI[l].intro+'</p><div class="aca-hero-badges"><span>🇷🇺 Pre-A1 → B2</span><span>✍️ '+units.length+' '+UI[l].word+' / '+units.length+' units</span></div></div>'+
   '<div class="aca-summary"><div><b>'+d+'/'+totalActivities+'</b><small>'+UI[l].total+'</small></div><div><b>⭐ '+store.points+'</b><small>'+UI[l].stars+'</small></div><div><b>'+memory.due.length+'</b><small>'+UI[l].due+'</small></div></div>'+
   '<section class="aca-path-info"><strong>🌟 '+UI[l].courseGuide+'</strong><p>'+UI[l].notice+'</p></section>'+
-  '<a class="aca-review-call" href="#academy/first-words"><span>🧸</span><span><strong>'+tx("My first 120 Russian words","Unang 120 salita sa Ruso",l)+'</strong><small>'+tx("20 tiny picture-word themes, 6 words at a time","20 munting paksa, tig-6 na salita",l)+'</small></span><b>›</b></a>'+
+  '<a class="aca-review-call" href="#academy/first-words"><span>Аа</span><span><strong>'+tx("240 themed Russian word cards","240 tematikong salita sa Ruso",l)+'</strong><small>'+tx("40 practical topics, six words each","40 praktikal na paksa, tig-6 na salita",l)+'</small></span><b>›</b></a>'+
   '<a class="aca-review-call" href="#academy/dialogues"><span>💬</span><span><strong>'+tx("Russian conversation lab","Pagsasanay sa usapan sa Ruso",l)+'</strong><small>'+tx("20 situations: say it, listen, understand","20 sitwasyon: magsalita, makinig, umunawa",l)+'</small></span><b>›</b></a>'+
+  '<a class="aca-review-call" href="#academy/writing"><span>✎</span><span><strong>'+tx("Writing portfolio","Portfolio ng pagsusulat",l)+'</strong><small>'+tx("30 guided assignments · saved private drafts","30 gawaing pagsulat · pribadong mga draft",l)+'</small></span><b>›</b></a>'+
+  '<a class="aca-review-call" href="#academy/lab"><span>✳</span><span><strong>'+tx("Grammar and reading studio","Pagsasanay sa gramatika at pagbasa",l)+'</strong><small>'+tx("100 grammar drills · 20 graded texts · independent writing","100 pagsasanay sa gramatika · 20 teksto · sariling pagsulat",l)+'</small></span><b>›</b></a>'+
   '<div class="aca-stage-list">'+stages.map((stage,i)=>{
     const list=units.filter(x=>x.stage===stage.id), n=list.reduce((s,x)=>s+unitDone(x),0),max=list.length*activityModes.length;
     return '<a class="aca-stage-card" href="#academy/level/'+stage.id+'"><span class="aca-stage-index">'+(i+1)+'</span><span class="aca-stage-icon">'+stage.icon+'</span><span class="aca-stage-copy"><small>'+stage.label+'</small><strong>'+val(stage,l)+'</strong><span class="aca-track"><i style="width:'+pct(n,max)+'%"></i></span><em>'+n+'/'+max+'</em></span><span class="aca-chev">›</span></a>';
@@ -112,9 +115,9 @@ function overview(l){
 function firstWordsPage(route,l){
   const packId=route.split("/")[2];
   if(!packId){
-    return '<a class="aca-back" href="#academy">← '+UI[l].back+'</a>'+top("🧸 Pre-A1",tx("My first 120 Russian words","Unang 120 salita sa Ruso",l),tx("Learn 6 at a time, like our English app. Tap a picture, listen, repeat, then remember.","Anim na salita bawat aralin. Tingnan, pakinggan, ulitin at alalahanin.",l))+
+    return '<a class="aca-back" href="#academy">← '+UI[l].back+'</a>'+top("🧸 Pre-A1",tx("240 essential Russian word cards","240 tematikong salita sa Ruso",l),tx("Learn six words at a time. Listen, read, repeat and test your recall.","Anim na salita bawat aralin. Makinig, bumasa, ulitin at alalahanin.",l))+
       '<div class="aca-units">'+firstWordPacks.map((p,i)=>
-        '<a class="aca-unit-card" href="#academy/first-words/'+p.id+'"><span class="aca-unit-icon">'+p.icon+'</span><span><small>'+(i+1)+'/20</small><strong>'+esc(val(p.title,l))+'</strong><em>'+(modeDone(p,"words")?UI[l].completed:"6 "+UI[l].words)+'</em></span><span class="aca-chev">›</span></a>').join("")+'</div>';
+        '<a class="aca-unit-card" href="#academy/first-words/'+p.id+'"><span class="aca-unit-icon">'+p.icon+'</span><span><small>'+(i+1)+'/40</small><strong>'+esc(val(p.title,l))+'</strong><em>'+(modeDone(p,"words")?UI[l].completed:"6 "+UI[l].words)+'</em></span><span class="aca-chev">›</span></a>').join("")+'</div>';
   }
   const p=firstWordPacks.find(x=>x.id===packId);if(!p)return firstWordsPage("academy/first-words",l);
   const s=ensureSession(route,l);
@@ -145,6 +148,7 @@ function stagePage(id,l){
   const stage=getStage(id);if(!stage)return overview(l);
   const list=units.filter(u=>u.stage===id);
   return '<a class="aca-back" href="#academy">← '+UI[l].back+'</a>'+top(stage.icon+" "+stage.label,val(stage,l),val(stage.target,l))+
+  '<div class="aca-path-info"><strong>'+tx("Practise the grammar of this level with 20 explained questions.","Magsanay ng gramatika sa antas na ito sa 20 tanong na may paliwanag.",l)+'</strong><div class="aca-mini-nav"><a href="#academy/grammar/'+id+'">✳ '+tx("Grammar trainer","Pagsasanay sa gramatika",l)+'</a><a href="#academy/library">▤ '+tx("Reading library","Aklatan sa pagbabasa",l)+'</a></div></div>'+
   '<div class="aca-units">'+list.map((u,i)=>'<a class="aca-unit-card" href="#academy/unit/'+u.id+'"><span class="aca-unit-icon">'+u.icon+'</span><span><small>'+stage.label+' • '+(i+1)+'/'+list.length+'</small><strong>'+val(u.title,l)+'</strong><em>'+unitDone(u)+'/'+activityModes.length+' '+UI[l].total+'</em></span><span class="aca-chev">›</span></a>').join("")+'</div>'+baseNav(l);
 }
 function unitPage(id,l){
@@ -155,7 +159,7 @@ function unitPage(id,l){
     top(u.icon+' '+s.label,val(u.title,l),val(u.rule,l))+
     '<section class="aca-panel"><h2>'+UI[l].model+'</h2>'+sample+'</section>'+
     '<section class="aca-panel"><h2>'+UI[l].vocab+'</h2><div class="aca-glossary">'+u.words.map(w=>'<div><button class="aca-sound" data-aca="sound" data-text="'+esc(w.ru)+'" aria-label="'+UI[l].audio+'">🔊</button><strong lang="ru">'+esc(w.ru)+'</strong><span>'+esc(val(w,l))+'</span></div>').join("")+'</div></section>'+
-    '<h2 class="aca-section-title">'+UI[l].continue+'</h2><div class="aca-activities">'+activityModes.map(m=>
+    '<h2 class="aca-section-title">'+UI[l].continue+'</h2><p class="aca-muted">'+tx("These tasks build familiarity. To test grammar in new situations, use the separate trainer.","Panimulang pagsasanay ito. Para sa bagong halimbawa ng gramatika, gamitin ang trainer.",l)+'</p><div class="aca-activities">'+activityModes.map(m=>
       '<a class="aca-mode" href="#academy/lesson/'+u.id+'/'+m.id+'"><span>'+m.emoji+'</span><strong>'+tx(m.en,m.tl,l)+'</strong>'+marker(u,m)+'</a>').join("")+'</div>'+baseNav(l);
 }
 function russianBoard(){
@@ -230,6 +234,11 @@ function lessonPage(id,mode,l){
       '<div class="aca-example"><button class="aca-sound" data-aca="sound" data-text="'+esc(u.example.ru)+'">🔊 '+UI[l].audio+'</button><strong lang="ru">'+esc(u.example.ru)+'</strong><small>'+esc(val(u.example,l))+'</small></div>'+
       '<div class="aca-reading" lang="ru">'+esc(u.reading.ru)+'</div>'+
       '<button class="aca-sound" data-aca="sound" data-text="'+esc(u.reading.ru)+'">🔊 '+UI[l].audio+'</button>'+
+      '<div class="aca-recorder"><h3>'+tx("Record and listen to yourself","I-record at pakinggan ang iyong sarili",l)+'</h3><p>'+tx("Optional. Microphone access requires permission. Audio stays in this session; nothing is uploaded or saved.","Opsyonal. Kailangan ng pahintulot sa mikropono. Sa session lang ang audio; walang ina-upload o sine-save.",l)+'</p>'+
+      '<div class="aca-recorder-buttons"><button class="aca-secondary" type="button" data-aca="record-start">'+tx("● Start recording","● Magsimulang mag-record",l)+'</button>'+
+      '<button class="aca-secondary" type="button" data-aca="record-stop" hidden>'+tx("■ Stop","■ Itigil",l)+'</button></div>'+
+      '<p id="aca-rec-status" role="status">'+(isRecordingSupported()?tx("Ready when you are.","Handa kung kailan ka handa.",l):tx("Microphone recording unavailable; speaking aloud still works.","Walang recording sa browser; maaari pa ring magsalita nang malakas.",l))+'</p>'+
+      '<audio id="aca-rec-play" controls hidden aria-label="'+tx("Your private recording","Pribadong recording",l)+'"></audio></div>'+
       '<button class="aca-cta aca-wide" data-aca="practice-done">'+UI[l].spoken+' ✓</button></section>';
   }
   if(mode==="journal"){
@@ -305,12 +314,39 @@ function moveNext(s,l,api){
   }else s.phase="done";
   api.render();
 }
-export function handleAcademyAction(button,api){
+export async function handleAcademyAction(button,api){
   const action=button.dataset.aca;
   const l=api.language() === "tl"?"tl":"en";
   const route=api.route(),s=ensureSession(route,l);
   if(action==="sound"){api.speak(button.dataset.text||"");return;}
   if(!s)return;
+  if(action==="record-start"&&s.mode==="speak"){
+    const status=document.getElementById("aca-rec-status");
+    const start=document.querySelector('[data-aca="record-start"]');
+    const stop=document.querySelector('[data-aca="record-stop"]');
+    if(status)status.textContent=tx("Requesting microphone permission…","Humihingi ng pahintulot sa mikropono…",l);
+    if(start)start.disabled=true;
+    try{
+      const key=s.key;
+      await startPrivateRecording(url=>{
+        if(session?.key!==key)return;
+        const player=document.getElementById("aca-rec-play");
+        if(player&&url){player.src=url;player.hidden=false;}
+        const statusNow=document.getElementById("aca-rec-status");
+        if(statusNow)statusNow.textContent=tx(url?"Play back your recording and compare it with the Russian model.":"No audio was captured.","Pakinggan ang recording at ihambing sa modelong Ruso.",l);
+        const startNow=document.querySelector('[data-aca="record-start"]');
+        const stopNow=document.querySelector('[data-aca="record-stop"]');
+        if(startNow){startNow.disabled=false;startNow.hidden=false;}
+        if(stopNow)stopNow.hidden=true;
+      });
+      if(session?.key!==key){discardPrivateRecording();return;}
+      if(start)start.hidden=true;
+      if(stop)stop.hidden=false;
+      if(status)status.textContent=tx("Recording locally… Tap Stop when finished.","Nagri-record sa device… Pindutin ang Itigil.",l);
+    }catch(e){if(start)start.disabled=false;if(status)status.textContent=String(e.message||e);}
+    return;
+  }
+  if(action==="record-stop"&&s.mode==="speak"){stopPrivateRecording();return;}
   if(action==="toggle-translation"){s.show=!s.show;api.render();return;}
   if(action==="dialogue-answer"&&s.mode==="dialogue"){
     if(s.answered)return;
@@ -343,7 +379,7 @@ export function handleAcademyAction(button,api){
     correctOne(s,options[Number(button.dataset.choice)],l,api);return;
   }
   if(action==="next-task"){moveNext(s,l,api);return;}
-  if(action==="practice-done"){mark(s.u,"speak");s.phase="done";api.render();return;}
+  if(action==="practice-done"){discardPrivateRecording();mark(s.u,"speak");s.phase="done";api.render();return;}
   if(action==="save-draft"){
     const input=document.getElementById("aca-draft"),draft=input?.value||"";
     store.drafts[s.u.id]=draft;
@@ -375,3 +411,5 @@ export function academyStatistics(){
   const m=memoryDue();
   return {units:units.length,firstWordPacks:firstWordPacks.length,dialogues:dialogues.length,activities:totalActivities,completed:Object.keys(store.done).length,knownWords:m.known.length,dueWords:m.due.length,points:store.points};
 }
+
+export function stopSpeakingRehearsal(){discardPrivateRecording();}

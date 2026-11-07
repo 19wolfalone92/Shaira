@@ -15,17 +15,17 @@ Shaira is a beginner who reads English and/or Filipino/Tagalog. The app is an **
 7. **Use grammar in context:** connect cases, agreement, verb aspect, motion, complex sentences and discourse markers to concrete communicative tasks.
 8. **Transfer:** repeat with people in real life; speak with a competent Russian speaker; have longer texts reviewed by a teacher or language partner.
 
-## Actual implemented content (initial release)
+## Implemented programme — expanded adult edition (2026-11-07)
 - 33 Russian letters exposed in the previous alphabet module + handwriting canvas with words and sentences.
-- 20 × 6 = **120 beginner picture words**, sourced from the owner's English_Child educational sets, with Russian targets and EN/Filipino explanations.
+- 40 × 6 = **240 themed vocabulary cards**: 120 early word-picture cards plus 120 additional adult-life vocabulary cards with Russian/English/Filipino translations.
 - 32 **teacher-authored thematic units** across 5 levels, containing six words, a contextual rule, an example, a text and comprehension question, a Russian sentence typing task, a free-writing prompt and a model response.
 - 7 activity types per unit: vocabulary, listen/choose, grammar/phrase matching, reading comprehension, sentence writing, speaking shadowing, open writing journal.
 - 20 additional EN/Filipino-supported **Russian dialogues** (greetings through B2 argument).
-- 120 + (32 × 6) = **312 learning word records**; some words intentionally repeat in context, so distinct lexical item count is lower than 312.
-- 224 unit activity slots + 20 beginner themes + 20 dialogues = **264 activity slots**. Some slots are self-reported practice (not scored).
+- 240 + (32 × 6) = **432 learning word records**. Repeated words appear in contexts; this is not a count of unique lexical lemmas.
+- 224 unit activity slots + 40 beginner/adult vocabulary themes + 20 dialogues = **284 academy activity slots**; added 100 independent grammar questions, 20 graded readings (40 comprehension checks), and 30 structured writing assignments. Some unit slots are self-reported practice (not assessed).
 - Review intervals: 1, 3, 7, 14, 30 days when eligible; wrong answers scheduled immediately; early review must not postpone an actual due date.
-- Free-writing drafts only saved locally on this device; automatic essay evaluation is NOT implemented.
-- Listening tasks are only marked as listening if the browser exposes speech synthesis. Speech quality and voice availability are not independently tested yet.
+- Writing portfolio drafts are saved locally with word-count, punctuation and paragraph/connective checks. Those checks do NOT assess spelling, grammar, coherence or substantive quality.
+- Listening tasks are only marked as listening if the browser exposes speech synthesis. Speech quality and voice availability are not independently tested yet. Synthetic voice audio is not a substitute for independently verified native Russian recordings.
 
 ## Path to real competence: content map and assessment
 | Stage | Skills and focus | Example output task | Independent human assessment |
@@ -84,3 +84,12 @@ The handwriting canvas is deliberately described as **freehand drawing, not hand
 - On a real iPhone Safari, test canvas touch and scroll locking, small screen layout, voice playback, service-worker offline launch and safe-area padding.
 - Accessibility: VoiceOver reading, focus, contrast, 200% zoom, reduced motion.
 - Confirm EN/Filipino translations and Russian examples with qualified native speakers before broader distribution.
+
+
+## Added adult independent practice
+
+The **Grammar Trainer** offers 20 independently authored contextual four-choice questions for each of five course stages. It reports a 10-question session score, remembers per-item results, provides English and Filipino rule explanations, and deliberately does not equate a score with CEFR proficiency. **Graded Reading** adds four original texts per stage (20 texts in total), each with questions, a reading guide, selected vocabulary and a free-writing task. B2 texts use longer, nuanced arguments rather than beginner phrase lists.
+
+The **Writing Portfolio** contains six original assignments per stage (30 in total), with an adult situation, a Russian model opening, a recommended length and a self-edit reminder. Format-only checks do not score correctness. All drafts and lab records are included in local JSON backup/restore. This supports independent practice, but a fully self-sufficient B2 claim remains premature without native audio, teacher-grade feedback, broader vocabulary, novel assessments and real speaker validation.
+
+**User-experience principles:** a calm, reading-first mobile design instead of a preschool visual style; compact daily-learning choices; visible starting point; progress without artificial streak pressure; large iPhone touch targets; no subscriptions or hidden paid dependencies. Actual Safari device checks and independent linguistic review are still required.

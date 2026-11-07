@@ -85,3 +85,14 @@ This repository is now **far more substantial** than the initial 13 beginner les
 6. Deploy verified changes from feature branch via PR and merge only after CI passes. Published Pages output currently follows main.
 
 **Acceptance is pedagogical and functional, not numeric marketing claims.** A "B2" label on a unit does not mean Shaira can genuinely perform at B2.
+
+
+## Expansion 2026-11-07 — adult learning experience
+
+- The homepage and Academy were restyled as an **adult** study environment. Foundations/first words remain, but early-childhood visuals are no longer the primary navigation.
+- Added `assets/adult-word-packs.js` (120 practical adult vocabulary cards); existing child-source first-word set remains as beginner reference, total 40 packs (240 bilingual cards).
+- Added `assets/grammar-drills.js` (100 explanations-backed exercises), `assets/reading-library.js` (20 original graded reading passages and 40 comprehension checks), `assets/writing-tasks.js` (30 writing portfolio assignments).
+- Added `assets/learning-labs.js` and `assets/learning-labs.css` with independent grammar/reading/writing routes, saved scores/drafts and structured self-review.
+- Added `assets/adult-theme.css`; all modules are cached offline. `assets/backup.js` now backs up lab sessions and drafts as well as Academy progress.
+- Main limitations remain **genuine B2 proof**, native-speaker audio, speaking assessment, qualified corrections for free writing, exhaustive grammatical coverage and enough unique lexemes.
+- Before calling this a complete course: expand contextual task variety substantially, human-review bilingual translations, verify all modules on a real iPhone Safari and independently benchmark four core skills.

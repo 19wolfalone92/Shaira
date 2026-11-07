@@ -1,48 +1,48 @@
-# Shaira — Learn Russian 🇷🇺
+# Shaira — Russian Academy 🇷🇺
 
-An iPhone-first, offline-capable Russian-learning progressive web app (PWA), built especially for **Shaira**. Lessons and explanations in **English or Filipino/Tagalog**, Russian targets throughout. Inspired by the owner's separate \`English_Child\` learning app, with an adult-friendly interface.
+An adult-first, free-to-use iPhone PWA for **Shaira** to learn Russian from the first Cyrillic letters. Learning guidance is in **English and Filipino/Tagalog**. The project is inspired by the structure of `English_Child`, but the presentation, themes and longer assignments are intended for an adult.
 
-## Try it
-Published via GitHub Pages: https://19wolfalone92.github.io/Shaira/
+**Open:** https://19wolfalone92.github.io/Shaira/ — Safari → Share → Add to Home Screen.
 
-On iPhone, open the HTTPS site in Safari and choose **Share → Add to Home Screen**. The home-screen icon behaves like an app. Initial load needs internet; previously cached content can run offline. Russian speech synthesis uses available iOS voices and may be unavailable offline depending on the device.
+## What actually works
 
-## Included now
-- **Cyrillic from zero:** 33 uppercase/lowercase letters; first syllables and phrases; handwriting canvas for letters, words and sentences.
-- **First 120 picture words:** 20 themed packs of six words with English and Filipino.
-- **Russian Academy:** 5 target stages (Pre-A1, A1, A2, B1, B2), 32 substantive units covering gender, six cases, tenses, aspect, motion, complex syntax, discourse and writing.
-- **7 complementary activities per unit:** vocabulary, listen/choose, grammar/phrase study, reading comprehension, controlled writing, speaking/shadowing and open writing workshop.
-- **20 dialogue scenarios:** from greetings and shopping to debates and interpreting sources.
-- **Spaced recall:** due words rescheduled after 1/3/7/14/30 days, correct and wrong-answer handling.
-- **Local progress, points and writing drafts:** no account, ads, analytics, paid services or server.
+| Course area | Available material |
+| --- | --- |
+| Alphabet and writing | 33 Cyrillic letters, reading/spelling foundations, touch handwriting for letters, words and sentences |
+| Vocabulary | 40 bilingual themed packs × 6 cards = **240 cards** (120 early words + 120 practical adult words) |
+| Academy path | 32 original topic units across **Pre-A1, A1, A2, B1 and B2** |
+| Unit practice | 7 formats per unit: vocabulary, listen/choose, phrase/grammar basics, reading, controlled writing, shadowing and open writing |
+| Conversation | 20 contextual Russian dialogues; optional private microphone recording and playback in speaking lessons (browser permitting) |
+| Independent grammar | **100 contextual questions** (20 per stage), with answer-specific explanations in EN and Filipino |
+| Reading | **20 original levelled texts**, 40 comprehension questions, word glossary, speaking aloud and associated writing tasks |
+| Writing portfolio | **30 guided tasks**, from basic sentences to extended B2-style arguments, on-device drafts and format-only self-review |
+| Retention | Spaced vocabulary review after 1, 3, 7, 14 and 30 days; practice and progress stored locally |
+| Backup | Export/import all progress, grammar sessions, reading history and drafts through Settings |
+| Offline | Static curriculum, exercises and texts cached by service worker after first online visit |
 
-**264 activity slots in this release:** 32 × 7 unit activities, 20 first-word themes and 20 dialogues. Completing these slots does **not** equate to achieving any official CEFR level. Some activities are self-marked practice; free-writing and pronunciation are not automatically assessed.
+### Important about level labels
 
-## Important limitations
-This is an **expanded, functioning course foundation with B2-oriented units**, *not* a complete independently validated B2 curriculum. Genuine B2 requires more vocabulary, longer authentic reading and listening, sustained speaking, essay feedback from teachers and independent evaluation of all four skills. The current app contains 312 curated word records, including deliberate overlaps, not thousands of unique words. Synthetic speech depends on the device. The handwriting canvas does not recognise handwriting.
+**These are teaching-path targets, not CEFR certificates.** The app includes materials labelled through B2 but does **not** yet constitute a complete, independently validated route to real B2. Thousands of additional reviewed lexical entries, varied grammar/reading/writing tasks, native-speaker recordings, dependable audio and speaking assessment, teacher-quality essay feedback and independent examinations are still needed. A user cannot reliably establish B2 by completion counters alone.
 
-For the learning sequence, writing objectives and future expansion checklist, see [teacher syllabus](docs/SHAIRA_PEDAGOGY.md) and [Work handoff](docs/WORK_HANDOFF.md).
+Synthetic Russian speech uses the browser/device voice when available; it may not work offline. Optional recorded speaking samples are kept only in temporary browser memory and never uploaded. The handwritten canvas permits tracing but **does not recognise writing**, and the writing portfolio does **not** judge grammar or semantics automatically. No mandatory account, ad, analytics, paid API or server is included.
 
-## Local development
-Dependency-free JS + CSS app; run any HTTP server from repository root:
+## Learning strategy
 
-\`\`\`bash
-python3 -m http.server 8000
-# open http://localhost:8000
-\`\`\`
+1. Begin with Cyrillic, syllables, short words and phrases.
+2. Learn 3–6 new practical words and review them later on schedule.
+3. Follow topic units in order and do listening, grammar, reading, speech and writing rather than only quizzes.
+4. Complete the independent grammar trainer and graded reading at the current level.
+5. Write original Russian paragraphs; use the self-edit checklist and seek feedback from a qualified speaker for longer texts.
+6. Repeat unfamiliar topics and test the skill in situations not already memorised.
 
-Validate with Node.js 20+:
+Detailed teaching programme: [SHAIRA_PEDAGOGY.md](docs/SHAIRA_PEDAGOGY.md). Development handoff: [WORK_HANDOFF.md](docs/WORK_HANDOFF.md).
 
-\`\`\`bash
-npm run check
-\`\`\`
+## Local development / CI
 
-No npm installation or paid API keys required.
+No dependencies or API keys. Use Node.js 20+ to run `npm run check`. A local HTTP server suffices: `python3 -m http.server 8000`; then open `http://localhost:8000`. CI uses GitHub Actions to verify syntax and tests; deployment workflow publishes `main` to GitHub Pages.
 
-## Deploy
-GitHub Pages uses the included \`.github/workflows/pages.yml\` on pushes to \`main\`. Select **Settings → Pages → Build and deployment → GitHub Actions** once. CI workflow \`.github/workflows/ci.yml\` checks JS syntax and tests on pushes/PRs. Confirm both workflows report success before treating a release as deployed.
+## Privacy and backup
 
-## Privacy
-All learning progress and drafts stay in the browser's localStorage; there is no server, sign-in or tracking. Clearing Safari site data removes them. There is no cloud sync. You can export both lesson progress and writing drafts as a local JSON file, then restore that file on another device from Settings. Keep exported files private.
+All lessons and drafts live in browser localStorage only. Use Settings → **Export progress** to save a private JSON file, and import on another device (import **replaces** existing local data). No cloud account, sync or tracking. Clear browser data only after exporting anything important.
 
 © 2026 Shaira learning project.

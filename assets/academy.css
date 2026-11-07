@@ -106,3 +106,9 @@
 .backup-buttons{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
 .backup-buttons button{font-size:12px;padding:11px 6px}
 @media(max-width:355px){.backup-buttons{grid-template-columns:1fr}}
+
+.aca-recorder{margin:19px 0 8px;padding:16px;background:#f7f5fa;border:1px solid #e5deec;border-radius:13px}
+.aca-recorder h3{font-size:15px;margin:0 0 9px}.aca-recorder p{color:#685e77;font-size:12px;line-height:1.6;margin:5px 0 12px}
+.aca-recorder-buttons{display:flex;gap:10px;flex-wrap:wrap}
+.aca-secondary{font-size:13px;font-weight:800;border:1px solid #bca9db;border-radius:10px;color:#58488a;background:#fff;padding:11px 14px;min-height:44px}
+.aca-recorder audio{width:100%;max-width:100%;margin-top:10px}

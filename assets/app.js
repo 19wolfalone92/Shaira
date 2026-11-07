@@ -1,6 +1,7 @@
 import { sections, lessons, alphabet, keyboardRows } from "./lessons.js";
-import { academyHtml, handleAcademyAction, handleAcademySubmit, academyStatistics } from "./academy-ui.js";
+import { academyHtml, handleAcademyAction, handleAcademySubmit, academyStatistics, stopSpeakingRehearsal } from "./academy-ui.js";
 import { downloadBackup, restoreBackup } from "./backup.js";
+import {labHtml,labAction,labInput,labStats} from "./learning-labs.js";
 
 const STORAGE_KEY = "shaira-progress-v1";
 const dictionary = {
@@ -123,22 +124,39 @@ function navBar(route) {
     `<a href="#${id}" class="nav-item ${active === id ? "active" : ""}" ${active === id ? 'aria-current="page"' : ""}><span aria-hidden="true">${icon(id)}</span><small>${phrase(id)}</small></a>`).join("")}</nav>`;
 }
 function header() {
-  return `<header class="topbar"><div class="brand-mark" aria-hidden="true">Ш</div><div><div class="brand">shaira<span class="brand-dot">.</span></div><div class="brand-caption">${phrase("tagline")}</div></div><span class="top-counter" aria-label="${state.completed.length} ${phrase("completed")}">${state.completed.length}/${lessons.length} ✓</span></header>`;
+  return `<header class="topbar"><div class="brand-mark" aria-hidden="true">Ш</div><div><div class="brand">shaira<span class="brand-dot">.</span></div><div class="brand-caption">${phrase("tagline")}</div></div><a class="top-counter" href="#academy" aria-label="${phrase("progress")}">${academyStatistics().completed} ✓</a></header>`;
 }
 function home() {
-  return `<section class="hero"><div class="hero-copy"><span class="pill">🇷🇺 ${phrase("learn")}</span><h1>${phrase("hello")}</h1><p>${phrase("welcomeDesc")}</p></div><div class="hero-flower" aria-hidden="true">Ж</div></section>
-  <section class="progress-card" aria-label="${phrase("progress")}"><div class="progress-top"><strong>${phrase("keep")}</strong><span>${progressPercent()}%</span></div><div class="progress-track"><div class="progress-fill" style="width:${progressPercent()}%"></div></div><small>${state.completed.length} ${phrase("progressSuffix")} ${lessons.length} ${phrase("completed")}</small></section>
-  <a href="#academy" class="academy-shortcut"><span class="academy-shortcut-icon">🎓</span><span><strong>${state.language==="tl"?"Rusong mula zero hanggang B2":"Russian from zero to B2"}</strong><small>${state.language==="tl"?"Alpabeto • Pagbasa • Pakikinig • Gramatika • Pagsulat":"Alphabet • Reading • Listening • Grammar • Writing"}</small></span><span aria-hidden="true">›</span></a>
-  <h2 class="section-heading">${phrase("group")}</h2>
-  ${sections.map(section => {
-    const items = lessons.filter(l => l.section === section.id);
-    return `<section class="course-section" aria-labelledby="group-${section.id}">
-      <div class="course-heading"><div class="course-icon">${section.icon}</div><div><h3 id="group-${section.id}">${escapeHtml(loc(section.title))}</h3><p>${escapeHtml(loc(section.subtitle))}</p></div><span class="count">${items.filter(l => state.completed.includes(l.id)).length}/${items.length}</span></div>
-      <div class="lesson-list">${items.map((lesson,i)=>`<button class="lesson-row" data-action="open-lesson" data-id="${lesson.id}">
-        <span class="lesson-number ${state.completed.includes(lesson.id)?"finished":""}">${state.completed.includes(lesson.id)?"✓":i+1}</span>
-        <span class="lesson-info"><strong>${escapeHtml(loc(lesson.title))}</strong><small>${state.completed.includes(lesson.id)?phrase("done"):escapeHtml(loc(lesson.goal))}</small></span>
-        <span class="arrow" aria-hidden="true">›</span></button>`).join("")}</div></section>`;
-  }).join("")}`;
+  const a=academyStatistics(),labs=labStats();
+  const first=lessons.find(l=>!state.completed.includes(l.id));
+  const l=state.language, fil=l==="tl";
+  const headline=fil?"Kumusta, Shaira. Simulan natin ang Ruso.":"Shaira, Russian starts here.";
+  const detail=fil?"Isang kumpletong landas sa pagbabasa, pagsulat at pakikipag-usap. Magsimula sa alpabeto at umusad sa sariling bilis.":
+    "Learn to read, write and communicate in Russian. Start with Cyrillic and build your skills at your own pace.";
+  const summaryTitle=fil?"Iyong pag-unlad":"Your learning path";
+  const sectionsText=fil?["Alpabeto at unang pantig","Mga pangunahing salita","Gramatika at pagbasa","Pagsulat ng sariling teksto"]:
+    ["Alphabet and first syllables","Essential vocabulary","Grammar and reading","Independent writing"];
+  const routeCards=[
+    {href:first?"#lesson/"+first.id:"#academy/first-words",icon:"Аа",heading:sectionsText[0],sub:fil?"33 titik • tunog at baybay":"33 letters • sounds and spelling"},
+    {href:"#academy/first-words",icon:"01",heading:sectionsText[1],sub:fil?"120 salita • maiikling paksa":"120 words • practical topics"},
+    {href:"#academy/lab",icon:"✳",heading:sectionsText[2],sub:fil?"100 tanong • 20 mahabang teksto":"100 questions • 20 graded texts"},
+    {href:"#academy/writing",icon:"✎",heading:sectionsText[3],sub:fil?"Sulat • mga draft • rebisyon":"Writing • drafts • revision"}
+  ];
+  return '<section class="adult-welcome"><div class="adult-welcome-copy"><span class="adult-eyebrow">SHAIRA · LEARN RUSSIAN</span><h1>'+headline+'</h1><p>'+detail+'</p>'+
+     '<a class="adult-cta" href="'+routeCards[0].href+'">'+(fil?"Simulan ang unang aralin":"Start the first lesson")+' →</a></div><div class="adult-russian" aria-hidden="true">Я</div></section>'+
+   '<section class="adult-progress"><h2>'+summaryTitle+'</h2><div class="adult-progress-row"><span><strong>'+state.completed.length+'</strong><small>/'+lessons.length+' '+(fil?"panimulang aralin":"foundation lessons")+'</small></span>'+
+   '<span><strong>'+a.completed+'</strong><small>/'+a.activities+' '+(fil?"pagsasanay":"course activities")+'</small></span>'+
+   '<span><strong>'+labs.readingsPassed+'</strong><small>/'+labs.readingsTotal+' '+(fil?"teksto":"reading texts")+'</small></span></div>'+
+   '<p class="adult-muted">'+(fil?"Layunin ang aktuwal na kasanayan, hindi lamang ang bilang ng natapos.":"The goal is real competence, not a completion counter.")+'</p></section>'+
+   '<h2 class="adult-heading">'+(fil?"Pumili ng pagsasanay":"Choose your next step")+'</h2><div class="adult-route-grid">'+
+   routeCards.map(x=>'<a href="'+x.href+'"><span>'+x.icon+'</span><div><strong>'+x.heading+'</strong><small>'+x.sub+'</small></div><b>›</b></a>').join("")+'</div>'+
+   '<a class="adult-course-link" href="#academy"><span>↗</span><div><strong>'+(fil?"Buksan ang buong kurso: Pre-A1 hanggang B2":"Explore the full course: Pre-A1 through B2")+'</strong>'+
+    '<small>'+(fil?"Iisang landas ng pag-aaral na may mga paksa at gawain":"A structured learning route with topics and practice")+'</small></div></a>'+
+   '<details class="adult-foundations" '+(state.completed.length===0?'open':'')+'><summary><strong>'+(fil?"Unang mga aralin: alpabeto, pagbasa, parirala":"Foundation lessons: alphabet, reading, phrases")+'</strong><span>'+state.completed.length+'/'+lessons.length+'</span></summary>'+
+    sections.map(section=>'<section class="course-section"><div class="course-heading"><div class="course-icon">'+section.icon+'</div><div><h3>'+escapeHtml(loc(section.title))+'</h3><p>'+escapeHtml(loc(section.subtitle))+'</p></div></div>'+
+    '<div class="lesson-list">'+lessons.filter(lesson=>lesson.section===section.id).map(lesson=>
+     '<button class="lesson-row" type="button" data-action="open-lesson" data-id="'+lesson.id+'"><span class="lesson-number '+(state.completed.includes(lesson.id)?"finished":"")+'">'+(state.completed.includes(lesson.id)?"✓":"→")+'</span>'+
+     '<span class="lesson-info"><strong>'+escapeHtml(loc(lesson.title))+'</strong><small>'+escapeHtml(loc(lesson.goal))+'</small></span><span class="arrow">›</span></button>').join("")+'</div></section>').join("")+'</details>';
 }
 function quizMarkup(lesson) {
   const quiz = lesson.quiz;
@@ -203,13 +221,14 @@ function writePage() {
 }
 function settingsPage() {
   const academy = academyStatistics();
+  const labs = labStats();
   return `<div class="page-intro"><span class="eyebrow">⚙ ${phrase("settings")}</span><h1>${phrase("settings")}</h1></div>
     <section class="settings-card"><h2>${phrase("language")}</h2><p>${phrase("langInfo")}</p><div class="lang-switch" role="group" aria-label="${phrase("language")}">
       <button type="button" data-action="language" data-value="en" class="${state.language==="en"?"selected":""}" aria-pressed="${state.language==="en"}">🇬🇧 English</button>
       <button type="button" data-action="language" data-value="tl" class="${state.language==="tl"?"selected":""}" aria-pressed="${state.language==="tl"}">🇵🇭 Filipino</button></div></section>
     <section class="settings-card"><h2>${phrase("progress")}</h2><p>${state.completed.length}/${lessons.length} ${phrase("completed")}. ${phrase("local")}</p>
       <button type="button" class="danger-button" data-action="reset">${phrase("reset")}</button></section>
-    <section class="settings-card"><h2>🎓 ${state.language==="tl"?"Pag-usad sa Akademya":"Academy progress"}</h2><p>${academy.completed}/${academy.activities} ${state.language==="tl"?"gawaing nasanay":"activities practised"} · ${academy.knownWords} ${state.language==="tl"?"salitang napag-aralan":"studied words"} · ${academy.dueWords} ${state.language==="tl"?"dapat balikan":"due to review"}</p></section>
+    <section class="settings-card"><h2>🎓 ${state.language==="tl"?"Pag-usad sa Akademya":"Academy progress"}</h2><p>${academy.completed}/${academy.activities} ${state.language==="tl"?"gawaing nasanay":"activities practised"} · ${academy.knownWords} ${state.language==="tl"?"salitang napag-aralan":"studied words"} · ${academy.dueWords} ${state.language==="tl"?"dapat balikan":"due to review"} · ${labs.grammarAttempts} ${state.language==="tl"?"pagsubok sa gramatika":"grammar sessions"} · ${labs.readingsPassed} ${state.language==="tl"?"tekstong nabasa":"reading checks passed"}</p></section>
     <section class="settings-card"><h2>💾 ${state.language==="tl"?"I-save at ibalik ang pag-usad":"Export and restore progress"}</h2><p>${state.language==="tl"?"I-save ang progreso at mga draft sa isang pribadong JSON file. Ang pag-import ay papalit sa kasalukuyang pag-usad sa device na ito.":"Save your lessons and writing drafts in a private JSON file. Import replaces progress on this device. Keep this file private."}</p><div class="backup-buttons"><button class="secondary-button" type="button" data-action="export-backup">📤 ${state.language==="tl"?"I-export":"Export progress"}</button><button class="secondary-button" type="button" data-action="import-backup">📥 ${state.language==="tl"?"I-import":"Import backup"}</button></div><input id="backup-file" type="file" accept=".json,application/json" hidden aria-label="Shaira JSON backup"></section>
     <section class="settings-card"><h2>📱 ${phrase("install")}</h2><p>${phrase("installInfo")}</p></section>
     <section class="settings-card"><h2>☁ ${phrase("offline")}</h2><p>${phrase("offlineInfo")}</p></section>`;
@@ -217,7 +236,8 @@ function settingsPage() {
 function render() {
   if (drawingCleanup) { drawingCleanup(); drawingCleanup = null; }
   const route = currentRoute();
-  const page = route === "home" ? home() : route.startsWith("academy") ? academyHtml(route,state.language) : route === "review" ? reviewPage() : route === "write" ? writePage() :
+  if(!route.startsWith("academy/lesson/") || !route.endsWith("/speak"))stopSpeakingRehearsal();
+  const page = route === "home" ? home() : route === "academy/lab" || route.startsWith("academy/grammar") || route.startsWith("academy/library") || route.startsWith("academy/writing") ? labHtml(route,state.language) : route.startsWith("academy") ? academyHtml(route,state.language) : route === "review" ? reviewPage() : route === "write" ? writePage() :
     route === "settings" ? settingsPage() : lessonPage(route.slice(7));
   document.documentElement.lang = state.language === "tl" ? "fil" : "en";
   document.title = "Shaira · Learn Russian";
@@ -261,6 +281,8 @@ function initializeCanvas() {
   drawingCleanup = () => {canvas.removeEventListener("pointerdown",down);canvas.removeEventListener("pointermove",move);canvas.removeEventListener("pointerup",up);canvas.removeEventListener("pointercancel",up);};
 }
 document.addEventListener("click", event => {
+  const labButton=event.target.closest("[data-lab]");
+  if(labButton){labAction(labButton,{language:()=>state.language,route:currentRoute,render,speak,navigate,notice:showToast});return;}
   const academyButton=event.target.closest("[data-aca]");
   if(academyButton){handleAcademyAction(academyButton,{language:()=>state.language,route:currentRoute,render,speak,navigate});return;}
   const button=event.target.closest("[data-action]");
@@ -297,6 +319,7 @@ document.addEventListener("click", event => {
     input.focus();
   }
 });
+document.addEventListener("input", event => {labInput(event,{language:()=>state.language});});
 document.addEventListener("submit", event => {
   if(handleAcademySubmit(event,{language:()=>state.language,route:currentRoute,render,speak}))return;
   if (event.target.id !== "answer-form") return;

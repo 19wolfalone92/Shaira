@@ -50,3 +50,24 @@ test("untrusted backup fields are filtered and no arbitrary keys are restored",(
  assert.equal(restored.academy.drafts["too-big"],undefined);
  assert.equal(restored.academy.secrets,undefined);
 });
+
+test("adult lab grammar, reading and portfolio records are included in backup",()=>{
+  const source=memory({"shaira-labs-v1":JSON.stringify({
+    grammar:{a2:{best:9,attempts:2,last:1790000000000,items:{"a2-04":{seen:3,correct:2,last:1790000000000}}}},
+    readings:{"remote-balance":{passed:true,attempts:2,last:1790000000000}},
+    drafts:{"portfolio:debate-social":"На мой взгляд, это важная проблема. Однако есть другая сторона."}
+  })});
+  const backup=buildBackup(source),restored=memory();
+  assert.equal(backup.labs.grammar.a2.best,9);
+  restoreBackup(JSON.stringify(backup),restored);
+  const labs=JSON.parse(restored.getItem("shaira-labs-v1"));
+  assert.equal(labs.grammar.a2.items["a2-04"].seen,3);
+  assert.equal(labs.readings["remote-balance"].passed,true);
+  assert.match(labs.drafts["portfolio:debate-social"],/Однако/);
+});
+test("old compatible backups without lab data restore with an empty lab record",()=>{
+  const old={format:BACKUP_FORMAT,version:BACKUP_VERSION,legacy:{language:"en",completed:[]},academy:{done:{},memory:{},drafts:{},points:0}};
+  const target=memory();
+  restoreBackup(JSON.stringify(old),target);
+  assert.deepEqual(Object.keys(JSON.parse(target.getItem("shaira-labs-v1")).drafts),[]);
+});
