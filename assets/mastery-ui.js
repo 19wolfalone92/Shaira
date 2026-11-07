@@ -17,7 +17,7 @@ const M={
   read:"Read the passage before answering",prompt:"Choose the best response",noFeedback:"Answers will be explained at the end of the review.",passed:"Stage review checkpoint passed",
   notPassed:"Study the mistakes and try again",examConditions:"To pass: at least 8/10 overall, including at least one correct written Russian answer and one correct comprehension question.",
   examWriting:"Write your Russian answer",examCount:"correct answers",typed:"written answers",reading:"reading answers",change:"Return to the chapter list",
-  field:"Your written response",retry:"Retake this stage review",listen:"Listen to Russian",
+  field:"Your written response",keyboard:"On-screen Russian keyboard",retry:"Retake this stage review",listen:"Listen to Russian",
   saved:"Stored on this device",notSaved:"The browser could not save progress. Export your backup from Settings after storage is restored.",
   skillNote:"A passed chapter means those three specific questions were answered, not that the whole subject is mastered.",
   formHelp:"Enter a complete Russian sentence or form; punctuation and case are checked only against listed answers.",
@@ -37,7 +37,7 @@ const M={
   read:"Basahin muna ang teksto",prompt:"Piliin ang angkop na sagot",noFeedback:"May paliwanag ng sagot pagkatapos ng pagsusuri.",passed:"Pumasa sa pagsusuri sa antas",
   notPassed:"Balikan ang pagkakamali at subukan uli",examConditions:"Para pumasa: 8/10, may tamang sagot sa pagsulat at pag-unawa sa binasa.",
   examWriting:"Isulat ang sagot sa Ruso",examCount:"tamang sagot",typed:"nakasulat na sagot",reading:"tamang sagot sa pagbasa",change:"Bumalik sa listahan",
-  field:"Iyong sagot sa Ruso",retry:"Subukan muli ang pagsusuri",listen:"Pakinggan ang Ruso",
+  field:"Iyong sagot sa Ruso",keyboard:"Keyboard sa Ruso",retry:"Subukan muli ang pagsusuri",listen:"Pakinggan ang Ruso",
   saved:"Na-save sa device",notSaved:"Hindi ma-save sa browser. Gumawa ng backup kapag naayos ang storage.",
   skillNote:"Ang pagpasa sa tatlong tanong ay hindi awtomatikong mastery ng buong paksa.",
   formHelp:"Isulat ang buong pangungusap o anyo sa Ruso; mga nakatalang sagot lamang ang sinusuri.",
@@ -90,6 +90,14 @@ function introStudio(u,lesson,l,m){
    '<strong lang="ru">'+e(example.ru)+'</strong><p>'+e(tr(example,l))+'</p></div>').join("")+'</div></section>'+
  '<div class="ms-warning"><b>'+m.common+'</b><p>'+e(tr(lesson.tip,l))+'</p></div>';
 }
+const russianKeys=["ё й ц у к е н г ш щ з х ъ","ф ы в а п р о л д ж э","я ч с м и т ь б ю"];
+function keyboard(m){
+ return '<details class="ms-keyboard"><summary>⌨ '+m.keyboard+'</summary>'+
+ russianKeys.map(row=>'<div>'+row.split(" ").map(ch=>
+   '<button type="button" data-mastery="key" data-char="'+ch+'">'+ch+'</button>').join("")+'</div>').join("")+
+ '<div><button type="button" data-mastery="key" data-char=" " class="ms-key-space">Space</button>'+
+ '<button type="button" data-mastery="backspace">⌫</button></div></details>';
+}
 function question(s,l,m){
  const q=s.questions[s.index],isType=q.type==="type";
  const prompt=typeof q.prompt==="string"?q.prompt:tr(q.prompt,l);
@@ -98,8 +106,8 @@ function question(s,l,m){
  '<div class="ms-meter"><i style="width:'+Math.round(100*s.index/s.questions.length)+'%"></i></div>'+
  '<h2>'+e(prompt)+'</h2>'+
  (isType?'<form id="ms-answer-form"><label for="ms-answer">'+m.field+'</label>'+
-   '<input id="ms-answer" name="answer" lang="ru" autocomplete="off" autocorrect="off" spellcheck="false" required placeholder="'+m.enter+'" value="'+e(s.selected??"")+'"/>'+
-   '<p class="ms-muted">'+m.formHelp+'</p><button type="submit" class="ms-primary">'+m.confirm+'</button></form>':
+   '<input id="ms-answer" name="answer" lang="ru" autocomplete="off" autocorrect="off" spellcheck="false" required placeholder="'+m.enter+'" value="'+e(s.selected??"")+'" '+(s.feedback?"disabled":"")+'/>'+
+   '<p class="ms-muted">'+m.formHelp+'</p>'+(s.feedback?"":'<button type="submit" class="ms-primary">'+m.confirm+'</button>'+keyboard(m))+'</form>':
    '<div class="ms-options">'+choices.map((v,i)=>
      '<button type="button" data-mastery="choose" data-choice="'+i+'" '+(s.kind==="studio"&&s.feedback?"disabled":"")+
      ' class="'+(s.kind==="studio"&&s.feedback?(v===q.answer?"ms-good":s.selected===v?"ms-bad":""):"")+'">'+e(v)+'</button>').join("")+'</div>')+
@@ -162,6 +170,15 @@ export function masteryAction(button,api){
  const id=route.split("/")[2],target=kind==="studio"?studioForUnit(id):checkpointForStage(id);
  if(!target)return;
  const s=state(route,l,kind,id);
+ if(action==="key"||action==="backspace"){
+   if(s.feedback||s.result)return;
+   const input=document.getElementById("ms-answer");if(!input)return;
+   const a=input.selectionStart??input.value.length,z=input.selectionEnd??a;
+   if(action==="key")input.setRangeText(button.dataset.char||"",a,z,"end");
+   else if(a!==z)input.setRangeText("",a,z,"end");
+   else if(a>0)input.setRangeText("",a-1,a,"end");
+   s.selected=input.value;input.focus();return;
+ }
  if(action==="retry"){active=null;api.render();return;}
  if(action==="choose"&&!s.result&&!s.feedback){
    const idx=Number(button.dataset.choice),q=s.questions[s.index];
@@ -187,7 +204,7 @@ export function masterySubmit(event,api){
  const route=api.route(),l=api.language()==="tl"?"tl":"en";
  const kind=route.startsWith("academy/checkpoint/")?"checkpoint":"studio";
  const id=route.split("/")[2],s=state(route,l,kind,id);
- if(s.result||s.index>=s.questions.length)return true;
+ if(s.result||s.feedback||s.index>=s.questions.length)return true;
  const input=document.getElementById("ms-answer");if(!input)return true;
  s.selected=input.value;
  if(kind==="studio"){
