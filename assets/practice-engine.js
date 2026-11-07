@@ -135,10 +135,15 @@ export function selectMix(stage,history=loadMix(),{audio=false,random=Math.rando
   if(!groups.has(item.mode))groups.set(item.mode,[]);
   groups.get(item.mode).push(item);
  }
+ // Cache each question's score once: a random comparator would be non-transitive.
+ const rank=new Map(),now=Date.now();
  const scorer=q=>{
+  if(rank.has(q.id))return rank.get(q.id);
   const rec=safe(old[q.id]),n=int(rec.seen),due=Number(rec.due)||0;
-  return (n===0?-100:due<=Date.now()?-50:35)+n*4+
+  const score=(n===0?-100:due<=now?-50:35)+n*4+
    (n>0&&int(rec.correct)<n?-20:0)+random()*12;
+  rank.set(q.id,score);
+  return score;
  };
  const result=[],usedSources=new Set(),usedIds=new Set();
  const sortedTypes=shuffled([...groups.keys()],random);
