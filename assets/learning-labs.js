@@ -43,7 +43,7 @@ const b=(en,tl,l)=>l==="tl"?tl:en;
 const loc=(o,l)=>o?.[l]||o?.en||"";
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const words=s=>String(s||"").trim().split(/\s+/).filter(Boolean).length;
-const init=()=>({grammar:{},readings:{},drafts:{}});
+const init=()=>({grammar:{},readings:{},drafts:{},draftUpdated:{}});
 function load(){
   try{
     const data=JSON.parse(localStorage.getItem(KEY)||"{}");
