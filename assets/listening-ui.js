@@ -1,5 +1,4 @@
-// Private synthetic listening practice for Shaira. No recordings are uploaded or saved.
-// Progress means a TTS-assisted listening comprehension attempt, not native-speech mastery.
+// Listening comprehension with bundled synthetic Russian audio.
 import {listeningClips,listeningForStage} from "./listening-clips.js";
 import {stages} from "./academy-data.js";
 export const LISTENING_KEY="shaira-listening-v1";
@@ -7,17 +6,16 @@ const txt={
  title:"Listen to Russian",intro:"Hear the Russian message first, then answer in English. The transcript stays hidden until you have answered. Listen again as often as you need.",
  back:"Back to Academy",choose:"Choose a listening topic",clip:"Listening exercise",level:"Study topic",
  play:"Play Russian speech",slow:"Play slowly",question:"What did you understand?",answer:"Select the correct answer",
- hidden:"The Russian transcript appears after your attempt.",mustPlay:"Tap Play Russian speech before answering.",unavailable:"Russian audio is not available in this browser. This activity cannot count as listening; use Reading Library instead.",
+ hidden:"The Russian transcript appears after your attempt.",mustPlay:"Listen to the full clip to unlock the answers.",unavailable:"Could not play this clip. Try again or open the reading version below.",
  explanation:"Why this answer?",transcript:"Russian transcript",read:"Read the transcript",
  correct:"Correct answer",incorrect:"Not yet. Compare the sentence with the English explanation.",replay:"Try another listening attempt",
- result:"Practice result",notCertified:"This exercise uses your device's synthetic Russian voice, not a recorded native speaker. Listening practice is not proof of a CEFR level.",
+ result:"Practice result",notCertified:"The built-in Russian audio uses a synthetic voice.",
  attempts:"attempts",passed:"clips answered correctly",newClip:"Next listening clip",backIndex:"All listening clips",
  hint:"Try answering before revealing the Russian text. For real listening progress, practise with native speakers as well.",
  reveal:"Reveal text for reading (not graded as listening)",ungraded:"Reading version shown. This is no longer a listening test."
 };
 const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const object=v=>v&&typeof v==="object"&&!Array.isArray(v)?v:{};
-const available=()=>typeof window!=="undefined"&&"speechSynthesis" in window&&typeof SpeechSynthesisUtterance!=="undefined";
 export function loadListening(storage=globalThis.localStorage){
  try{
   const data=object(JSON.parse(storage.getItem(LISTENING_KEY)||"{}"));
@@ -49,21 +47,20 @@ function clipPage(id){
  return '<a href="#academy/listening" class="lp-audio-back">← '+txt.backIndex+'</a>'+
  '<section class="lp-audio-hero"><small>'+clip.stage.toUpperCase()+' · '+txt.clip+' '+(idx+1)+'/'+listeningClips.length+'</small>'+
  '<h1>'+esc(clip.title)+'</h1><p>'+txt.intro+'</p>'+
- '<div class="lp-audio-buttons"><button type="button" data-listening="play" class="lp-audio-main" '+(!available()?"disabled":"")+'>🔊 '+txt.play+'</button>'+
- '<button type="button" data-listening="slow" '+(!available()?"disabled":"")+'>0.7× '+txt.slow+'</button></div>'+
- (!available()?'<p class="lp-audio-warning">'+txt.unavailable+'</p>':"")+
+ '<div class="lp-audio-buttons"><button type="button" data-listening="play" class="lp-audio-main">🔊 '+txt.play+'</button>'+
+ '<button type="button" data-listening="slow">0.7× '+txt.slow+'</button></div>'+
  '<p class="lp-audio-muted">'+txt.notCertified+'</p></section>'+
  '<section class="lp-audio-question"><h2>'+txt.question+'</h2><p>'+esc(clip.question)+'</p>'+
  (s.chosen===null?'<div class="lp-audio-options">'+s.options.map((v,i)=>'<button type="button" data-listening="answer" data-choice="'+i+'" '+
- (!s.played?"disabled":"")+'>'+esc(v)+'</button>').join("")+'</div>':
+ (!s.played||s.revealed?"disabled":"")+'>'+esc(v)+'</button>').join("")+'</div>':
  '<div class="lp-audio-feedback '+(s.chosen===clip.answer?"good":"wrong")+'"><b>'+txt[s.chosen===clip.answer?"correct":"incorrect"]+'</b>'+
  '<p>'+txt.answer+': <strong>'+esc(clip.answer)+'</strong></p><p>'+txt.explanation+': '+esc(clip.why)+'</p></div>')+
  (s.message?'<p role="status" class="lp-audio-warning">'+esc(s.message)+'</p>':"")+
- '<p class="lp-audio-muted">'+(s.played?txt.hidden:txt.mustPlay)+'</p>'+
+ (!s.revealed&&s.chosen===null?'<p class="lp-audio-muted">'+(s.played?txt.hidden:txt.mustPlay)+'</p>':"")+
  (s.chosen!==null||s.revealed?'<div class="lp-audio-transcript"><h3>'+txt.transcript+'</h3><p lang="ru">'+esc(clip.russian)+'</p></div>':
  '<button class="lp-audio-reveal" type="button" data-listening="reveal">'+txt.reveal+'</button>')+
  (s.revealed&&s.chosen===null?'<p class="lp-audio-warning">'+txt.ungraded+'</p>':"")+
- (s.chosen!==null?'<div class="lp-audio-finish"><button class="lp-audio-main" data-listening="retry">'+txt.replay+'</button>'+
+ (s.chosen!==null||s.revealed?'<div class="lp-audio-finish"><button class="lp-audio-main" data-listening="retry">'+txt.replay+'</button>'+
  (listeningClips[idx+1]?'<a href="#academy/listening/'+listeningClips[idx+1].id+'">'+txt.newClip+' →</a>':"")+'</div>':"")+
  '</section><p class="lp-audio-muted">'+txt.hint+'</p>';
 }
@@ -83,9 +80,13 @@ export function listeningAction(btn,api){
  if(!clip)return;
  if(session?.id!==id)session=newSession(id);
  if(action==="play"||action==="slow"){
-  if(!available()){session.message=txt.unavailable;api.render();return;}
-  session.played=true;
-  api.speak(clip.russian,action==="slow"?0.64:0.85);
+  const attempt=session,route=api.route();
+  api.speak(clip.russian,action==="slow"?0.7:1,ok=>{
+   if(session!==attempt||api.route()!==route)return;
+   if(ok)attempt.played=true;
+   attempt.message=ok?"":txt.unavailable;
+   api.render();
+  },clip.id);
   return;
  }
  if(action==="reveal"){
@@ -93,7 +94,7 @@ export function listeningAction(btn,api){
  }
  if(action==="retry"){session=newSession(id);api.render();return;}
  if(action==="answer"&&session.chosen===null){
-  if(!session.played||session.revealed){session.message=session.revealed?txt.ungraded:txt.mustPlay;api.render();return;}
+  if(!session.played||session.revealed)return;
   const selected=session.options[Number(btn.dataset.choice)];
   if(selected===undefined)return;
   session.chosen=selected;session.saved=recordListening(id,selected===clip.answer);

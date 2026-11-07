@@ -75,3 +75,11 @@
 .ms-trace-pad>span{position:absolute;inset:0;display:grid;place-items:center;font-size:135px;line-height:1;color:#eee8f4;pointer-events:none}
 #micro-trace{position:relative;display:block;width:100%;height:100%;touch-action:none;z-index:1;cursor:crosshair}
 .ms-trace-box>.ms-outline{margin-top:12px}
+
+.ms-revisit section,.ms-revisit form{display:grid;gap:8px}
+.ms-revisit section{padding-top:12px}
+.ms-revisit label{font-size:13px;font-weight:700}
+.ms-revisit select{width:100%;min-height:44px;padding:8px;color:#35254d;background:#fff;border:1px solid #9b85be;border-radius:9px;font:inherit}
+.ms-revisit .ms-outline{min-height:44px}
+.ms-question h2,.ms-study h2,.ms-feedback,.ms-success h1{scroll-margin-top:84px}
+.ms-question .ms-outline{margin-top:12px}

@@ -106,7 +106,10 @@ export const modeInfo={
  challenge:{name:"Challenge",questions:4,description:"More demanding recognition and 2 Russian typing tasks on each step."}
 };
 export const microStepAt=index=>Number.isInteger(index)&&index>=0&&index<MICRO_TOTAL?FIRST_STEPS[index]:null;
-const vowels="АОУИЕЫЭЁЮЯ";
+export function microAudioId(step){
+ if(step.kind==="letter")return "letter-"+step.model.codePointAt(0).toString(16);
+ return step.kind==="review"?"word-"+(step.chapter-1):step.id;
+}
 const selectDifferent=(primary,candidates,count=3)=>{
  const out=[primary];
  for(const c of candidates)if(c!==primary&&!out.includes(c)&&out.length<count)out.push(c);
@@ -119,38 +122,39 @@ const priorWords=(step)=>{
 };
 const lowerDistractors=step=>priorLetters(step).map(x=>x.lower);
 const upperDistractors=step=>priorLetters(step).map(x=>x.upper);
-const question=(id,prompt,answer,options,explanation,kind="choice")=>({
- id,prompt,answer,options,explanation,kind
+const question=(id,prompt,answer,options,explanation,kind="choice",letterCase)=>({
+ id,prompt,answer,options,explanation,kind,letterCase
 });
 export function microQuestions(step){
  if(!step)return[];
- const known=priorLetters(step),g=step.group;
+ const g=step.group;
  if(step.kind==="letter"){
   const l=step.letter,upper=selectDifferent(l.upper,[...upperDistractors(step).reverse(),...FIRST_LETTERS.map(x=>x.upper)],3);
   const lower=selectDifferent(l.lower,[...lowerDistractors(step).reverse(),...FIRST_LETTERS.map(x=>x.lower)],3);
   return [
    question("recognise","Tap the Russian letter for the sound: "+l.sound,l.upper,upper,"This letter is «"+l.upper+"»; "+l.tip),
    question("lowercase","Which is the lowercase form of «"+l.upper+"»?",l.lower,lower,"The lowercase form is «"+l.lower+"»."),
-   question("write","Type the uppercase Cyrillic letter for: "+l.sound,l.upper,null,"Write the Cyrillic «"+l.upper+"».","type"),
-   question("write-lower","Type the lowercase form of «"+l.upper+"».",l.lower,null,"The lowercase Russian form is «"+l.lower+"».","type")
+   question("write","Type the uppercase Cyrillic letter for: "+l.sound,l.upper,null,"Write the Cyrillic «"+l.upper+"».","type","upper"),
+   question("write-lower","Type the lowercase form of «"+l.upper+"».",l.lower,null,"The lowercase Russian form is «"+l.lower+"».","type","lower")
   ];
  }
  if(["blend","word","review"].includes(step.kind)){
   const wordPool=priorWords(step),syllables=FIRST_GROUPS.slice(0,step.chapter);
-  const opts=selectDifferent(g.word,wordPool.map(x=>x.word).reverse().concat(["мама","кот","нос","папа"]),3);
+  const letters=lowerDistractors(step);
+  const opts=selectDifferent(g.word,wordPool.map(x=>x.word).reverse().concat(letters.map(l=>g.word.slice(0,-1)+l)),3);
   const meaningOpts=selectDifferent(g.meaning,wordPool.map(x=>x.meaning).reverse().concat(["dog","car","table"]),3);
-  const blendOpts=selectDifferent(g.blend,syllables.map(x=>x.blend).reverse().concat(["мо","та","на"]),3);
+  const blendOpts=selectDifferent(g.blend,syllables.map(x=>x.blend).reverse().concat(letters.flatMap(l=>[g.blend[0]+l,l+g.blend[1]])),3);
   if(step.kind==="blend")return [
    question("blend-recognise","Tap the two-letter Russian syllable for: "+g.pron,g.blend,blendOpts,"The model is «"+g.blend+"». "+g.notes),
-   question("blend-sound","Choose the Cyrillic syllable pronounced: "+g.pron,g.blend,selectDifferent(g.blend,[g.blend.split("").reverse().join(""),...blendOpts.slice(1),"ми"],3),"«"+g.blend+"» matches the taught Russian sounds."),
+   question("blend-sound","Join «"+g.blend[0]+"» followed by «"+g.blend[1]+"». Which spelling keeps that order?",g.blend,selectDifferent(g.blend,[g.blend.split("").reverse().join(""),...blendOpts.slice(1),"ми"],3),"«"+g.blend+"» matches the taught Russian sounds."),
    question("blend-type","Type the Russian syllable for: "+g.pron,g.blend,null,"Write «"+g.blend+"» from memory.","type"),
-   question("blend-type-again","Write the same syllable in Cyrillic: "+g.pron,g.blend,null,"Build the sounds as «"+g.blend+"».","type")
+   question("blend-type-again","Finish the syllable "+g.pron+": «"+g.blend[0]+"_». Type the missing letter.",g.blend[1],null,"The model is «"+g.blend+"».","type")
   ];
   if(step.kind==="word")return [
    question("meaning","What does «"+g.word+"» mean?",g.meaning,meaningOpts,"«"+g.word+"» means "+g.meaning+"."),
    question("find-word","Which Russian word means: "+g.meaning+"?",g.word,opts,"The Russian word for "+g.meaning+" is «"+g.word+"»."),
    question("write-word","Type the Russian word for: "+g.meaning,g.word,null,"Write «"+g.word+"».","type"),
-   question("write-word2","Recall and type this word in Cyrillic: "+g.meaning,g.word,null,"The model word is «"+g.word+"».","type")
+   question("write-word2","Complete «_"+g.word.slice(1)+"» ("+g.meaning+"). Type its first letter.",g.word[0],null,"The model word is «"+g.word+"».","type")
   ];
   return [
    question("review-meaning","Review: what is the English meaning of «"+g.word+"»?",g.meaning,meaningOpts,"«"+g.word+"» means "+g.meaning+"."),
@@ -166,6 +170,6 @@ export function microQuestions(step){
   question("phrase-meaning","What does the Russian phrase «"+p.ru+"» mean?",p.en,enOptions,p.tip),
   question("phrase-find","Which Russian phrase means: "+p.en,p.ru,ruOptions,"The model is «"+p.ru+"». "+p.tip),
   question("phrase-write","Type the complete Russian phrase: "+p.en,p.ru,null,"Model phrase: «"+p.ru+"».","type"),
-  question("phrase-write2","Write from memory: "+p.en,p.ru,null,"Use this Russian phrase: «"+p.ru+"».","type")
+  question("phrase-write2","Supply the last word for “"+p.en+"”: «"+p.ru.replace(/[^\s]+$/u,"___")+"».",p.ru.split(" ").at(-1),null,"The full model is «"+p.ru+"».","type")
  ];
 }

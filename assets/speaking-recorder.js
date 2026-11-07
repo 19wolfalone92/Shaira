@@ -10,10 +10,14 @@ export async function startPrivateRecording(onStop){
   if(!isRecordingSupported())throw new Error("Microphone recording is unavailable in this browser.");
   if(active)throw new Error("Please stop the current recording first.");
   if(objectURL){URL.revokeObjectURL(objectURL);objectURL=null;}
-  const stream=await navigator.mediaDevices.getUserMedia({audio:true});
+  const current={recorder:null,stream:null};
+  active=current;
   try{
+    const stream=await navigator.mediaDevices.getUserMedia({audio:true});
+    current.stream=stream;
+    if(active!==current){releaseStream(stream);return false;}
     const recorder=new MediaRecorder(stream),chunks=[];
-    const current={recorder,stream,chunks};active=current;
+    current.recorder=recorder;
     recorder.addEventListener("dataavailable",event=>{if(event.data&&event.data.size)chunks.push(event.data);});
     recorder.addEventListener("stop",()=>{
       releaseStream(stream);
@@ -26,18 +30,22 @@ export async function startPrivateRecording(onStop){
     },{once:true});
     recorder.start();
     return true;
-  }catch(e){releaseStream(stream);throw e;}
+  }catch(error){
+    releaseStream(current.stream);
+    if(active!==current)return false;
+    active=null;
+    throw error;
+  }
 }
 export function stopPrivateRecording(){
-  if(!active)return false;
-  if(active.recorder.state!=="inactive"){active.recorder.stop();return true;}
+  if(active?.recorder&&active.recorder.state!=="inactive"){active.recorder.stop();return true;}
   return false;
 }
 export function discardPrivateRecording(){
   if(active){
     const current=active;active=null;
     releaseStream(current.stream);
-    try{if(current.recorder.state!=="inactive")current.recorder.stop();}catch{}
+    try{if(current.recorder&&current.recorder.state!=="inactive")current.recorder.stop();}catch{}
   }
   if(objectURL){try{URL.revokeObjectURL(objectURL);}catch{}objectURL=null;}
 }

@@ -2,6 +2,7 @@ import {stages,units,activityModes,getUnit,getStage,academyLessonTotal} from "./
 import {firstWordPacks} from "./first-words.js";
 import {dialogues} from "./dialogues.js";
 import {startPrivateRecording,stopPrivateRecording,discardPrivateRecording,isRecordingSupported} from "./speaking-recorder.js";
+import {hasRussianVoice} from "./russian-audio.js";
 const KEY="shaira-academy-v1";
 const MS_DAY=86400000, STEPS=[1,3,7,14,30];
 const UI={
@@ -27,9 +28,8 @@ const wordPackUnit=p=>({id:p.id,words:p.words});
 const totalActivities=academyLessonTotal+firstWordPacks.length+dialogues.length;
 const unitDone=u=>activityModes.filter(m=>modeDone(u,m.id)).length;
 const pct=(done,total)=>Math.round(100*done/Math.max(1,total));
-const buttons=(opts,action)=>opts.map((opt,i)=>'<button type="button" class="aca-choice" data-aca="'+action+'" data-choice="'+esc(i)+'">'+esc(opt)+'</button>').join("");
+const buttons=(opts,action,disabled=false)=>opts.map((opt,i)=>'<button type="button" class="aca-choice" data-aca="'+action+'" data-choice="'+esc(i)+'"'+(disabled?" disabled":"")+'>'+esc(opt)+'</button>').join("");
 const marker=(u,m)=>modeDone(u,m.id)?'<span class="aca-check">✓</span>':'<span class="aca-chev">›</span>';
-const speechAvailable=()=>typeof window!=="undefined"&&"speechSynthesis" in window;
 let session=null;
 let transient={notice:""};
 function persist(){
@@ -149,7 +149,7 @@ function firstWordsPage(route,l){
   const p=firstWordPacks.find(x=>x.id===packId);if(!p)return firstWordsPage("academy/first-words",l);
   const s=ensureSession(route,l);
   const header='<a class="aca-back" href="#academy/first-words/group/'+groupOf(p)+'">← '+UI[l].back+'</a>'+top(p.icon+" "+(p.stage?p.stage.toUpperCase():"Pre-A1"),val(p.title,l),tx("Look, say and remember.","Tingnan, sabihin at tandaan.",l));
-  if(s.phase==="done")return header+'<div class="aca-celebrate">🌟<h2>'+UI[l].finish+'</h2><a class="aca-cta aca-link" href="#academy/first-words/group/'+groupOf(p)+'">'+UI[l].studyNext+' →</a></div>';
+  if(s.phase==="done")return header+completedActivity(l);
   if(s.phase==="quiz")return header+answersHtml(s,l,"words");
   return header+'<section class="aca-panel"><h2>'+UI[l].learnFirst+'</h2><div class="aca-word-grid">'+p.words.map(w=>
     '<div><span class="aca-emoji">'+w.icon+'</span><button class="aca-sound" data-aca="sound" data-text="'+esc(w.ru)+'">🔊</button><b lang="ru">'+esc(w.ru)+'</b><small>'+esc(val(w,l))+'</small></div>').join("")+'</div><button class="aca-cta aca-wide" data-aca="start-quiz">'+UI[l].testNow+' →</button></section>';
@@ -203,12 +203,19 @@ function russianBoard(){
 function answersHtml(s,l,type){
   const title=type==="listen"?UI[l].choose:type==="review"?UI[l].today:UI[l].choose;
   const x=s.tasks[s.index];
-  const subject=type==="listen"&&speechAvailable()?
-    '<div class="aca-word-big">🔊</div><button class="aca-cta" data-aca="sound" data-text="'+esc(x.w.ru)+'">'+UI[l].audio+'</button>' :
+  const listening=type==="listen",hasVoice=hasRussianVoice();
+  const subject=listening?
+    '<div class="aca-word-big" aria-hidden="true">🔊</div><button type="button" class="aca-cta" data-aca="listen-word" '+(hasVoice?"":"disabled")+'>'+UI[l].audio+'</button>'+
+    (hasVoice?'<p class="aca-muted">Listen to the full word to unlock the answers.</p>':'<p>'+UI[l].noAudio+' <a href="#academy/lesson/'+s.u.id+'/read">Open the reading activity →</a></p>'):
     '<div class="aca-word-big" lang="ru">'+esc(x.w.ru)+'</div>'+
-    (type!=="listen"?'<button class="aca-sound" data-aca="sound" data-text="'+esc(x.w.ru)+'">🔊 '+UI[l].audio+'</button>':'<p>'+UI[l].noAudio+'</p>');
+    '<button class="aca-sound" data-aca="sound" data-text="'+esc(x.w.ru)+'">🔊 '+UI[l].audio+'</button>';
   return '<div class="aca-task"><span class="aca-task-count">'+(s.index+1)+' / '+s.tasks.length+'</span><h2>'+title+'</h2>'+subject+
-    '<div class="aca-choices">'+buttons(x.choices,"answer")+'</div>'+feedback(s,l)+'</div>';
+    '<div class="aca-choices">'+buttons(x.choices,"answer",s.answered||(listening&&!s.heard))+'</div>'+feedback(s,l)+'</div>';
+}
+function completedActivity(l){
+ return '<div class="aca-celebrate"><span aria-hidden="true">🌟</span><h2>'+UI[l].finish+'</h2>'+
+   '<a class="aca-cta aca-link" href="#today">Return to Today →</a>'+
+   '<button type="button" class="aca-text-btn" data-aca="restart-activity">'+UI[l].restart+'</button></div>';
 }
 function feedback(s,l){
   if(!s.answered)return "";
@@ -224,8 +231,7 @@ function lessonPage(id,mode,l){
   const header='<a class="aca-back" href="#academy/unit/'+id+'">← '+UI[l].back+'</a>'+
    top(u.icon+' '+getStage(u.stage).label,tx(m.en,m.tl,l),val(u.title,l))+
    '<div class="aca-session-meter"><span style="width:'+Math.round((s.index/Math.max(s.tasks.length,1))*100)+'%"></span></div>';
-  if(s.phase==="done")return header+'<div class="aca-celebrate"><div>🌟 🪻 ✨</div><h2>'+UI[l].finish+'</h2><p>'+UI[l].notice+'</p>'+
-     '<a class="aca-cta aca-link" href="#academy/unit/'+id+'">'+UI[l].studyNext+' →</a></div>';
+  if(s.phase==="done")return header+completedActivity(l);
   if(mode==="words"){
     if(s.phase==="study"){
       return header+'<section class="aca-panel"><h2>'+UI[l].learnFirst+'</h2><div class="aca-word-grid">'+u.words.map(w=>
@@ -235,10 +241,10 @@ function lessonPage(id,mode,l){
     return header+answersHtml(s,l,"words");
   }
   if(mode==="listen"){
-    if(s.phase==="study")return header+'<section class="aca-panel"><h2>'+UI[l].listen+'</h2><p>'+UI[l].learnFirst+'</p>'+
+    if(s.phase==="study")return header+'<section class="aca-panel"><h2>Hear a Russian example</h2><p>'+UI[l].learnFirst+'</p>'+
       '<div class="aca-example"><button class="aca-sound" data-aca="sound" data-text="'+esc(u.example.ru)+'">🔊 '+UI[l].audio+'</button><strong lang="ru">'+esc(u.example.ru)+'</strong></div>'+
-      '<p class="aca-muted">'+(speechAvailable()?UI[l].choose:UI[l].notTested)+'</p>'+
-      '<button class="aca-cta aca-wide" data-aca="start-quiz">'+UI[l].continue+'</button></section>';
+      (hasRussianVoice()?'<button type="button" class="aca-cta aca-wide" data-aca="start-quiz">'+UI[l].continue+'</button>':
+       '<p class="aca-muted">'+UI[l].noAudio+'</p><a class="aca-cta aca-link" href="#academy/lesson/'+id+'/read">Open the reading activity →</a>')+'</section>';
     return header+answersHtml(s,l,"listen");
   }
   if(mode==="grammar"){
@@ -269,7 +275,7 @@ function lessonPage(id,mode,l){
       '<div class="aca-reading" lang="ru">'+esc(u.reading.ru)+'</div>'+
       '<button class="aca-sound" data-aca="sound" data-text="'+esc(u.reading.ru)+'">🔊 '+UI[l].audio+'</button>'+
       '<div class="aca-recorder"><h3>'+tx("Record and listen to yourself","I-record at pakinggan ang iyong sarili",l)+'</h3><p>'+tx("Optional. Microphone access requires permission. Audio stays in this session; nothing is uploaded or saved.","Opsyonal. Kailangan ng pahintulot sa mikropono. Sa session lang ang audio; walang ina-upload o sine-save.",l)+'</p>'+
-      '<div class="aca-recorder-buttons"><button class="aca-secondary" type="button" data-aca="record-start">'+tx("● Start recording","● Magsimulang mag-record",l)+'</button>'+
+      '<div class="aca-recorder-buttons"><button class="aca-secondary" type="button" data-aca="record-start" '+(isRecordingSupported()?"":"disabled")+'>'+tx("● Start recording","● Magsimulang mag-record",l)+'</button>'+
       '<button class="aca-secondary" type="button" data-aca="record-stop" hidden>'+tx("■ Stop","■ Itigil",l)+'</button></div>'+
       '<p id="aca-rec-status" role="status">'+(isRecordingSupported()?tx("Ready when you are.","Handa kung kailan ka handa.",l):tx("Microphone recording unavailable; speaking aloud still works.","Walang recording sa browser; maaari pa ring magsalita nang malakas.",l))+'</p>'+
       '<audio id="aca-rec-play" controls hidden aria-label="'+tx("Your private recording","Pribadong recording",l)+'"></audio></div>'+
@@ -328,7 +334,7 @@ function correctOne(s,input,l,api){
   api.render();
 }
 function moveNext(s,l,api){
-  s.answered=false;s.message="";
+  s.answered=false;s.message="";s.heard=false;
   if(["words","first-words","listen","review"].includes(s.mode)){
     s.index++;
     if(s.index>=s.tasks.length){
@@ -337,7 +343,7 @@ function moveNext(s,l,api){
         if(s.mode==="review")s.phase="quiz";
       }else{
         if(s.mode==="first-words")mark(s.u,"words");
-        else if(s.mode==="words"||(s.mode==="listen"&&speechAvailable()))mark(s.u,s.mode);
+        else if(s.mode==="words"||s.mode==="listen")mark(s.u,s.mode);
         if(s.mode==="review"){store.lastReview=Date.now();persist();}
         s.phase="done";
       }
@@ -355,16 +361,25 @@ export async function handleAcademyAction(button,api){
   const route=api.route(),s=ensureSession(route,l);
   if(action==="sound"){api.speak(button.dataset.text||"");return;}
   if(!s)return;
+  if(action==="restart-activity"&&s.phase==="done"){session=null;api.render();return;}
+  if(action==="listen-word"&&s.mode==="listen"&&s.phase==="quiz"){
+    const index=s.index;
+    api.speak(s.tasks[index].w.ru,0.8,ok=>{
+      if(ok&&session===s&&api.route()===route&&s.index===index){s.heard=true;api.render();}
+    });
+    return;
+  }
   if(action==="record-start"&&s.mode==="speak"){
     const status=document.getElementById("aca-rec-status");
     const start=document.querySelector('[data-aca="record-start"]');
     const stop=document.querySelector('[data-aca="record-stop"]');
     if(status)status.textContent=tx("Requesting microphone permission…","Humihingi ng pahintulot sa mikropono…",l);
     if(start)start.disabled=true;
+    const previous=document.getElementById("aca-rec-play");
+    if(previous){previous.pause();previous.removeAttribute("src");previous.hidden=true;}
     try{
-      const key=s.key;
-      await startPrivateRecording(url=>{
-        if(session?.key!==key)return;
+      const started=await startPrivateRecording(url=>{
+        if(session!==s||api.route()!==route)return;
         const player=document.getElementById("aca-rec-play");
         if(player&&url){player.src=url;player.hidden=false;}
         const statusNow=document.getElementById("aca-rec-status");
@@ -374,7 +389,7 @@ export async function handleAcademyAction(button,api){
         if(startNow){startNow.disabled=false;startNow.hidden=false;}
         if(stopNow)stopNow.hidden=true;
       });
-      if(session?.key!==key){discardPrivateRecording();return;}
+      if(!started||session!==s||api.route()!==route)return;
       if(start)start.hidden=true;
       if(stop)stop.hidden=false;
       if(status)status.textContent=tx("Recording locally… Tap Stop when finished.","Nagri-record sa device… Pindutin ang Itigil.",l);
@@ -394,12 +409,12 @@ export async function handleAcademyAction(button,api){
     return;
   }
   if(action==="start-quiz"){
-    s.phase="quiz";s.index=0;s.mistakes=0;s.answered=false;
+    s.phase="quiz";s.index=0;s.mistakes=0;s.answered=false;s.heard=false;
     if(s.mode==="grammar")prepareChoices(s,l);
     api.render();return;
   }
   if(action==="answer" && (["words","first-words","listen","review"].includes(s.mode))){
-    if(s.answered)return;
+    if(s.answered||(s.mode==="listen"&&!s.heard))return;
     const x=s.tasks[s.index],selected=x.choices[Number(button.dataset.choice)];
     s.good=selected===x.correct;s.correct=x.correct;s.answered=true;
     if(!s.good)s.mistakes++;

@@ -1,14 +1,22 @@
 # Shaira — Russian Academy 🇷🇺
 
-An adult-first, free-to-use iPhone PWA for **Shaira** to practise Russian **every study day**, starting with the very first Cyrillic letters. **The entire learner-facing interface, exercises, explanations and feedback are in English**; Russian appears as the language being learned. The project is inspired by the structure of `English_Child`, but the presentation, themes and longer assignments are intended for an adult.
+An adult-first, free-to-use mobile PWA for **Shaira** to practise Russian **every study day**, starting with the very first Cyrillic letters. **The entire learner-facing interface, exercises, explanations and feedback are in English**; Russian appears as the language being learned. The project is inspired by the structure of `English_Child`, but the presentation, themes and longer assignments are intended for an adult.
 
-**Open:** https://19wolfalone92.github.io/Shaira/ — Safari → Share → Add to Home Screen.
+**Open:** https://19wolfalone92.github.io/Shaira/ — add it to the Home Screen in Safari or install it from Chrome on Android.
 
-## NEW v0.8: start from absolute zero, one small step at a time
+## v0.9 · Offline audio and foundation review
+
+The 78 First Steps include Russian audio for letters, syllables, words and phrases. Reopen any completed step from **Review a past step**. Shaira suggests steps to revisit based on earlier errors and keeps the current position in the course. The optional fast-track now includes three short Cyrillic answers and three recognition checks.
+
+All 30 listening situations and 30 sound contrasts use built-in synthetic Russian audio. Answer buttons unlock after playback. **Settings → Offline lessons** shows when the download is ready. Guided study offers a reading alternative when audio is unavailable, with progress recorded as reading. Other spoken examples still use the device’s Russian voice.
+
+Audio was generated locally with [Piper Denis](https://huggingface.co/rhasspy/piper-voices/blob/main/ru/ru_RU/denis/medium/MODEL_CARD) (CC0 training dataset). To regenerate the packaged clips, run `scripts/build-audio.py` with Python, Piper, FFmpeg, Node.js and the Denis model plus its adjacent JSON. The app uses the generated assets directly.
+
+## Start from absolute zero, one small step at a time
 
 For an adult who does not know even one Cyrillic letter, Today now starts with **78 tiny steps** BEFORE the longer 210-session curriculum. The first six steps teach А, М, О, ма, мама and a short review. The entire foundation covers **each of the 33 Cyrillic letters separately**, 11 short syllables, 11 readable beginner words, 11 reviews and 12 practical everyday phrases. Every required word is made only of letters the student has already learned.
 
-Difficulty is **always student-selectable**: Gentle (default, 2 recognition checks, no mandatory typing), Steady (3 checks with one typed answer), and Challenge (4 checks including two typed Russian answers). An optional six-question, all-correct fast track can prove three following micro-skills and advance without unearned skipping. A freehand tracing area, synthetic Russian speech and Cyrillic keyboard help adult learners, without claiming automatic pronunciation or handwriting assessment. Older learners retain their existing place; new step progress and difficulty survive backup.
+Difficulty is **always student-selectable**: Gentle (default, 2 recognition checks, no mandatory typing), Steady (3 checks with one typed answer), and Challenge (4 checks including two typed Russian answers). An optional six-question, all-correct fast track can prove three following micro-skills and advance without unearned skipping. A freehand tracing area, built-in Russian audio and Cyrillic keyboard help adult learners, without claiming automatic pronunciation or handwriting assessment. Older learners retain their existing place; new step progress and difficulty survive backup.
 
 Full syllabus: **[TRUE_BEGINNER_STAIRCASE.md](docs/TRUE_BEGINNER_STAIRCASE.md)**.
 
@@ -36,7 +44,7 @@ Detailed release scope: **[V07_COMPLETE_SKILLS.md](docs/V07_COMPLETE_SKILLS.md)*
 | Independent grammar | **100 contextual questions**, **30 grammar handbook chapters**, 32 deeper teaching studios (96 Russian examples and 64 new questions), and 5 independent 10-question stage reviews |
 | Reading | **35 levelled texts**, 70 comprehension questions and 5 additional unseen stage-review texts (including an extended argument at B2) |
 | Writing portfolio | **45 guided writing tasks**, from basic sentences to extended B2-style arguments, on-device drafts and format-only self-review |
-| Listening comprehension | **30 audio-first listening scenarios** across five study stages. English questions; hidden Russian transcripts; scores are not awarded if the learner reveals the script. Uses device TTS, not native recordings. |
+| Listening comprehension | **30 audio-first listening scenarios** across five study stages. English questions; hidden Russian transcripts; scores are not awarded if the learner reveals the script. Uses built-in synthetic Russian speech. |
 | Russian case laboratory | **24 nouns × 6 cases × singular/plural = 288 explicit forms**, adaptive 10-question productive writing practice, real scores and local progress |
 | Retention | Spaced vocabulary review after 1, 3, 7, 14 and 30 days; meaningful four-way choices even for one due word |
 | Backup | Export/import the daily route, all stage reviews, structured studios, noun-case practice, listening attempts, grammar scores, reading history and private drafts through Settings |
@@ -46,7 +54,7 @@ Detailed release scope: **[V07_COMPLETE_SKILLS.md](docs/V07_COMPLETE_SKILLS.md)*
 
 **These are teaching-path targets, not CEFR certificates.** The 210 sessions are a first structured study sequence, not 210 guaranteed days to B2. The 5 short stage reviews and the 288 case forms do not substitute for long-form authentic listening, independent speaking evaluation or expert feedback on essays. The app includes materials labelled through B2 but does **not** yet constitute a complete, independently validated route to real B2. Thousands of additional reviewed lexical entries, varied grammar/reading/writing tasks, native-speaker recordings, dependable audio and speaking assessment, teacher-quality essay feedback and independent examinations are still needed. A user cannot reliably establish B2 by completion counters alone.
 
-Synthetic Russian speech uses the browser/device voice when available; it may not work offline. Optional recorded speaking samples are kept only in temporary browser memory and never uploaded. The handwritten canvas permits tracing but **does not recognise writing**, and the writing portfolio does **not** judge grammar or semantics automatically. No mandatory account, ad, analytics, paid API or server is included.
+The First Steps, listening situations and sound contrasts include offline audio. Other spoken examples use the Russian voice provided by the device. Optional recorded speaking samples are kept only in temporary browser memory and never uploaded. The handwritten canvas permits tracing but **does not recognise writing**, and the writing portfolio does **not** judge grammar or semantics automatically. No mandatory account, ad, analytics, paid API or server is included.
 
 ### English-first design
 
@@ -75,10 +83,10 @@ All lessons and drafts live in browser localStorage only. Use Settings → **Exp
 
 ## New: Variety Lab, Verb Lab and interactive Russian scenarios
 
-**Variety Lab** offers **13 different exercise formats** in each 12-question round: Russian–English recognition, English–Russian recall, typed Russian words, grammar, noun-case endings, conjugation, word-order assembly, sentence translation, proofreading, reading comprehension, four-pair matching, Russian audio identification and synthetic-voice dictation. Questions are sampled from curated material and prioritise unseen, due and previously failed items. The latest mixed-skills session must score at least **9/12, including two productive correct answers**, at each weekly review in the guided route.
+**Variety Lab** offers **13 exercise formats** across its 12-question rounds: Russian–English recognition, English–Russian recall, typed Russian words, grammar, noun-case endings, conjugation, word-order assembly, sentence translation, proofreading, reading comprehension, four-pair matching, Russian audio identification and synthetic-voice dictation. Questions are sampled from curated material and prioritise unseen, due and previously failed items. The latest mixed-skills session must score at least **9/12, including two productive correct answers**, at each weekly review in the guided route.
 
 **Verb Lab** includes **24 selected verbs** with 240 explicitly written Russian present and past forms and optional spoken examples.
 
 **Choose Your Response** is a library of **15 interactive adult scenarios** with 45 situational decisions, varied scripted replies and English explanations. Scenarios cover conversations with neighbours, shops, work, travel, repairs and nuanced arguments. These model real-life language but are not live AI conversations.
 
-All these modules work without paid APIs and keep exercise history locally. Backups now include the mixed-task review schedule and scenario scores. The Russian TTS depends on device capabilities; no native human audio or automatic pronunciation grading is claimed. The course still cannot certify B2.
+All these modules work without paid APIs and keep exercise history locally. Backups now include the mixed-task review schedule and scenario scores. The Russian TTS for these modules depends on device capabilities. Pronunciation practice is self-assessed. The course still cannot certify B2.

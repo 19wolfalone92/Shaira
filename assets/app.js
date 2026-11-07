@@ -1,6 +1,6 @@
 import { sections, lessons, alphabet, keyboardRows } from "./lessons.js";
 import { academyHtml, handleAcademyAction, handleAcademySubmit, academyStatistics, stopSpeakingRehearsal } from "./academy-ui.js";
-import { downloadBackup, restoreBackup } from "./backup.js";
+import { downloadBackup, restoreBackup, resetProgress } from "./backup.js";
 import {todayHtml,todayPreview,todayAction,todaySubmit,todayInput} from "./daily-ui.js";
 import {labHtml,labAction,labInput,labStats} from "./learning-labs.js";
 import {masteryHtml,masteryAction,masterySubmit} from "./mastery-ui.js";
@@ -12,8 +12,10 @@ import {scenariosHtml,scenariosAction} from "./scenario-ui.js";
 import {phoneticsHtml,phoneticsAction} from "./phonetics-ui.js";
 import {coachHtml} from "./study-coach.js";
 import {courseSearchHtml,courseSearchInput,courseSearchAction} from "./course-search-ui.js";
-import {needsMicroStart} from "./first-steps-engine.js";
+import {needsMicroStart, enrolInMicroPath, readMicro} from "./first-steps-engine.js";
 import {firstStepsHtml,firstStepsHomePreview,firstStepsAction,firstStepsSubmit,firstStepsInput,microCelebrationPending} from "./first-steps-ui.js";
+
+import {playRussian, stopRussianAudio} from "./russian-audio.js";
 
 const STORAGE_KEY = "shaira-progress-v1";
 const dictionary = {
@@ -31,10 +33,10 @@ const dictionary = {
     tip:"Draw slowly, then listen and copy the letter.", clear:"Clear", newLetter:"Next letter", letter:"Letter",
     language:"Explanation language", langInfo:"Russian content stays Russian. Explanations switch instantly.",
     progress:"Your progress", local:"Saved on this device only (no sign-in or cloud sync).",
-    reset:"Erase local progress", resetConfirm:"Delete all lesson progress saved in this browser?",
-    install:"Install on iPhone", installInfo:"In Safari, open the deployed HTTPS site, tap Share, then Add to Home Screen.",
-    offline:"Offline lessons", offlineInfo:"After the first online visit, cached pages work offline. Spoken audio depends on iPhone voices.",
-    audioUnavailable:"Russian voice playback is not supported in this browser.",
+    reset:"Erase all local progress", resetConfirm:"Delete all progress, preferences and writing drafts saved on this device?",
+    install:"Install Shaira",
+    offline:"Offline lessons", offlineInfo:"Lessons and built-in audio work offline once the download is ready. Other examples use your device’s Russian voice.",
+    audioUnavailable:"Could not play Russian audio. Check your device’s Russian voice or try the built-in listening lessons.",
     answerHint:"Use the Cyrillic keyboard below or your phone keyboard.",
     keyboard:"Russian keyboard", skip:"Study next card →", progressSuffix:"of", learn:"Read • Write • Speak",
     errorStorage:"Progress cannot be saved in this browser session.", results:"Practice question",
@@ -108,24 +110,20 @@ function showToast(message) {
   showToast.timer = setTimeout(() => { node.hidden = true; }, 2800);
 }
 function navigate(route) {
-  location.hash = route;
-  if (location.hash.slice(1) === route) render();
+  if (location.hash.slice(1) !== route) location.hash = route;
 }
 function currentRoute() {
-  const hash = decodeURIComponent(location.hash.slice(1));
+  let hash;
+  try { hash = decodeURIComponent(location.hash.slice(1)); }
+  catch { return "today"; }
   if (hash.startsWith("lesson/") && lessons.some(l => l.id === hash.slice(7))) return hash;
   return hash === "academy" || hash.startsWith("academy/") ? hash : ["home","today","review","write","settings"].includes(hash) ? hash : "today";
 }
-function speak(text,rate=0.78) {
-  if (!("speechSynthesis" in window)) { showToast(phrase("audioUnavailable")); return; }
-  window.speechSynthesis.cancel();
-  const utterance = new SpeechSynthesisUtterance(text);
-  utterance.lang = "ru-RU";
-  utterance.rate = Math.min(1.2,Math.max(0.5,Number(rate)||0.78));
-  const voices = window.speechSynthesis.getVoices();
-  const russian = voices.find(v => v.lang.toLowerCase().startsWith("ru"));
-  if (russian) utterance.voice = russian;
-  window.speechSynthesis.speak(utterance);
+function speak(text,rate,onResult,clipId) {
+  playRussian(text,rate,ok=>{
+    onResult?.(ok);
+    if(!ok)showToast(phrase("audioUnavailable"));
+  },clipId);
 }
 function icon(id) {
   return {home:"⌂",today:"◷",academy:"🎓",review:"✦",write:"✎",settings:"⚙"}[id];
@@ -136,7 +134,8 @@ function navBar(route) {
     `<a href="#${id==="review"?"academy/review":id}" class="nav-item ${active === id ? "active" : ""}" ${active === id ? 'aria-current="page"' : ""}><span aria-hidden="true">${icon(id)}</span><small>${phrase(id)}</small></a>`).join("")}</nav>`;
 }
 function header() {
-  return `<header class="topbar"><a href="#home" class="brand-mark" aria-label="Shaira · Home">Ш</a><div><div class="brand">shaira<span class="brand-dot">.</span></div><div class="brand-caption">${phrase("tagline")}</div></div><a class="top-counter" href="#today" aria-label="${phrase("progress")}">${academyStatistics().completed} ✓</a></header>`;
+  const counter=needsMicroStart()?readMicro().index+" steps":academyStatistics().completed+" ✓";
+  return `<header class="topbar"><a href="#home" class="brand-mark" aria-label="Shaira · Home">Ш</a><div><div class="brand">shaira<span class="brand-dot">.</span></div><div class="brand-caption">${phrase("tagline")}</div></div><a class="top-counter" href="#today" aria-label="${phrase("progress")}">${counter}</a></header>`;
 }
 function home() {
   const a=academyStatistics(),labs=labStats();
@@ -238,6 +237,12 @@ function writePage() {
     '<p class="canvas-caption">'+t.explanation+'</p><div class="write-buttons"><button class="secondary-button" type="button" data-action="clear-canvas">'+phrase("clear")+'</button><button class="primary-button" type="button" data-action="next-letter">'+phrase("newLetter")+' →</button></div>'+
     '<a class="writing-academy-link" href="#academy">'+(state.language==="tl"?"📚 Magpatuloy sa kursong pagsulat":"📚 Continue sentence writing in the Academy")+' →</a></div>';
 }
+let offlineStatus="Checking whether this browser supports offline lessons.";
+function setOfflineStatus(message){
+  offlineStatus=message;
+  const status=document.getElementById("offline-status");
+  if(status)status.textContent=message;
+}
 function settingsPage() {
   const academy = academyStatistics();
   const labs = labStats();
@@ -247,19 +252,20 @@ function settingsPage() {
       <button type="button" class="danger-button" data-action="reset">${phrase("reset")}</button></section>
     <section class="settings-card"><h2>🎓 ${state.language==="tl"?"Pag-usad sa Akademya":"Academy progress"}</h2><p>${academy.completed}/${academy.activities} ${state.language==="tl"?"gawaing nasanay":"activities practised"} · ${academy.knownWords} ${state.language==="tl"?"salitang napag-aralan":"studied words"} · ${academy.dueWords} ${state.language==="tl"?"dapat balikan":"due to review"} · ${labs.grammarAttempts} ${state.language==="tl"?"pagsubok sa gramatika":"grammar sessions"} · ${labs.readingsPassed} ${state.language==="tl"?"tekstong nabasa":"reading checks passed"}</p></section>
     <section class="settings-card"><h2>💾 ${state.language==="tl"?"I-save at ibalik ang pag-usad":"Export and restore progress"}</h2><p>${state.language==="tl"?"I-save ang progreso at mga draft sa isang pribadong JSON file. Ang pag-import ay papalit sa kasalukuyang pag-usad sa device na ito.":"Save your lessons and writing drafts in a private JSON file. Import replaces progress on this device. Keep this file private."}</p><div class="backup-buttons"><button class="secondary-button" type="button" data-action="export-backup">📤 ${state.language==="tl"?"I-export":"Export progress"}</button><button class="secondary-button" type="button" data-action="import-backup">📥 ${state.language==="tl"?"I-import":"Import backup"}</button></div><input id="backup-file" type="file" accept=".json,application/json" hidden aria-label="Shaira JSON backup"></section>
-    <section class="settings-card"><h2>📱 ${phrase("install")}</h2><p>${phrase("installInfo")}</p></section>
-    <section class="settings-card"><h2>☁ ${phrase("offline")}</h2><p>${phrase("offlineInfo")}</p></section>`;
+    <section class="settings-card"><h2>📱 ${phrase("install")}</h2><p><strong>iPhone or iPad</strong> · Open Shaira in Safari, tap Share, then Add to Home Screen.</p>
+      <p><strong>Android</strong> · Open Shaira in Chrome, open the menu, then choose Add to Home screen or Install app.</p></section>
+    <section class="settings-card"><h2>☁ ${phrase("offline")}</h2><p>${phrase("offlineInfo")}</p><p id="offline-status" role="status">${escapeHtml(offlineStatus)}</p><small>Shaira 0.9.0</small></section>`;
 }
-function render() {
+function render(focusSelector) {
   if (drawingCleanup) { drawingCleanup(); drawingCleanup = null; }
   const route = currentRoute();
-  if(!route.startsWith("academy/lesson/") || !route.endsWith("/speak"))stopSpeakingRehearsal();
   const page = route==="academy/first-steps" ? firstStepsHtml() : route==="academy/search" ? courseSearchHtml() : route==="academy/coach" ? coachHtml() : route==="academy/sounds"||route.startsWith("academy/sounds/") ? phoneticsHtml(route) : route==="academy/scenarios"||route.startsWith("academy/scenarios/") ? scenariosHtml(route) : route==="academy/verbs"||route.startsWith("academy/verbs/") ? verbHtml(route) : route==="academy/mix"||route.startsWith("academy/mix/") ? mixerHtml(route) : route==="academy/listening"||route.startsWith("academy/listening/") ? listeningHtml(route) : route==="academy/cases"||route.startsWith("academy/cases/") ? caseHtml(route,state.language) : route==="academy/mastery"||route.startsWith("academy/mastery/")||route.startsWith("academy/checkpoint/") ? masteryHtml(route,state.language) : route === "today" ? ((needsMicroStart()||microCelebrationPending())?firstStepsHtml():todayHtml(state.language)) : route === "home" ? home() : route === "academy/lab" || route.startsWith("academy/grammar") || route.startsWith("academy/library") || route.startsWith("academy/writing") || route.startsWith("academy/handbook") ? labHtml(route,state.language) : route.startsWith("academy") ? academyHtml(route,state.language) : route === "review" ? reviewPage() : route === "write" ? writePage() :
     route === "settings" ? settingsPage() : lessonPage(route.slice(7));
   document.documentElement.lang = "en";
   document.title = "Shaira · Learn Russian";
-  el.innerHTML = `${header()}<main id="main-content" class="main-content">${page}<footer class="footer">${phrase("footer")}</footer></main>${navBar(route)}<div id="toast" class="toast" role="status" hidden></div>`;
-  if (route === "write" || route==="academy/first-steps" || (route==="today"&&needsMicroStart())) initializeCanvas();
+  el.innerHTML = `${header()}<main id="main-content" class="main-content" tabindex="-1">${page}<footer class="footer">${phrase("footer")}</footer></main>${navBar(route)}<div id="toast" class="toast" role="status" hidden></div>`;
+  initializeCanvas();
+  if(focusSelector)document.querySelector(focusSelector)?.focus();
 }
 function checkAnswer(value) {
   const route = currentRoute();
@@ -344,7 +350,10 @@ document.addEventListener("click", event => {
 
   else if (action === "export-backup") { try {downloadBackup();}catch(error){showToast(String(error.message||error));} }
   else if (action === "import-backup") { document.getElementById("backup-file")?.click(); }
-  else if (action === "reset") { if (window.confirm(phrase("resetConfirm"))) {state.completed=[];save();render();} }
+  else if (action === "reset" && window.confirm(phrase("resetConfirm"))) {
+    try { resetProgress(); window.location.reload(); }
+    catch (error) { showToast(error.message); }
+  }
   else if (action === "type-key" || action === "delete-key") {
     const input=document.getElementById("answer-input");if(!input)return;
     const start=input.selectionStart ?? input.value.length, end=input.selectionEnd ?? start;
@@ -384,8 +393,36 @@ document.addEventListener("change", async event => {
   } catch(error){showToast(String(error.message||error));}
   finally{event.target.value="";}
 });
-window.addEventListener("hashchange",() => {lessonCardIndex=0;feedback=null;render();});
+function stopPlayback(){stopRussianAudio();stopSpeakingRehearsal();}
+window.addEventListener("hashchange",() => {
+  stopPlayback();
+  lessonCardIndex=0;feedback=null;render();
+  document.getElementById("main-content")?.focus({preventScroll:true});
+  window.scrollTo?.(0,0);
+});
+window.addEventListener("pagehide",stopPlayback);
+if(needsMicroStart())enrolInMicroPath();
 render();
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}));
-}
+if("serviceWorker" in navigator){
+  window.addEventListener("load",async()=>{
+    const workers=navigator.serviceWorker,alreadyInstalled=!!workers.controller;
+    workers.addEventListener("controllerchange",()=>{
+      if(alreadyInstalled)showToast("A Shaira update is ready. Refresh when you finish this activity.");
+    });
+    setOfflineStatus("Downloading lessons and audio for offline use…");
+    try{
+      const registration=await workers.register("./sw.js",{updateViaCache:"none"});
+      function watch(){
+        const worker=registration.installing;
+        worker?.addEventListener("statechange",()=>{
+          if(worker.state==="redundant"&&!registration.active)
+            setOfflineStatus("Offline download could not finish. Reopen Shaira while connected.");
+        });
+      }
+      watch();
+      registration.addEventListener("updatefound",watch);
+      await workers.ready;
+      setOfflineStatus("Ready to study offline on this device.");
+    }catch{setOfflineStatus("Offline download could not start in this browser.");}
+  });
+}else setOfflineStatus("This browser does not support offline installation.");

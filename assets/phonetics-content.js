@@ -6,7 +6,7 @@ const pair=(id,stage,focus,a,b,explain)=>({id,stage,focus,
 export const SOUND_PAIRS=[
  pair("luk-lyuk","starter","Hard /л/ vs soft /лʲ/",["лук","onion or bow"],["люк","hatch"],"The letter ю after л signals a soft consonant; лук begins with a hard л."),
  pair("byl-bil","starter","Russian ы vs и",["был","he was"],["бил","he was hitting"],"Russian ы and и are distinct vowels; train them without reading a Latin transcription."),
- pair("nos-nyos","starter","О vs Ё after a consonant",["нос","nose"],["нёс","he carried"],"Ё represents a different vowel and usually softens the preceding consonant."),
+ pair("nos-nyos","starter","Hard Н vs soft Н before an o sound",["нос","nose"],["нёс","he carried"],"Both words have a stressed o sound. In «нёс», ё signals a soft н; in «нос», н is hard."),
  pair("shar-zhar","starter","Voiced Ж vs voiceless Ш",["шар","ball"],["жар","heat"],"Ш is voiceless while Ж is voiced; both are usually hard consonants."),
  pair("dom-tom","starter","Voiced vs voiceless onset",["дом","house"],["том","volume of a book"],"Listen to the first consonant: Russian д is voiced; т is voiceless."),
  pair("myl-mil","starter","Ы vs И in a short word",["мыл","he washed"],["мил","dear / nice (masculine)"],"Contrast the vowels in two meaningful words. Russian и commonly softens preceding consonants."),

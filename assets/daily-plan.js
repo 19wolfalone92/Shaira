@@ -180,13 +180,19 @@ export function snapshot(storage=globalThis.localStorage){
  const phonetics=parse(storage,"shaira-phonetics-v1");
  return {academy,labs,legacy,mastery,cases,listenings,mixer,phonetics};
 }
+const readingKey=(state,step)=>state.index+":reading-instead:"+step.id;
+export function usesReadingAlternative(step,state,audioAvailable){
+ return !!step.fallback&&(state.marks?.[readingKey(state,step)]===true||
+  (step.kind==="listen"&&!audioAvailable));
+}
 export function stepComplete(step,state,snap,audioAvailable=true){
  const t=Number(state.startedAt)||0;
  if(!t)return false;
  const done=safeRecord(snap.academy.done),l=safeRecord(snap.labs);
  if(step.kind==="legacy")return Array.isArray(snap.legacy.completed)&&snap.legacy.completed.includes(step.key);
  if(["pack","unit","speak","dialogue"].includes(step.kind))return Number(done[step.key])>=t;
- if(step.kind==="listen")return Number(done[audioAvailable?step.key:step.fallback])>=t;
+ if(usesReadingAlternative(step,state,audioAvailable)&&Number(done[step.fallback])>=t)return true;
+ if(step.kind==="listen")return Number(done[step.key])>=t;
  if(step.kind==="handbook")return state.marks[String(state.index)+":"+step.id]===true;
  if(step.kind==="grammar"){
    const rec=safeRecord(safeRecord(l.grammar)[step.level]);
@@ -212,14 +218,10 @@ export function stepComplete(step,state,snap,audioAvailable=true){
      Number(last?.score)>=9&&Number(last?.productive)>=2;
  }
  if(step.kind==="sound"){
-   if(!audioAvailable)return Number(done[step.fallback])>=t;
    const items=safeRecord(snap.phonetics?.items);
-   const a=items[step.key+":0"],b=items[step.key+":1"];
-   const latest=Number(a?.last)>=Number(b?.last||0)?a:b;
-   return Number(latest?.last)>=t&&latest?.lastCorrect===true;
+   return [items[step.key+":0"],items[step.key+":1"]].some(item=>Number(item?.last)>=t&&item?.lastCorrect===true);
  }
  if(step.kind==="audio"){
-   if(!audioAvailable)return Number(done[step.fallback])>=t;
    const record=safeRecord(safeRecord(snap.listenings).items)[step.key];
    return Number(record?.last)>=t&&record?.lastPassed===true;
  }
@@ -263,6 +265,12 @@ export function markReference(step,storage=globalThis.localStorage){
  const state=beginDay(storage);
  if(!step||step.kind!=="handbook")return false;
  state.marks[String(state.index)+":"+step.id]=true;
+ return saveDayState(state,storage);
+}
+export function chooseReadingAlternative(id,storage=globalThis.localStorage){
+ const state=beginDay(storage),step=makeDay(state.index)?.tasks.find(task=>task.id===id);
+ if(!step?.fallback)return false;
+ state.marks[readingKey(state,step)]=true;
  return saveDayState(state,storage);
 }
 export function changeGoal(goal,storage=globalThis.localStorage){

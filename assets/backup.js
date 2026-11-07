@@ -1,4 +1,5 @@
 /* Shaira's explicit user-controlled progress export/import. No cloud, network, analytics or tokens. */
+import {MICRO_KEY, normalizeMicroState} from "./first-steps-engine.js";
 const LEGACY="shaira-progress-v1";
 const ACADEMY="shaira-academy-v1";
 const LABS="shaira-labs-v1";
@@ -9,7 +10,8 @@ const LISTENING="shaira-listening-v1";
 const MIXER="shaira-mixed-practice-v1";
 const SCENARIOS="shaira-scenarios-v1";
 const PHONETICS="shaira-phonetics-v1";
-const MICRO="shaira-microsteps-v1";
+const PROGRESS_KEYS={legacy:LEGACY,academy:ACADEMY,labs:LABS,daily:DAILY,mastery:MASTERY,
+  cases:CASES,listening:LISTENING,mixer:MIXER,scenarios:SCENARIOS,phonetics:PHONETICS,micro:MICRO_KEY};
 export const BACKUP_FORMAT="shaira-learning-backup";
 export const BACKUP_VERSION=1;
 function object(x){return x!==null&&typeof x==="object"&&!Array.isArray(x);}
@@ -213,19 +215,6 @@ function cleanPhonetics(x){
  }
  return {items};
 }
-function cleanMicro(x){
- const raw=safeObj(x),finished=[];
- const mode=["gentle","steady","challenge"].includes(raw.mode)?raw.mode:"gentle";
- const index=Number.isInteger(raw.index)&&raw.index>=0&&raw.index<=78?raw.index:0;
- if(Array.isArray(raw.finished))for(const value of raw.finished.slice(-78)){
-  if(!object(value)||!Number.isInteger(value.index)||value.index<0||value.index>=78||
-     !["learned","tested"].includes(value.method)||!Number.isFinite(value.at)||value.at<0)continue;
-  finished.push({index:value.index,method:value.method,at:value.at});
- }
- const wrong=Number.isInteger(raw.wrong)&&raw.wrong>=0&&raw.wrong<=100000?raw.wrong:0;
- const totalPractice=Number.isInteger(raw.totalPractice)&&raw.totalPractice>=0&&raw.totalPractice<=100000?raw.totalPractice:0;
- return {index,mode,finished,wrong,totalPractice};
-}
 function parseExisting(storage,key){
   try{return JSON.parse(storage.getItem(key)||"{}");}
   catch{return {};}
@@ -243,7 +232,7 @@ export function buildBackup(storage=globalThis.localStorage){
     mixer:cleanMixer(parseExisting(storage,MIXER)),
     scenarios:cleanScenarios(parseExisting(storage,SCENARIOS)),
     phonetics:cleanPhonetics(parseExisting(storage,PHONETICS)),
-    micro:cleanMicro(parseExisting(storage,MICRO))
+    micro:normalizeMicroState(parseExisting(storage,MICRO_KEY))
   };
 }
 export function readBackup(json){
@@ -251,40 +240,38 @@ export function readBackup(json){
   let data;try{data=JSON.parse(json);}catch{throw new Error("Invalid JSON backup.");}
   if(!object(data)||data.format!==BACKUP_FORMAT||data.version!==BACKUP_VERSION)throw new Error("Not a compatible Shaira backup.");
   if(!object(data.legacy)||!object(data.academy))throw new Error("The backup is missing required progress data.");
-  return {legacy:cleanProgress(data.legacy),academy:cleanAcademy(data.academy),labs:cleanLabs(data.labs),daily:cleanDaily(data.daily),mastery:cleanMastery(data.mastery),cases:cleanCasePractice(data.cases),listening:cleanListening(data.listening),mixer:cleanMixer(data.mixer),scenarios:cleanScenarios(data.scenarios),phonetics:cleanPhonetics(data.phonetics),micro:cleanMicro(data.micro)};
+  return {legacy:cleanProgress(data.legacy),academy:cleanAcademy(data.academy),labs:cleanLabs(data.labs),daily:cleanDaily(data.daily),mastery:cleanMastery(data.mastery),cases:cleanCasePractice(data.cases),listening:cleanListening(data.listening),mixer:cleanMixer(data.mixer),scenarios:cleanScenarios(data.scenarios),phonetics:cleanPhonetics(data.phonetics),micro:normalizeMicroState(data.micro)};
+}
+function writeProgress(storage,data,action){
+  const entries=Object.entries(PROGRESS_KEYS).map(([section,key])=>({
+    key,before:storage.getItem(key),after:data?JSON.stringify(data[section]):null
+  })).filter(entry=>entry.before!==entry.after);
+  // Shrink large entries before adding new ones. Roll back in reverse order.
+  const change=({before,after})=>(after?.length??0)-(before?.length??0);
+  entries.sort((a,b)=>change(a)-change(b));
+  const write=(key,value)=>value===null?storage.removeItem(key):storage.setItem(key,value);
+  const changed=[];
+  try{
+    for(const entry of entries){
+      write(entry.key,entry.after);
+      changed.push(entry);
+    }
+  }catch(error){
+    let restored=true;
+    for(const entry of changed.reverse()){
+      try{write(entry.key,entry.before);}catch{restored=false;}
+    }
+    throw new Error("Could not "+action+". "+(restored?
+      "Your previous progress was kept.":"Some previous progress could not be restored."),{cause:error});
+  }
 }
 export function restoreBackup(json,storage=globalThis.localStorage){
-  const parsed=readBackup(json); // do all validation before changing device state
-  const beforeLegacy=storage.getItem(LEGACY),beforeAcademy=storage.getItem(ACADEMY),beforeLabs=storage.getItem(LABS),beforeDaily=storage.getItem(DAILY),beforeMastery=storage.getItem(MASTERY),beforeCases=storage.getItem(CASES),beforeListening=storage.getItem(LISTENING),beforeMixer=storage.getItem(MIXER),beforeScenarios=storage.getItem(SCENARIOS),beforePhonetics=storage.getItem(PHONETICS),beforeMicro=storage.getItem(MICRO);
-  try{
-    storage.setItem(LEGACY,JSON.stringify(parsed.legacy));
-    storage.setItem(ACADEMY,JSON.stringify(parsed.academy));
-    storage.setItem(LABS,JSON.stringify(parsed.labs));
-    storage.setItem(DAILY,JSON.stringify(parsed.daily));
-    storage.setItem(MASTERY,JSON.stringify(parsed.mastery));
-    storage.setItem(CASES,JSON.stringify(parsed.cases));
-    storage.setItem(LISTENING,JSON.stringify(parsed.listening));
-    storage.setItem(MIXER,JSON.stringify(parsed.mixer));
-    storage.setItem(SCENARIOS,JSON.stringify(parsed.scenarios));
-    storage.setItem(PHONETICS,JSON.stringify(parsed.phonetics));
-    storage.setItem(MICRO,JSON.stringify(parsed.micro));
-  }catch(error){
-    try{
-      if(beforeLegacy===null)storage.removeItem?.(LEGACY);else storage.setItem(LEGACY,beforeLegacy);
-      if(beforeAcademy===null)storage.removeItem?.(ACADEMY);else storage.setItem(ACADEMY,beforeAcademy);
-      if(beforeLabs===null)storage.removeItem?.(LABS);else storage.setItem(LABS,beforeLabs);
-      if(beforeDaily===null)storage.removeItem?.(DAILY);else storage.setItem(DAILY,beforeDaily);
-      if(beforeMastery===null)storage.removeItem?.(MASTERY);else storage.setItem(MASTERY,beforeMastery);
-      if(beforeCases===null)storage.removeItem?.(CASES);else storage.setItem(CASES,beforeCases);
-      if(beforeListening===null)storage.removeItem?.(LISTENING);else storage.setItem(LISTENING,beforeListening);
-      if(beforeMixer===null)storage.removeItem?.(MIXER);else storage.setItem(MIXER,beforeMixer);
-      if(beforeScenarios===null)storage.removeItem?.(SCENARIOS);else storage.setItem(SCENARIOS,beforeScenarios);
-      if(beforePhonetics===null)storage.removeItem?.(PHONETICS);else storage.setItem(PHONETICS,beforePhonetics);
-      if(beforeMicro===null)storage.removeItem?.(MICRO);else storage.setItem(MICRO,beforeMicro);
-    }catch{}
-    throw new Error("Could not write backup to this device: "+error.message);
-  }
+  const parsed=readBackup(json);
+  writeProgress(storage,parsed,"import your backup");
   return parsed;
+}
+export function resetProgress(storage=globalThis.localStorage){
+  writeProgress(storage,null,"erase progress");
 }
 export function downloadBackup(){
   const json=JSON.stringify(buildBackup(),null,2);
