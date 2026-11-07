@@ -1,6 +1,6 @@
 /* Cache only this app's public static files. No user progress or personal data is sent anywhere. */
-const CACHE = "shaira-static-v5";
-const SHELL = ["./", "./index.html", "./assets/styles.css", "./assets/lessons.js", "./assets/academy-data.js", "./assets/first-words.js", "./assets/backup.js", "./assets/dialogues.js", "./assets/academy-ui.js", "./assets/academy.css", "./assets/app.js", "./manifest.webmanifest", "./icons/icon.svg", "./icons/icon-180.png", "./icons/icon-192.png", "./icons/icon-512.png"];
+const CACHE = "shaira-static-v6";
+const SHELL = ["./", "./index.html", "./assets/styles.css", "./assets/lessons.js", "./assets/academy-data.js", "./assets/first-words.js", "./assets/backup.js", "./assets/grammar-drills.js", "./assets/reading-library.js", "./assets/learning-labs.js", "./assets/learning-labs.css", "./assets/dialogues.js", "./assets/academy-ui.js", "./assets/academy.css", "./assets/app.js", "./manifest.webmanifest", "./icons/icon.svg", "./icons/icon-180.png", "./icons/icon-192.png", "./icons/icon-512.png"];
 self.addEventListener("install", event => {
   event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(SHELL)).then(() => self.skipWaiting()));
 });
