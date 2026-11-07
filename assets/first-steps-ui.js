@@ -1,6 +1,6 @@
 // The first screen new adult beginners should see: micro-lessons, not an
 // A1 grammar exam. Progress belongs to each small step, not to elapsed days.
-import {FIRST_STEPS,FIRST_LETTERS,MICRO_TOTAL,modeInfo,microQuestions,microStepAt} from "./first-steps-data.js";
+import {FIRST_STEPS,MICRO_TOTAL,modeInfo,microQuestions,microStepAt} from "./first-steps-data.js";
 import {readMicro,changeMicroMode,needsMicroStart,finishMicroRung,microSkipRungs,
  recordMicroMistake,matchesMicroAnswer,MICRO_SKIP_SIZE} from "./first-steps-engine.js";
 const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -18,7 +18,7 @@ function getSession(state){
   return makeSession(state);
  return active;
 }
-const keyboard=(target="micro-typed")=>'<details class="ms-keyboard"><summary>⌨ Russian letters (optional keyboard)</summary>'+
+const keyboard=()=>'<details class="ms-keyboard"><summary>⌨ Russian letters (optional keyboard)</summary>'+
  ['ё й ц у к е н г ш щ з х ъ','ф ы в а п р о л д ж э','я ч с м и т ь б ю'].map(row=>
   '<div>'+row.split(" ").map(ch=>'<button type="button" data-micro="letter-key" data-char="'+ch+'">'+ch+'</button>').join("")+'</div>').join("")+
  '<div><button type="button" data-micro="letter-key" data-char=" " class="ms-space">Space</button>'+
