@@ -1,5 +1,6 @@
+import {adultWordPacks} from "./adult-word-packs.js";
 // Starter picture-word sets adapted from the owner's English_Child first-step sets.
-// 20 themes x 6 words; Russian targets with English and Filipino explanations.
+// 40 themes x 6 words; Russian targets with English and Filipino explanations.
 export const firstWordPacks = [
   {
     "id": "fw-01",
@@ -922,3 +923,5 @@ export const firstWordPacks = [
     ]
   }
 ];
+
+firstWordPacks.push(...adultWordPacks);
