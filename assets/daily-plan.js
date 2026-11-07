@@ -154,7 +154,7 @@ export function readDayState(storage=globalThis.localStorage){
    startedDate:typeof state.startedDate==="string"?state.startedDate:"",
    goal:[20,40,60].includes(state.goal)?state.goal:40,
    marks:safeRecord(state.marks),challenges:safeRecord(state.challenges),
-   finished:Array.isArray(state.finished)?state.finished.filter(x=>Number.isInteger(x.day)&&x.day>=0&&x.day<GUIDED_STUDY_DAYS).slice(-GUIDED_STUDY_DAYS):[],
+   finished:Array.isArray(state.finished)?state.finished.filter(x=>Number.isInteger(x?.day)&&x.day>=0&&x.day<GUIDED_STUDY_DAYS).slice(-GUIDED_STUDY_DAYS):[],
    errors:safeRecord(state.errors)
  };
 }

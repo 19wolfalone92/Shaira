@@ -38,6 +38,9 @@ test("main interface completes a lesson, keeps English instructions and opens wr
   const academyStatistics = () => ({completed:0,activities:264,knownWords:0,dueWords:0});
   const labStats = () => ({readingsPassed:0,readingsTotal:20,grammarAttempts:0});
   const stopSpeakingRehearsal = () => {};
+  const stopRussianAudio = () => {};
+  const enrolInMicroPath = () => {};
+  const readMicro = () => ({index:0});
   const todayHtml=()=>"<section>Today</section>";
   const todayPreview=()=>"<a href=\"#today\">Today</a>";
   const todayAction=()=>{};
@@ -72,11 +75,11 @@ test("main interface completes a lesson, keeps English instructions and opens wr
   const firstStepsAction=()=>{};
   const firstStepsSubmit=()=>false;
   const firstStepsInput=()=>false;
-  const run = new Function("sections","lessons","alphabet","keyboardRows","document","window","location","navigator","localStorage","academyStatistics","labStats","stopSpeakingRehearsal","todayHtml","todayPreview","todayAction","todaySubmit","todayInput","masteryHtml","masteryAction","masterySubmit","caseHtml","caseAction","caseSubmit","listeningHtml","listeningAction","mixerHtml","mixerAction","mixerSubmit","verbHtml","verbAction","scenariosHtml","scenariosAction","phoneticsHtml","phoneticsAction","coachHtml","courseSearchHtml","courseSearchInput","courseSearchAction","needsMicroStart","firstStepsHtml","firstStepsHomePreview","firstStepsAction","firstStepsSubmit","firstStepsInput","microCelebrationPending",source);
-  run(sections,lessons,alphabet,keyboardRows,document,window,location,navigator,localStorage,academyStatistics,labStats,stopSpeakingRehearsal,todayHtml,todayPreview,todayAction,todaySubmit,todayInput,masteryHtml,masteryAction,masterySubmit,caseHtml,caseAction,caseSubmit,listeningHtml,listeningAction,mixerHtml,mixerAction,mixerSubmit,verbHtml,verbAction,scenariosHtml,scenariosAction,phoneticsHtml,phoneticsAction,coachHtml,courseSearchHtml,courseSearchInput,courseSearchAction,needsMicroStart,firstStepsHtml,firstStepsHomePreview,firstStepsAction,firstStepsSubmit,firstStepsInput,microCelebrationPending);
+  const run = new Function("sections","lessons","alphabet","keyboardRows","document","window","location","navigator","localStorage","academyStatistics","labStats","stopSpeakingRehearsal","todayHtml","todayPreview","todayAction","todaySubmit","todayInput","masteryHtml","masteryAction","masterySubmit","caseHtml","caseAction","caseSubmit","listeningHtml","listeningAction","mixerHtml","mixerAction","mixerSubmit","verbHtml","verbAction","scenariosHtml","scenariosAction","phoneticsHtml","phoneticsAction","coachHtml","courseSearchHtml","courseSearchInput","courseSearchAction","needsMicroStart","firstStepsHtml","firstStepsHomePreview","firstStepsAction","firstStepsSubmit","firstStepsInput","microCelebrationPending","stopRussianAudio","enrolInMicroPath","readMicro",source);
+  run(sections,lessons,alphabet,keyboardRows,document,window,location,navigator,localStorage,academyStatistics,labStats,stopSpeakingRehearsal,todayHtml,todayPreview,todayAction,todaySubmit,todayInput,masteryHtml,masteryAction,masterySubmit,caseHtml,caseAction,caseSubmit,listeningHtml,listeningAction,mixerHtml,mixerAction,mixerSubmit,verbHtml,verbAction,scenariosHtml,scenariosAction,phoneticsHtml,phoneticsAction,coachHtml,courseSearchHtml,courseSearchInput,courseSearchAction,needsMicroStart,firstStepsHtml,firstStepsHomePreview,firstStepsAction,firstStepsSubmit,firstStepsInput,microCelebrationPending,stopRussianAudio,enrolInMicroPath,readMicro);
   const click=(action,props={})=>events.click({target:{closest:selector=>selector==="[data-action]"?{dataset:{action,...props}}:null}});
   assert.match(app.innerHTML,/Your learning path/);
-  click("open-lesson",{id:"vowels"});
+  click("open-lesson",{id:"vowels"});windowEvents.hashchange();
   assert.match(app.innerHTML,/10 Russian vowels/);
   for(let i=0;i<5;i++) click("next-card");
   assert.match(app.innerHTML,/Which letter usually/);
@@ -85,7 +88,7 @@ test("main interface completes a lesson, keeps English instructions and opens wr
   click("choose",{value:"Я"});
   assert.match(app.innerHTML,/Correct!/);
   assert.deepEqual(JSON.parse(storage.get("shaira-progress-v1")).completed, ["vowels"]);
-  click("finish-lesson");
+  click("finish-lesson");windowEvents.hashchange();
   click("language",{value:"tl"});
   assert.match(app.innerHTML,/Shaira, Russian starts here/);
   assert.doesNotMatch(app.innerHTML,/Kumusta, Shaira/);

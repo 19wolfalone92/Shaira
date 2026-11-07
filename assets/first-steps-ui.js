@@ -46,13 +46,13 @@ function studyCard(step){
  (letter?"Hear the letter name":"Hear it")+'</button>'+
  '<button type="button" data-micro="hear-slow" class="ms-outline">0.7× Slowly</button></div>'+
  (letter?'<p class="ms-hint">The audio gives the letter’s name. Use the sound above when you read words.</p>':"")+
- '<p class="ms-hint">Spend a minute looking and listening. You do not need to rush. Say the model aloud if you feel comfortable.</p>'+
+ '<button type="button" class="ms-primary" data-micro="start">I am ready for a tiny check →</button>'+
  (letter?'<div class="ms-trace-box"><strong>Optional: trace this one letter</strong>'+
  '<p>Use your finger or stylus. Handwriting is free practice and is not automatically marked.</p>'+
  '<div class="ms-trace-pad"><span lang="ru" aria-hidden="true">'+esc(letter.upper)+'</span>'+
  '<canvas id="micro-trace" aria-label="Freehand Cyrillic letter tracing pad" role="img"></canvas></div>'+
  '<button type="button" data-micro="clear-trace" class="ms-outline">Clear drawing ↻</button></div>':"")+
- '<button type="button" class="ms-primary" data-micro="start">I am ready for a tiny check →</button></section>';
+ '</section>';
 }
 function questionCard(q,index,total,session,fast=false){
  const opts=(fast?session.test?.options:session.options)||[];
@@ -96,23 +96,22 @@ function summary(state){
  '</span><b>'+c.count+'/'+c.total+'</b><i><em style="width:'+Math.round(c.count/c.total*100)+'%"></em></i></div>').join("")+'</div>'+
  '</details>'+revisit;
 }
-function startHeader(state,step,hidden=false){
+function startHeader(state){
  const pct=Math.round(state.index/MICRO_TOTAL*100);
  return '<section class="ms-hero"><span>SHAIRA · RUSSIAN FROM ABSOLUTE ZERO</span>'+
  '<h1>One small step at a time.</h1>'+
- '<p>No Russian knowledge is required. We will teach <strong>one new letter</strong>, then a sound, a syllable, a tiny word and finally short phrases. You choose the pace.</p>'+
+ '<p>Start with one letter. Build up to words and first conversations.</p>'+
  '<div class="ms-progress-numbers"><strong>'+state.index+' / '+MICRO_TOTAL+'</strong><span>tiny steps completed</span></div>'+
  '<div class="ms-progress" role="progressbar" aria-label="Foundation steps completed" aria-valuemin="0" aria-valuemax="'+MICRO_TOTAL+'" aria-valuenow="'+state.index+'"><i style="width:'+pct+'%"></i></div>'+
- (step?'<p class="ms-next">Next: <b>'+esc(hidden?'A tiny Russian check':step.title)+'</b> · about 2–5 minutes</p>':"")+
+ (state.index<MICRO_TOTAL?'<p class="ms-next">Step '+(state.index+1)+' · about 2–5 minutes</p>':"")+
  '</section>';
 }
 function modes(state){
- return '<section class="ms-mode"><h2>Choose how challenging this feels</h2>'+
- '<p>Start with Gentle. Change the difficulty at any time. Changing it restarts only the current unfinished check — your completed steps stay saved.</p>'+
- '<div class="ms-mode-row">'+Object.entries(modeInfo).map(([key,data])=>
+ return '<section class="ms-mode"><h2>Practice difficulty</h2>'+
+ '<div class="ms-mode-row" role="group" aria-label="Practice difficulty">'+Object.entries(modeInfo).map(([key,data])=>
  '<button type="button" data-micro="mode" data-value="'+key+'" aria-pressed="'+(state.mode===key)+'" class="'+(state.mode===key?"selected":"")+'">'+
  '<strong>'+data.name+'</strong><small>'+data.questions+' checks</small></button>').join("")+'</div>'+
- '<p class="ms-hint"><strong>Current mode:</strong> '+esc(modeInfo[state.mode].description)+'</p></section>';
+ '<p class="ms-hint">'+esc(modeInfo[state.mode].description)+'</p></section>';
 }
 function success(state,session){
  const old=FIRST_STEPS[session.index];
@@ -143,8 +142,8 @@ function fastPanel(session){
 }
 export function firstStepsHtml(){
  const state=readMicro(),s=getSession(state),step=microStepAt(s.index);
- if(s.test)return startHeader(state,microStepAt(state.index),true)+fastPanel(s);
- if(s.complete)return startHeader(state,microStepAt(state.index),true)+success(state,s)+summary(state);
+ if(s.test)return startHeader(state)+fastPanel(s);
+ if(s.complete)return startHeader(state)+success(state,s)+summary(state);
  if(!step)return '<section class="ms-success"><span>🎓</span><h1>Your Cyrillic foundation is ready.</h1>'+
  '<p>You have practised all 33 letters, 11 syllables, tiny Russian words and twelve first phrases in small steps.</p>'+
  '<p>This is not a Russian proficiency certificate. Your full guided course now develops longer vocabulary, grammar, listening, reading, writing and conversation.</p>'+
@@ -152,7 +151,7 @@ export function firstStepsHtml(){
  const questions=microQuestionsFor(step,s.mode);
  const review=s.review?'<section class="ms-fast-intro"><h2>Reviewing step '+(s.index+1)+'</h2>'+
    '<button type="button" data-micro="back" class="ms-back">← Return to my place</button></section>':"";
- return startHeader(state,s.review?null:step,s.phase!=="study")+review+modes(state)+
+ return startHeader(state)+review+modes(state)+
  (s.error?'<p class="ms-feedback retry" role="status">'+esc(s.error)+'</p>':"")+
  (s.phase==="study"?studyCard(step):
     questionCard(questions[s.question],s.question,questions.length,{...s,options:s.options[s.question]||[]}))+
@@ -211,7 +210,10 @@ export function firstStepsAction(button,api){
   return;
  }
  if(action==="next"||action==="back"){
-  makeSession(readMicro());api.render();return;
+  makeSession(state);
+  if(state.index>=MICRO_TOTAL&&!s.review&&api.route?.()==="academy/first-steps")api.navigate("today");
+  else api.render();
+  return;
  }
  if(action==="review"){openReview(Number(button.dataset.value),state,api);return;}
  if(action==="show-model"&&!s.test){makeSession(state,s.index);api.render(".ms-study h2");return;}

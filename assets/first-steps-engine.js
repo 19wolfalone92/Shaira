@@ -91,12 +91,13 @@ export function enrolInMicroPath(storage=globalThis.localStorage){
 export function needsMicroStart(storage=globalThis.localStorage){
  const state=readMicro(storage);
  if(state.index>=MICRO_TOTAL)return false;
+ const daily=parse(storage,"shaira-daily-v1");
+ if(Number(daily.index)>0)return false;
  if(state.enrolled||state.index>0)return true;
- // Preserve existing learners and their 210-day progress. Never reset the old course.
- const daily=parse(storage,"shaira-daily-v1"),legacy=parse(storage,"shaira-progress-v1"),
+ const legacy=parse(storage,"shaira-progress-v1"),
   academy=parse(storage,"shaira-academy-v1"),labs=parse(storage,"shaira-labs-v1"),
   mastery=parse(storage,"shaira-mastery-v1");
- if(Number(daily.index)>0||Number(daily.startedAt)>0||(Array.isArray(daily.finished)&&daily.finished.length>0))return false;
+ if(Number(daily.startedAt)>0||(Array.isArray(daily.finished)&&daily.finished.length>0))return false;
  if(Array.isArray(legacy.completed)&&legacy.completed.length>0)return false;
  if(Object.keys(safe(academy.done)).length||Object.keys(safe(academy.memory)).length)return false;
  if(Object.keys(safe(labs.grammar)).length||Object.keys(safe(labs.readings)).length||

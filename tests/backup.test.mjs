@@ -108,3 +108,20 @@ test("daily backup validation rejects impossible stages, oversized marks and mal
  assert.equal(result.challenges["17"].wrongQuiz,0);
  assert.equal(Object.prototype.hasOwnProperty.call(result.marks,"__proto__"),false);
 });
+
+test("a partially failed import restores earlier keys and keeps other apps' data",()=>{
+ const from=memory({"shaira-progress-v1":'{"completed":["vowels"]}'});
+ const target=memory({
+  "shaira-progress-v1":JSON.stringify({completed:["greetings","alphabet","phrases"]}),
+  "shaira-labs-v1":JSON.stringify({drafts:{old:"память"}}),
+  "another-app":"preserved"
+ });
+ const prior=[...target.map.entries()];
+ const set=target.setItem;
+ target.setItem=(key,value)=>{
+  if(key==="shaira-microsteps-v1")throw new Error("Storage full");
+  return set(key,value);
+ };
+ assert.throws(()=>restoreBackup(JSON.stringify(buildBackup(from)),target),/previous progress was kept/);
+ assert.deepEqual([...target.map.entries()].sort(),prior.sort());
+});

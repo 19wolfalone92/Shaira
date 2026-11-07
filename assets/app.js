@@ -126,7 +126,7 @@ function speak(text,rate,onResult,clipId) {
   },clipId);
 }
 function icon(id) {
-  return {home:"⌂",today:"◷",academy:"🎓",review:"✦",write:"✎",settings:"⚙"}[id];
+  return {home:"⌂",today:"◷",academy:"▤",review:"✦",write:"✎",settings:"⚙"}[id];
 }
 function navBar(route) {
   const active = route==="academy/review" ? "review" : route.startsWith("academy") ? "academy" : route.split("/")[0] === "lesson" ? "today" : route==="home"?"today":route;
@@ -134,7 +134,8 @@ function navBar(route) {
     `<a href="#${id==="review"?"academy/review":id}" class="nav-item ${active === id ? "active" : ""}" ${active === id ? 'aria-current="page"' : ""}><span aria-hidden="true">${icon(id)}</span><small>${phrase(id)}</small></a>`).join("")}</nav>`;
 }
 function header() {
-  const counter=needsMicroStart()?readMicro().index+" steps":academyStatistics().completed+" ✓";
+  const steps=readMicro().index,activities=academyStatistics().completed;
+  const counter=needsMicroStart()||(!activities&&steps)?steps+" steps":activities+" ✓";
   return `<header class="topbar"><a href="#home" class="brand-mark" aria-label="Shaira · Home">Ш</a><div><div class="brand">shaira<span class="brand-dot">.</span></div><div class="brand-caption">${phrase("tagline")}</div></div><a class="top-counter" href="#today" aria-label="${phrase("progress")}">${counter}</a></header>`;
 }
 function home() {
@@ -305,7 +306,7 @@ function initializeCanvas() {
 }
 document.addEventListener("click", event => {
   const microButton=event.target.closest("[data-micro]");
-  if(microButton){firstStepsAction(microButton,{route:currentRoute,render,speak,notice:showToast});return;}
+  if(microButton){firstStepsAction(microButton,{route:currentRoute,render,speak,navigate,notice:showToast});return;}
   const searchButton=event.target.closest("[data-search]");
   if(searchButton){courseSearchAction(searchButton);return;}
   const soundButton=event.target.closest("[data-sound]");

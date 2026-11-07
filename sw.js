@@ -35,6 +35,7 @@ self.addEventListener("fetch", event => {
   const url = new URL(request.url);
   if (request.mode === "navigate") {
     url.search = "";
+    url.hash = "";
     if (url.href === scope || url.href === indexURL) event.respondWith(serve(indexURL, request));
   } else if (assets.has(url.href)) {
     event.respondWith(serve(url.href, request));
