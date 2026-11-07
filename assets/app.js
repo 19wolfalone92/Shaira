@@ -5,6 +5,7 @@ import {todayHtml,todayPreview,todayAction,todaySubmit,todayInput} from "./daily
 import {labHtml,labAction,labInput,labStats} from "./learning-labs.js";
 import {masteryHtml,masteryAction,masterySubmit} from "./mastery-ui.js";
 import {caseHtml,caseAction,caseSubmit} from "./case-trainer.js";
+import {listeningHtml,listeningAction} from "./listening-ui.js";
 
 const STORAGE_KEY = "shaira-progress-v1";
 const dictionary = {
@@ -107,12 +108,12 @@ function currentRoute() {
   if (hash.startsWith("lesson/") && lessons.some(l => l.id === hash.slice(7))) return hash;
   return hash === "academy" || hash.startsWith("academy/") ? hash : ["home","today","review","write","settings"].includes(hash) ? hash : "today";
 }
-function speak(text) {
+function speak(text,rate=0.78) {
   if (!("speechSynthesis" in window)) { showToast(phrase("audioUnavailable")); return; }
   window.speechSynthesis.cancel();
   const utterance = new SpeechSynthesisUtterance(text);
   utterance.lang = "ru-RU";
-  utterance.rate = 0.78;
+  utterance.rate = Math.min(1.2,Math.max(0.5,Number(rate)||0.78));
   const voices = window.speechSynthesis.getVoices();
   const russian = voices.find(v => v.lang.toLowerCase().startsWith("ru"));
   if (russian) utterance.voice = russian;
@@ -238,7 +239,7 @@ function render() {
   if (drawingCleanup) { drawingCleanup(); drawingCleanup = null; }
   const route = currentRoute();
   if(!route.startsWith("academy/lesson/") || !route.endsWith("/speak"))stopSpeakingRehearsal();
-  const page = route==="academy/cases"||route.startsWith("academy/cases/") ? caseHtml(route,state.language) : route==="academy/mastery"||route.startsWith("academy/mastery/")||route.startsWith("academy/checkpoint/") ? masteryHtml(route,state.language) : route === "today" ? todayHtml(state.language) : route === "home" ? home() : route === "academy/lab" || route.startsWith("academy/grammar") || route.startsWith("academy/library") || route.startsWith("academy/writing") || route.startsWith("academy/handbook") ? labHtml(route,state.language) : route.startsWith("academy") ? academyHtml(route,state.language) : route === "review" ? reviewPage() : route === "write" ? writePage() :
+  const page = route==="academy/listening"||route.startsWith("academy/listening/") ? listeningHtml(route) : route==="academy/cases"||route.startsWith("academy/cases/") ? caseHtml(route,state.language) : route==="academy/mastery"||route.startsWith("academy/mastery/")||route.startsWith("academy/checkpoint/") ? masteryHtml(route,state.language) : route === "today" ? todayHtml(state.language) : route === "home" ? home() : route === "academy/lab" || route.startsWith("academy/grammar") || route.startsWith("academy/library") || route.startsWith("academy/writing") || route.startsWith("academy/handbook") ? labHtml(route,state.language) : route.startsWith("academy") ? academyHtml(route,state.language) : route === "review" ? reviewPage() : route === "write" ? writePage() :
     route === "settings" ? settingsPage() : lessonPage(route.slice(7));
   document.documentElement.lang = "en";
   document.title = "Shaira · Learn Russian";
@@ -282,6 +283,8 @@ function initializeCanvas() {
   drawingCleanup = () => {canvas.removeEventListener("pointerdown",down);canvas.removeEventListener("pointermove",move);canvas.removeEventListener("pointerup",up);canvas.removeEventListener("pointercancel",up);};
 }
 document.addEventListener("click", event => {
+  const listenButton=event.target.closest("[data-listening]");
+  if(listenButton){listeningAction(listenButton,{language:()=>state.language,route:currentRoute,render,speak,navigate,notice:showToast});return;}
   const caseButton=event.target.closest("[data-case]");
   if(caseButton){caseAction(caseButton,{language:()=>state.language,route:currentRoute,render,speak,navigate,notice:showToast});return;}
   const masteryButton=event.target.closest("[data-mastery]");
