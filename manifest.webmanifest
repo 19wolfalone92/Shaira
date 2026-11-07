@@ -1,13 +1,13 @@
 {
   "name": "Shaira — Learn Russian",
   "short_name": "Shaira",
-  "description": "Russian from the alphabet to reading and grammar, in English or Filipino.",
+  "description": "Russian from the alphabet to reading and grammar, with English instructions.",
   "id": "./",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "background_color": "#fbfaff",
-  "theme_color": "#7463d8",
+  "theme_color": "#57469b",
   "lang": "en",
   "icons": [
     {
