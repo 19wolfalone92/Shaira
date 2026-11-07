@@ -53,11 +53,11 @@ test("five distinct, independently authored stage reviews contain 8 selected and
    for(const [i,q]of p.questions.entries()){
      assert.ok(q.explanation.en&&q.explanation.tl,p.stage+":"+i);
      if(q.type==="choice"){
-       assert.ok(typeof q.prompt==="string"&&q.prompt.length>4);
+       assert.ok(q.prompt.en&&q.prompt.tl&&q.prompt.en.length>4);
        assert.equal(q.choices.length,4);
        assert.equal(new Set(q.choices).size,4);
        assert.ok(q.choices.includes(q.answer));
-       assert.equal(originalPrompts.has(q.prompt),false,"do not reuse the exact training question");
+       assert.equal(originalPrompts.has(q.prompt.en),false,"do not reuse the exact training question");
      }else{
        assert.ok(q.prompt.en&&q.prompt.tl);
        assert.match(q.answer,/[\u0400-\u052F]/u);
