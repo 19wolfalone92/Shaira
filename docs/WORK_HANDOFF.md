@@ -135,3 +135,13 @@ The user explicitly prioritised genuine daily learning across ALL skills, analog
 - Added **30 English-guided audio-first listening scenarios** (6 per study stage); Russian transcript is hidden until after answering, with a reading-only reveal action that does not count as listening. Uses browser Russian TTS and explicitly does not claim native audio.
 - Integrated listening into eligible speaking/listening daily study days; unavailable-TTS fallback redirects to reading without labelling it as a listening grade. Backups include validated listening history. Offline shell includes every new asset.
 - QA tests cover language lock, all new material, 210 daily references, listening grading, backup and browser degradation. Actual proficiency B2 remains unproven and requires authentic recorded audio and independent writing/oral evaluation.
+
+## November 7, 2026 — expanded v0.6 varied adult Russian course
+
+- Added Variety Lab: 13 scored modalities, adaptive twelve-question rounds, recognition, meaning recall, independent writing, noun cases, verb conjugations, sentence assembly, error correction, contextual reading, four-pair matching, and Russian synthetic-voice listening/dictation. New per-question local SRS history prioritises unseen, due and mistaken prompts.
+- Added 24 curated Russian verb paradigms (240 present/past forms), plus a browsable and voice-enabled Verb Lab reference.
+- Added 40 authored sentence-building models and 40 common-error pairs with English explanations; the practice engine additionally uses the existing vocabulary, grammar, noun-case and reading corpora.
+- Added 15 contextual branching adult conversation missions, 45 choices and two different dialogue consequences for each choice. This is curated decision-based dialogue, NOT free conversation or an AI proficiency assessment.
+- Each weekly guided revision now requires a fresh mixed round >=9/12, with >=2 correct productive written/order tasks.
+- Offline PWA assets, smoke/integration and content tests, backward-compatible sanitised JSON backup now cover new modules and scenario scores.
+- English-only learner instructions remain mandatory. Native-speaker audio, intelligent semantic essay grading, accent evaluation and independent B2 proficiency verification remain absent.
