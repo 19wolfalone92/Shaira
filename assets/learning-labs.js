@@ -1,6 +1,7 @@
 import {stages} from "./academy-data.js";
 import {grammarDrills,drillsForStage} from "./grammar-drills.js";
 import {readingLibrary,readingsForStage} from "./reading-library.js";
+import {writingTasks,writingForStage,writingWordTargets} from "./writing-tasks.js";
 
 const KEY="shaira-labs-v1";
 const TXT={
@@ -66,7 +67,8 @@ function overview(l){
   return back(l)+top("SHAIRA · STUDY",TXT[l].home,TXT[l].intro)+
   '<div class="lp-advice">'+esc(TXT[l].introAdvice)+'</div>'+
   '<div class="lp-paths"><a href="#academy/grammar"><span>✳</span><div><strong>'+TXT[l].grammar+'</strong><p>'+TXT[l].grammarDesc+'</p></div><b>›</b></a>'+
-  '<a href="#academy/library"><span>▤</span><div><strong>'+TXT[l].reading+'</strong><p>'+TXT[l].readingDesc+'</p></div><b>›</b></a></div>'+
+  '<a href="#academy/library"><span>▤</span><div><strong>'+TXT[l].reading+'</strong><p>'+TXT[l].readingDesc+'</p></div><b>›</b></a>'+
+  '<a href="#academy/writing"><span>✎</span><div><strong>'+b("Writing portfolio","Portfolio ng pagsusulat",l)+'</strong><p>'+b("30 guided adult writing tasks, from simple notes to balanced essays.","30 gawain sa pagsusulat: mula mensahe hanggang sanaysay.",l)+'</p></div><b>›</b></a></div>'+
   '<small class="lp-muted">'+TXT[l].examples+'</small>';
 }
 function grammarMenu(l){
@@ -151,6 +153,63 @@ function readingPage(id,l){
     (s.translation?'<div class="lp-reading-guide">'+TXT[l].translation+': '+esc(loc(p.guide,l))+'</div>':"")+
    '</article>'+glossary+question+writing;
 }
+
+function writingMenu(l){
+ return link("academy/lab","← "+TXT[l].go)+
+  top("✎ "+b("WRITE IN RUSSIAN","SUMULAT SA RUSO",l),b("Writing portfolio","Portfolio ng pagsusulat",l),
+    b("30 original assignments from the first sentences to structured B2 essays. Save, revise and compare models.","30 gawain mula unang pangungusap hanggang sanaysay sa B2. I-save, baguhin at ihambing ang modelo.",l))+
+  stages.map(stage=>{
+    const tasks=writingForStage(stage.id);
+    const done=tasks.filter(t=>String(data.drafts["portfolio:"+t.id]||"").trim().length>0).length;
+    return '<section class="lp-shelf"><div><strong>'+stage.icon+' '+stage.label+'</strong><small>'+done+'/'+tasks.length+'</small></div>'+
+      tasks.map(t=>'<a href="#academy/writing/task/'+t.id+'"><span>✎</span><div><strong>'+esc(loc(t.title,l))+'</strong>'+
+        '<small>'+esc(loc(t.brief,l))+'</small></div><b>'+((data.drafts["portfolio:"+t.id]||"").trim()?"✓":"›")+'</b></a>').join("")+
+      '</section>';
+  }).join("");
+}
+function getWritingEvaluation(text,task,l){
+ const n=words(text),range=writingWordTargets[task.stage]||[10,50];
+ const hasCyr=/[\u0400-\u052f]/u.test(text);
+ const ends=/[.!?…]\s*$/u.test(text.trim());
+ const paragraphCount=text.trim()?text.split(/\n\s*\n/).filter(x=>x.trim()).length:0;
+ const connective=/\b(однако|поэтому|поскольку|следовательно|во-первых|во-вторых|хотя|несмотря|таким образом|с другой стороны)\b/iu.test(text);
+ const checks=[
+  {pass:hasCyr,label:b("Russian Cyrillic is used","May ginamit na Russian Cyrillic",l)},
+  {pass:n>=range[0],label:b("Target length: at least ","Target na haba: hindi bababa sa ",l)+range[0]+" "+TXT[l].wordCount},
+  {pass:ends,label:b("The text ends with punctuation","May bantas sa huling pangungusap",l)}
+ ];
+ if(["b1","b2"].includes(task.stage))
+  checks.push({pass:connective,label:b("An argument connector appears","May pangdugtong sa pangangatwiran",l)});
+ if(task.stage==="b2")
+  checks.push({pass:paragraphCount>=2,label:b("At least two paragraphs","Hindi bababa sa dalawang talata",l)});
+ return {count:n,checks,range};
+}
+function writingStudioPage(id,l){
+ const task=writingTasks.find(t=>t.id===id);
+ if(!task)return writingMenu(l);
+ const content=data.drafts["portfolio:"+task.id]||"",ev=getWritingEvaluation(content,task,l);
+ return link("academy/writing","← "+b("Writing portfolio","Portfolio ng pagsusulat",l))+
+ top("✎ "+stageLabel(task.stage),loc(task.title,l),loc(task.brief,l))+
+ '<section class="lp-text"><h2>'+b("An opening you can adapt","Halimbawang panimula na maaaring baguhin",l)+'</h2>'+
+ '<p lang="ru" class="lp-sample-sentence">'+esc(task.model)+'</p>'+
+ '<div class="lp-advice">'+esc(loc(task.check,l))+'</div></section>'+
+ '<section class="lp-writing"><h2>'+b("Your own draft","Iyong sariling sulat",l)+'</h2>'+
+ '<p>'+b("Write independently before comparing with the sample. There is no automatic language marking.","Sumulat nang mag-isa bago ihambing ang halimbawa. Walang awtomatikong pagsusuri sa gramatika.",l)+'</p>'+
+ '<label for="lp-studio-draft">'+b("Your Russian text","Iyong tekstong Ruso",l)+'</label>'+
+ '<textarea id="lp-studio-draft" lang="ru" spellcheck="true" rows="10" placeholder="'+TXT[l].draft+'">'+esc(content)+'</textarea>'+
+ '<div class="lp-writing-actions"><span id="lp-studio-count">'+ev.count+' '+TXT[l].wordCount+'</span>'+
+ '<button type="button" data-lab="save-studio" class="lp-primary">'+TXT[l].save+'</button></div>'+
+ '<button type="button" class="lp-secondary" data-lab="review-studio">'+b("Check format and revise","Suriin ang anyo at baguhin",l)+'</button>'+
+ '<div id="lp-studio-feedback" aria-live="polite"></div>'+
+ '<div class="lp-advice">'+b("This self-check checks formatting only, not grammar, meaning, idiomatic style or CEFR level.","Ang self-check ay sa anyo lamang, hindi sa gramatika, kahulugan, estilo o CEFR.",l)+'</div></section>';
+}
+function writingFeedback(task,l,text){
+ const e=getWritingEvaluation(text,task,l);
+ return '<section class="lp-selfcheck"><h3>'+b("Self-editing checklist","Listahan sa sariling pag-eedit",l)+'</h3>'+
+ '<p>'+e.count+' '+TXT[l].wordCount+' · '+b("suggested","iminumungkahi",l)+' '+e.range.join("–")+'</p><ul>'+
+ e.checks.map(x=>'<li><strong>'+ (x.pass?"✓":"○") +'</strong> '+esc(x.label)+'</li>').join("")+'</ul>'+
+ '<p>'+b("Review case endings, aspect, coherence and factual accuracy yourself. A teacher or skilled speaker should review your longer texts.","Suriin ang mga hulihan, aspekto, pagkakaugnay at katotohanan. Magpasuri sa guro o bihasang tagapagsalita.",l)+'</p></section>';
+}
 export function labHtml(route,l="en"){
  if(!TXT[l])l="en";
  if(route==="academy/lab")return overview(l);
@@ -166,6 +225,19 @@ export function labAction(button,api){
    const id=route.split("/")[2],p=readingLibrary.find(x=>x.id===id);if(p)api.speak(p.text);return;
  }
  if(a==="toggle-guide"){if(session){session.translation=!session.translation;api.render();}return;}
+ if(a==="save-studio"||a==="review-studio"){
+   const id=route.split("/")[3],task=writingTasks.find(t=>t.id===id),input=document.getElementById("lp-studio-draft");
+   if(!task||!input)return;
+   const draft=input.value;
+   if(a==="save-studio"){
+     data.drafts["portfolio:"+id]=draft;
+     api.notice?.(save()?TXT[l].saved:TXT[l].saveError);
+   }else{
+     const node=document.getElementById("lp-studio-feedback");
+     if(node)node.innerHTML=writingFeedback(task,l,draft);
+   }
+   return;
+ }
  if(a==="save-writing"){
    const id=route.split("/")[2],input=document.getElementById("lp-draft");if(!input)return;
    data.drafts[id]=input.value;
@@ -219,6 +291,10 @@ export function labAction(button,api){
  }
 }
 export function labInput(event,api){
+ if(event.target.id==="lp-studio-draft"){
+   const count=document.getElementById("lp-studio-count");if(count)count.textContent=words(event.target.value)+" "+TXT[api.language()==="tl"?"tl":"en"].wordCount;
+   return true;
+ }
  if(event.target.id==="lp-draft"){
    const count=document.getElementById("lp-wordcount");if(count)count.textContent=words(event.target.value)+" "+TXT[api.language()==="tl"?"tl":"en"].wordCount;
    return true;
@@ -226,7 +302,7 @@ export function labInput(event,api){
  return false;
 }
 export function labStats(){
- return {grammarTotal:grammarDrills.length,readingsTotal:readingLibrary.length,
+ return {grammarTotal:grammarDrills.length,readingsTotal:readingLibrary.length,writingTotal:writingTasks.length,
   grammarAttempts:Object.values(data.grammar).reduce((v,x)=>v+(x.attempts||0),0),
   readingsPassed:Object.values(data.readings).filter(x=>x.passed).length};
 }
