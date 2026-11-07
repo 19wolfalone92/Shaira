@@ -98,11 +98,12 @@ function baseNav(l){
 function overview(l){
   const d=Object.keys(store.done).length;
   const memory=memoryDue();
-  return '<div class="aca-hero"><div class="aca-stars" aria-hidden="true">✦ 🌷 ✦</div><span class="aca-overline">SHAIRA • RUSSIAN SCHOOL</span><h1>'+UI[l].title+'</h1><p>'+UI[l].intro+'</p><div class="aca-hero-badges"><span>🇷🇺 Pre-A1 → B2</span><span>✍️ '+units.length+' '+UI[l].word+' / '+units.length+' units</span></div></div>'+
+  return '<div class="aca-hero"><div class="aca-stars" aria-hidden="true">А Б В</div><span class="aca-overline">SHAIRA · LANGUAGE ACADEMY</span><h1>'+UI[l].title+'</h1><p>'+UI[l].intro+'</p><div class="aca-hero-badges"><span>🇷🇺 Pre-A1 → B2</span><span>✍️ '+units.length+' '+UI[l].word+' / '+units.length+' units</span></div></div>'+
   '<div class="aca-summary"><div><b>'+d+'/'+totalActivities+'</b><small>'+UI[l].total+'</small></div><div><b>⭐ '+store.points+'</b><small>'+UI[l].stars+'</small></div><div><b>'+memory.due.length+'</b><small>'+UI[l].due+'</small></div></div>'+
   '<section class="aca-path-info"><strong>🌟 '+UI[l].courseGuide+'</strong><p>'+UI[l].notice+'</p></section>'+
-  '<a class="aca-review-call" href="#academy/first-words"><span>🧸</span><span><strong>'+tx("My first 120 Russian words","Unang 120 salita sa Ruso",l)+'</strong><small>'+tx("20 tiny picture-word themes, 6 words at a time","20 munting paksa, tig-6 na salita",l)+'</small></span><b>›</b></a>'+
+  '<a class="aca-review-call" href="#academy/first-words"><span>Аа</span><span><strong>'+tx("120 essential Russian words","120 mahalagang salita sa Ruso",l)+'</strong><small>'+tx("20 practical word topics, 6 words each","20 praktikal na paksa, tig-6 na salita",l)+'</small></span><b>›</b></a>'+
   '<a class="aca-review-call" href="#academy/dialogues"><span>💬</span><span><strong>'+tx("Russian conversation lab","Pagsasanay sa usapan sa Ruso",l)+'</strong><small>'+tx("20 situations: say it, listen, understand","20 sitwasyon: magsalita, makinig, umunawa",l)+'</small></span><b>›</b></a>'+
+  '<a class="aca-review-call" href="#academy/lab"><span>✳</span><span><strong>'+tx("Grammar and reading studio","Pagsasanay sa gramatika at pagbasa",l)+'</strong><small>'+tx("100 grammar drills · 20 graded texts · independent writing","100 pagsasanay sa gramatika · 20 teksto · sariling pagsulat",l)+'</small></span><b>›</b></a>'+
   '<div class="aca-stage-list">'+stages.map((stage,i)=>{
     const list=units.filter(x=>x.stage===stage.id), n=list.reduce((s,x)=>s+unitDone(x),0),max=list.length*activityModes.length;
     return '<a class="aca-stage-card" href="#academy/level/'+stage.id+'"><span class="aca-stage-index">'+(i+1)+'</span><span class="aca-stage-icon">'+stage.icon+'</span><span class="aca-stage-copy"><small>'+stage.label+'</small><strong>'+val(stage,l)+'</strong><span class="aca-track"><i style="width:'+pct(n,max)+'%"></i></span><em>'+n+'/'+max+'</em></span><span class="aca-chev">›</span></a>';
@@ -112,7 +113,7 @@ function overview(l){
 function firstWordsPage(route,l){
   const packId=route.split("/")[2];
   if(!packId){
-    return '<a class="aca-back" href="#academy">← '+UI[l].back+'</a>'+top("🧸 Pre-A1",tx("My first 120 Russian words","Unang 120 salita sa Ruso",l),tx("Learn 6 at a time, like our English app. Tap a picture, listen, repeat, then remember.","Anim na salita bawat aralin. Tingnan, pakinggan, ulitin at alalahanin.",l))+
+    return '<a class="aca-back" href="#academy">← '+UI[l].back+'</a>'+top("🧸 Pre-A1",tx("My first 120 Russian words","Unang 120 salita sa Ruso",l),tx("Learn six words at a time. Listen, read, repeat and test your recall.","Anim na salita bawat aralin. Makinig, bumasa, ulitin at alalahanin.",l))+
       '<div class="aca-units">'+firstWordPacks.map((p,i)=>
         '<a class="aca-unit-card" href="#academy/first-words/'+p.id+'"><span class="aca-unit-icon">'+p.icon+'</span><span><small>'+(i+1)+'/20</small><strong>'+esc(val(p.title,l))+'</strong><em>'+(modeDone(p,"words")?UI[l].completed:"6 "+UI[l].words)+'</em></span><span class="aca-chev">›</span></a>').join("")+'</div>';
   }
@@ -145,6 +146,7 @@ function stagePage(id,l){
   const stage=getStage(id);if(!stage)return overview(l);
   const list=units.filter(u=>u.stage===id);
   return '<a class="aca-back" href="#academy">← '+UI[l].back+'</a>'+top(stage.icon+" "+stage.label,val(stage,l),val(stage.target,l))+
+  '<div class="aca-path-info"><strong>'+tx("Practise the grammar of this level with 20 explained questions.","Magsanay ng gramatika sa antas na ito sa 20 tanong na may paliwanag.",l)+'</strong><div class="aca-mini-nav"><a href="#academy/grammar/'+id+'">✳ '+tx("Grammar trainer","Pagsasanay sa gramatika",l)+'</a><a href="#academy/library">▤ '+tx("Reading library","Aklatan sa pagbabasa",l)+'</a></div></div>'+
   '<div class="aca-units">'+list.map((u,i)=>'<a class="aca-unit-card" href="#academy/unit/'+u.id+'"><span class="aca-unit-icon">'+u.icon+'</span><span><small>'+stage.label+' • '+(i+1)+'/'+list.length+'</small><strong>'+val(u.title,l)+'</strong><em>'+unitDone(u)+'/'+activityModes.length+' '+UI[l].total+'</em></span><span class="aca-chev">›</span></a>').join("")+'</div>'+baseNav(l);
 }
 function unitPage(id,l){
@@ -155,7 +157,7 @@ function unitPage(id,l){
     top(u.icon+' '+s.label,val(u.title,l),val(u.rule,l))+
     '<section class="aca-panel"><h2>'+UI[l].model+'</h2>'+sample+'</section>'+
     '<section class="aca-panel"><h2>'+UI[l].vocab+'</h2><div class="aca-glossary">'+u.words.map(w=>'<div><button class="aca-sound" data-aca="sound" data-text="'+esc(w.ru)+'" aria-label="'+UI[l].audio+'">🔊</button><strong lang="ru">'+esc(w.ru)+'</strong><span>'+esc(val(w,l))+'</span></div>').join("")+'</div></section>'+
-    '<h2 class="aca-section-title">'+UI[l].continue+'</h2><div class="aca-activities">'+activityModes.map(m=>
+    '<h2 class="aca-section-title">'+UI[l].continue+'</h2><p class="aca-muted">'+tx("These tasks build familiarity. To test grammar in new situations, use the separate trainer.","Panimulang pagsasanay ito. Para sa bagong halimbawa ng gramatika, gamitin ang trainer.",l)+'</p><div class="aca-activities">'+activityModes.map(m=>
       '<a class="aca-mode" href="#academy/lesson/'+u.id+'/'+m.id+'"><span>'+m.emoji+'</span><strong>'+tx(m.en,m.tl,l)+'</strong>'+marker(u,m)+'</a>').join("")+'</div>'+baseNav(l);
 }
 function russianBoard(){
