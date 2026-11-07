@@ -81,7 +81,7 @@ function getSession(route,stage){
   if(session?.route===route)return session;
   const prior=data.grammar[stage]?.items||{};
   const bank=drillsForStage(stage);
-  const questions=shuffle(bank).sort((a,b)=>(prior[a.id]?.seen||0)-(prior[b.id]?.seen||0)).slice(0,10);
+  const questions=shuffle(bank).sort((a,b)=>(prior[a.id]?.seen||0)-(prior[b.id]?.seen||0)).slice(0,10).map(q=>({...q,options:shuffle(q.choices)}));
   session={route,stage,kind:"grammar",questions,index:0,correct:0,answered:false,selection:null,complete:false,missed:[],started:Date.now()};
   return session;
 }
@@ -105,9 +105,9 @@ function grammarPage(stage,l){
   const q=s.questions[s.index];
   return nav+'<section class="lp-question"><div class="lp-meta"><b>'+TXT[l].question+" "+(s.index+1)+"/"+s.questions.length+'</b><small>'+stageLabel(stage)+'</small></div>'+
     '<h2>'+esc(loc(q.instruction,l))+'</h2><p>'+esc(loc(q.context,l))+'</p>'+
-    '<div class="lp-options">'+q.choices.map((v,i)=>
+    '<div class="lp-options">'+q.options.map((v,i)=>
       '<button type="button" data-lab="answer-grammar" data-choice="'+i+'" '+(s.answered?"disabled":"")+' class="'+(s.answered&&v===q.answer?"lp-right":s.answered&&i===s.selection?"lp-wrong":"")+'">'+esc(v)+'</button>').join("")+'</div>'+
-    (s.answered?'<div class="lp-explanation" role="status"><strong>'+(s.questions[s.index].choices[s.selection]===q.answer?TXT[l].done:TXT[l].wrong)+'</strong>'+
+    (s.answered?'<div class="lp-explanation" role="status"><strong>'+(s.questions[s.index].options[s.selection]===q.answer?TXT[l].done:TXT[l].wrong)+'</strong>'+
       '<p>'+TXT[l].answer+': <span lang="ru">'+esc(q.answer)+'</span></p><p>'+esc(loc(q.explanation,l))+'</p>'+
       '<button type="button" data-lab="next-grammar" class="lp-primary">'+TXT[l].next+'</button></div>':"")+
     '</section>';
@@ -124,7 +124,7 @@ function libraryMenu(l){
 function readingPage(id,l){
  const p=readingLibrary.find(x=>x.id===id);if(!p)return libraryMenu(l);
  const route="academy/library/"+id;
- if(!session||session.route!==route)session={route,kind:"reading",id,translation:false,answered:[],selection:null,feedback:null,complete:false};
+ if(!session||session.route!==route)session={route,kind:"reading",id,translation:false,answered:[],selection:null,feedback:null,complete:false,options:p.questions.map(q=>shuffle(q.choices))};
  const s=session, saved=data.readings[id]||{};
  const q=p.questions[s.answered.length];
  const stage=stageLabel(p.stage);
@@ -132,7 +132,7 @@ function readingPage(id,l){
  let question="";
  if(!s.complete){
    question='<section class="lp-question"><div class="lp-meta">'+TXT[l].comprehension+' · '+(s.answered.length+1)+"/"+p.questions.length+'</div>'+
-   '<h2>'+esc(loc(q.ask,l))+'</h2><div class="lp-options">'+q.choices.map((x,i)=>
+   '<h2>'+esc(loc(q.ask,l))+'</h2><div class="lp-options">'+s.options[s.answered.length].map((x,i)=>
      '<button type="button" data-lab="answer-read" data-choice="'+i+'" '+(s.feedback?"disabled":"")+
      ' class="'+(s.feedback&&x===q.answer?"lp-right":s.feedback&&i===s.selection?"lp-wrong":"")+'">'+esc(x)+'</button>').join("")+'</div>'+
    (s.feedback?'<div class="lp-explanation" role="status"><strong>'+(s.feedback.good?TXT[l].done:TXT[l].wrong)+'</strong><p>'+loc(q.explain,l)+'</p>'+
@@ -281,8 +281,8 @@ export function labAction(button,api){
  }
  if(a==="answer-grammar"&&session?.kind==="grammar"&&!session.answered){
    const s=session,q=s.questions[s.index],choice=Number(button.dataset.choice);
-   if(!Number.isInteger(choice)||choice<0||choice>=q.choices.length)return;
-   const good=q.choices[choice]===q.answer;
+   if(!Number.isInteger(choice)||choice<0||choice>=q.options.length)return;
+   const good=q.options[choice]===q.answer;
    s.selection=choice;s.answered=true;s.correct+=Number(good);
    if(!good)s.missed.push(q);
    const existing=data.grammar[s.stage]||{best:0,attempts:0,items:{}};
@@ -304,8 +304,8 @@ export function labAction(button,api){
  if(a==="answer-read"&&session?.kind==="reading"&&!session.feedback){
    const s=session,p=readingLibrary.find(x=>x.id===s.id),q=p.questions[s.answered.length];
    const choice=Number(button.dataset.choice);
-   if(!Number.isInteger(choice)||choice<0||choice>=q.choices.length)return;
-   s.selection=choice;s.feedback={good:q.choices[choice]===q.answer};
+   if(!Number.isInteger(choice)||choice<0||choice>=s.options[s.answered.length].length)return;
+   s.selection=choice;s.feedback={good:s.options[s.answered.length][choice]===q.answer};
    api.render();return;
  }
  if(a==="next-read"&&session?.kind==="reading"&&session.feedback){
@@ -321,6 +321,7 @@ export function labAction(button,api){
  }
  if(a==="repeat-read"&&session?.kind==="reading"){
    session.answered=[];session.feedback=null;session.selection=null;session.complete=false;
+   session.options=readingLibrary.find(x=>x.id===session.id).questions.map(q=>shuffle(q.choices));
    api.render();return;
  }
 }
