@@ -13,7 +13,7 @@ const russianKeys=["ё й ц у к е н г ш щ з х ъ","ф ы в а п р �
 let session=null;
 function start(stage){
  session={stage,items:selectMix(stage,loadMix(),{audio:speechAvailable()}),index:0,
- answered:[],feedback:null,entered:"",chosenTokens:[],matchRu:null,matched:[],matchedWrong:false,
+ answered:[],feedback:null,entered:"",chosenTokens:[],matchRu:null,matched:[],matchedWrong:false,hadWrongMatch:false,choices:null,
  played:false,started:Date.now(),result:null,saveError:false};
 }
 function goStage(stage){
@@ -101,6 +101,7 @@ export function mixerHtml(route){
  const stage=route.split("/")[2];
  if(!MIX_STAGES.includes(stage))return overview();
  const s=goStage(stage);
+ if(!s.choices&&s.items[s.index]?.options)s.choices=s.items[s.index].options;
  if(!s.matchOptions&&s.items[s.index]?.mode==="match")s.matchOptions=shuffled(s.items[s.index].pairs.map(p=>p.en));
  return '<a class="mx-back" href="#academy/mix">← Back to Practice Lab</a>'+
  '<section class="mx-header"><span>SHAIRA · '+stage.toUpperCase()+'</span><h1>Flexible Russian practice</h1>'+
@@ -111,7 +112,7 @@ function shuffled(items){
  const x=items.slice();for(let i=x.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[x[i],x[j]]=[x[j],x[i]];}return x;
 }
 function gradeAndShow(s,answer,api){
- const q=s.items[s.index],correct=gradeMixAnswer(q,answer);
+ const q=s.items[s.index],correct=gradeMixAnswer(q,answer)&&!(q.mode==="match"&&s.hadWrongMatch);
  const saved=recordMixAnswer(q.id,correct);
  s.saveError=!saved||s.saveError;
  s.feedback={correct};
@@ -120,7 +121,7 @@ function gradeAndShow(s,answer,api){
 }
 function next(s,api){
  s.index++;s.feedback=null;s.entered="";s.selected=null;s.played=false;
- s.chosenTokens=[];s.matchRu=null;s.matched=[];s.matchedWrong=false;s.matchOptions=null;
+ s.chosenTokens=[];s.matchRu=null;s.matched=[];s.matchedWrong=false;s.hadWrongMatch=false;s.matchOptions=null;s.choices=null;
  if(s.index>=s.items.length){
   s.result=recordMixSession(s.stage,s.answered);
   if(s.result&&s.saveError)s.result.saved=false;
@@ -175,7 +176,7 @@ export function mixerAction(btn,api){
   if(!en||s.matched.some(x=>x.en===en))return;
   if(target?.en===en){s.matched.push(target);s.matchRu=null;s.matchedWrong=false;
    if(s.matched.length===q.pairs.length){gradeAndShow(s,s.matched,api);return;}
-  }else{s.matchedWrong=true;}
+  }else{s.matchedWrong=true;s.hadWrongMatch=true;}
   api.render();return;
  }
 }
