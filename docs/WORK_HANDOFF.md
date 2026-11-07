@@ -111,3 +111,15 @@ The user explicitly prioritised genuine daily learning across ALL skills, analog
 - Tests: \`tests/daily-path.test.mjs\` covers 210 session content references, progression, assessment evidence, spelling, audio fallback, bilingual UI, saving and privacy.
 
 **Do not** claim 210 sessions attain CEFR B2 or that the app already contains enough independently assessable material to replace every Russian textbook. Student wants that end goal, but it remains a measurable roadmap rather than a completed linguistic validation. Continue by expanding authentic audio, lexical depth, multiple worked examples for all grammar cases, more diverse unseen exercises, substantial writing and oral correction, and real iPhone QA. Build on the shipped daily route rather than replacing it with another static list.
+
+
+## November 7, 2026 — progressive study + stage reviews + morphology
+
+- Added 32 substantial adult bilingual Studios matching all 32 topic units. The package teaches 96 practical Russian examples, 64 new MCQ tasks and 32 productive Russian reconstructions (not a proxy for communicative competence).
+- Added 5 independent stage reviews (50 new questions): reading, contextual grammar, and Russian writing. Pass >=8/10 including >=1 correct written answer and >=1 reading-comprehension item, with fresh timestamp. Stage review required before advancing into the next daily stage.
+- A1/A2 now also include the noun-case lab: 24 nouns with 288 explicit inflected forms across six cases and singular/plural. A 10-question adaptive session must score >=8/10. Routes: #academy/mastery, #academy/checkpoint/STAGE, #academy/cases, #academy/cases/quiz, #academy/cases/noun/ID.
+- English and Filipino question text and explanations; typed Cyrillic keyboards for mastery and noun cases; no cloud or paid APIs.
+- All progress, including studios, independent checkpoints and morphology attempts, is included in backward-compatible sanitized local JSON export/import, with rollback.
+- Offline assets: studio-lessons.js, stage-checkpoints.js, mastery-engine.js, mastery-ui.js, mastery.css, declension-tables.js, case-trainer.js, case-trainer.css.
+- Tests: mastery.test.mjs and cases.test.mjs, plus original daily-path.test.mjs and all smoke tests.
+- Actual TORFL-II/B2 still requires much deeper lexical, authentic listening and independently graded spontaneous speaking/writing. Read docs/B2_CURRICULUM_MAP.md.
