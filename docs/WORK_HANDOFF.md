@@ -59,3 +59,29 @@ Build a friendly, effective, iPhone-first Russian learning app for a complete be
 
 ## Known limitations
 This is a working **foundation**, not a finished language course. Current handwriting is freehand only (no automatic recognition). Quizzes are one per lesson and not yet adaptively spaced. Voice depends on the browser's installed TTS voices. Local progress is device-specific. Deployment and real-device behavior still require verification.
+
+
+---
+
+## Handoff update — comprehensive Shaira Academy expansion (2026-11-07)
+
+This repository is now **far more substantial** than the initial 13 beginner lessons. Read **docs/SHAIRA_PEDAGOGY.md** for the detailed teacher's syllabus, real completion gaps, writing plan and level checks. Do not replace the working app with another outline; expand and test existing code.
+
+### Implemented in this branch
+- Added \`assets/first-words.js\`: 20 packs / 120 picture words, adapted from the owner's English_Child model and translated into EN/Filipino.
+- Added \`assets/academy-data.js\`: 5 CEFR-target stages, 32 original thematic units (6 bilingual words each, targeted rule, model, contextual reading, comprehension check, controlled Russian spelling, free-writing task with example).
+- Added \`assets/dialogues.js\`: 20 Russian conversations (with EN/Filipino translations).
+- Added \`assets/academy-ui.js\` and \`academy.css\`: 7 practice tracks per unit, contextual dialogues, beginner word map, spaced repetition, saved journal, practice points.
+- Upgraded handwriting canvas to practise lowercase/uppercase letters, words and full sentences. It does not perform recognition.
+- Integrated academy in navigation and static PWA offline cache. Added content integrity and interactive smoke tests.
+- Total activity slots: 264. Do not mistake them for 264 full lessons or CEFR certification.
+
+### Priority next
+1. Test actual iPhone Safari install, offline operation, touch/pen writing, keyboard, navigation, Russian voices, VoiceOver, 200% text zoom. Fix any bugs before producing further learning content.
+2. Grow each stage with much deeper exercise banks and quality native audio. For B2 add real paragraphs and multi-paragraph texts, inferential reading questions and teacher-reviewed 180–250-word essay tasks.
+3. Build meaningful mastery checkpoints and feedback; currently there are too few questions per grammar topic to confirm acquisition.
+4. Add opt-in local progress **export/import** before users entrust important drafts to this app.
+5. Have qualified native speakers check all Russian examples and Filipino explanations, with change tracking.
+6. Deploy verified changes from feature branch via PR and merge only after CI passes. Published Pages output currently follows main.
+
+**Acceptance is pedagogical and functional, not numeric marketing claims.** A "B2" label on a unit does not mean Shaira can genuinely perform at B2.
