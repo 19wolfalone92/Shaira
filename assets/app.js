@@ -142,8 +142,8 @@ function home() {
     ["Alphabet and first syllables","Essential vocabulary","Grammar and reading","Independent writing"];
   const routeCards=[
     {href:first?"#lesson/"+first.id:"#academy/first-words",icon:"Аа",heading:sectionsText[0],sub:fil?"33 titik • tunog at baybay":"33 letters • sounds and spelling"},
-    {href:"#academy/first-words",icon:"01",heading:sectionsText[1],sub:fil?"240 salita • mga praktikal na paksa":"240 words • practical topics"},
-    {href:"#academy/lab",icon:"✳",heading:sectionsText[2],sub:fil?"100 tanong • 20 mahabang teksto":"100 questions • 20 graded texts"},
+    {href:"#academy/first-words",icon:"01",heading:sectionsText[1],sub:"480 words • practical topics"},
+    {href:"#academy/lab",icon:"✳",heading:sectionsText[2],sub:"100 grammar questions • 35 graded texts"},
     {href:"#academy/writing",icon:"✎",heading:sectionsText[3],sub:fil?"Sulat • mga draft • rebisyon":"Writing • drafts • revision"}
   ];
   return todayPreview(l)+'<section class="adult-welcome"><div class="adult-welcome-copy"><span class="adult-eyebrow">SHAIRA · LEARN RUSSIAN</span><h1>'+headline+'</h1><p>'+detail+'</p>'+
