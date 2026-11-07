@@ -30,7 +30,7 @@ export const stageCheckpoints=[
  choice("«Это ___ комната».",["моя","мой","моё","мои"],"моя","Комната is feminine singular, so the possessive is моя.","Pambabaeng isahan ang комната kaya моя."),
  choice("«Мы ___ по-русски каждый день».",["говорим","говорит","говоришь","говорю"],"говорим","The мы subject requires first-person plural говорим.","Ang мы ay nangangailangan ng говорим."),
  choice("«Я сейчас вижу ___».",["сестру","сестра","сестре","сестрой"],"сестру","The direct object of видеть is accusative: сестру.","Accusative ang layon: сестру."),
- choice("«Я живу ___ Минске».",["в","на","от","под"],"в","In the city of Minsk uses в with prepositional Минске.","Ang lokasyong Minsk ay в Минске."),
+ choice("«Она работает ___ Казани».",["в","на","от","под"],"в","The city name Казань takes в with prepositional Казани for a static location.","Sa lungsod ng Казань ginagamit ang в Казани."),
  choice("«Кто ___ дома?»",["работает","работают","работаешь","работаю"],"работает","Кто normally agrees with third-person singular работает.","Ang кто ay madalas isahan: работает."),
  choice("«У неё ___ брат».",["есть","нету бы","будут","был есть"],"есть","«У неё есть брат» means she has a brother.","Ang У неё есть брат ay 'may kapatid siyang lalaki'."),
  choice("According to the reading, where does Olga work?",["in a café","at a school","in a hospital","at home"],"in a café","«Она работает в кафе» names her workplace.","Nasa café siya nagtatrabaho."),
