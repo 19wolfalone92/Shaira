@@ -8,7 +8,7 @@ const KEY="shaira-labs-v1";
 const TXT={
   en:{
     go:"Back to Academy",question:"Question",learn:"Independent practice",home:"Practice centre",intro:"Study a rule, try new examples, read authentic-style texts, then write your own answer. No rushing.",grammar:"Grammar trainer",reading:"Reading library",
-    grammarDesc:"100 separate, explained questions in realistic Russian contexts.",readingDesc:"20 original graded texts; comprehension plus independent writing.",
+    grammarDesc:"100 separate, explained questions in realistic Russian contexts.",readingDesc:"35 graded Russian texts, comprehension and independent writing.",
     choose:"Choose one answer",questions:"questions",next:"Next question",finish:"Practice summary",again:"Practise again",done:"Correct",wrong:"Learn from this answer",
     explanation:"Why?",answer:"Correct answer",best:"Best score",progress:"Your result",review:"Try more",mastered:"Practice checkpoint passed",notCertified:"This is a practice result, not a certified CEFR level.",
     first:"Choose a level",start:"Practise 10 questions",beginReading:"Open text",readText:"Read the text",showGlossary:"Key vocabulary",listen:"Listen to the text",
@@ -69,7 +69,7 @@ function overview(l){
   '<div class="lp-advice">'+esc(TXT[l].introAdvice)+'</div>'+
   '<div class="lp-paths"><a href="#academy/grammar"><span>✳</span><div><strong>'+TXT[l].grammar+'</strong><p>'+TXT[l].grammarDesc+'</p></div><b>›</b></a>'+
   '<a href="#academy/library"><span>▤</span><div><strong>'+TXT[l].reading+'</strong><p>'+TXT[l].readingDesc+'</p></div><b>›</b></a>'+
-  '<a href="#academy/writing"><span>✎</span><div><strong>'+b("Writing portfolio","Portfolio ng pagsusulat",l)+'</strong><p>'+b("30 guided adult writing tasks, from simple notes to balanced essays.","30 gawain sa pagsusulat: mula mensahe hanggang sanaysay.",l)+'</p></div><b>›</b></a>'+  '<a href="#academy/cases"><span>Аа</span><div><strong>'+b("Russian case trainer","Pagsasanay sa mga kaso",l)+'</strong><p>'+b("288 singular/plural noun forms and independent endings practice.","288 anyo ng pangngalan at pagsasanay sa hulihan.",l)+'</p></div><b>›</b></a>'+
+  '<a href="#academy/writing"><span>✎</span><div><strong>'+b("Writing portfolio","Portfolio ng pagsusulat",l)+'</strong><p>'+b("45 adult writing tasks, from simple notes to balanced essays.","30 gawain sa pagsusulat: mula mensahe hanggang sanaysay.",l)+'</p></div><b>›</b></a>'+  '<a href="#academy/cases"><span>Аа</span><div><strong>'+b("Russian case trainer","Pagsasanay sa mga kaso",l)+'</strong><p>'+b("288 singular/plural noun forms and independent endings practice.","288 anyo ng pangngalan at pagsasanay sa hulihan.",l)+'</p></div><b>›</b></a>'+
   '<a href="#academy/handbook"><span>А</span><div><strong>'+b("Grammar handbook","Manwal sa gramatika",l)+'</strong><p>'+b("30 illustrated grammar explanations, from Cyrillic to B2 prose.","30 paliwanag sa gramatika, mula Cyrillic hanggang B2.",l)+'</p></div><b>›</b></a></div>'+
   '<small class="lp-muted">'+TXT[l].examples+'</small>';
 }
