@@ -92,7 +92,11 @@ test("grammar and reading routes, feedback and progress work without internet",a
   const path="academy/library/first-morning",readApi={...api,route:()=>path};
   labHtml(path,"en");
   for(let i=0;i<2;i++){
-    labAction({dataset:{lab:"answer-read",choice:"0"}},readApi);
+    const page=labHtml(path,"en"),answer=readingLibrary.find(x=>x.id==="first-morning").questions[i].answer;
+    const offered=[...page.matchAll(/data-lab="answer-read" data-choice="(\d+)"[^>]*>([^<]+)</g)];
+    const right=offered.find(x=>x[2]===answer);
+    assert.ok(right,"reading options must include a correct answer for question "+i);
+    labAction({dataset:{lab:"answer-read",choice:right[1]}},readApi);
     labAction({dataset:{lab:"next-read"}},readApi);
   }
   assert.equal(labStats().readingsPassed,1);
