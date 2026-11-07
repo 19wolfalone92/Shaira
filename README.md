@@ -4,6 +4,14 @@ An adult-first, free-to-use iPhone PWA for **Shaira** to practise Russian **ever
 
 **Open:** https://19wolfalone92.github.io/Shaira/ — Safari → Share → Add to Home Screen.
 
+## NEW v0.8: start from absolute zero, one small step at a time
+
+For an adult who does not know even one Cyrillic letter, Today now starts with **78 tiny steps** BEFORE the longer 210-session curriculum. The first six steps teach А, М, О, ма, мама and a short review. The entire foundation covers **each of the 33 Cyrillic letters separately**, 11 short syllables, 11 readable beginner words, 11 reviews and 12 practical everyday phrases. Every required word is made only of letters the student has already learned.
+
+Difficulty is **always student-selectable**: Gentle (default, 2 recognition checks, no mandatory typing), Steady (3 checks with one typed answer), and Challenge (4 checks including two typed Russian answers). An optional six-question, all-correct fast track can prove three following micro-skills and advance without unearned skipping. A freehand tracing area, synthetic Russian speech and Cyrillic keyboard help adult learners, without claiming automatic pronunciation or handwriting assessment. Older learners retain their existing place; new step progress and difficulty survive backup.
+
+Full syllabus: **[TRUE_BEGINNER_STAIRCASE.md](docs/TRUE_BEGINNER_STAIRCASE.md)**.
+
 ## Your daily Russian teacher
 
 **Today** is the first screen. It leads Shaira through **210 guided study sessions** across Pre-A1, A1, A2, B1 and B2-target practice (42 guided sessions per stage). Each session includes genuine app activities (including new listening tasks on relevant days) plus independently checked mini-grammar and Cyrillic spelling exercises, one oral practice, English explanations, optional spaced review, a flexible 20/40/60-minute preference, and local skill history. The first 14 sessions explicitly guide an absolute beginner through letters, sounds, first nouns, phrases and introductory grammar. Lessons do not advance just because the date changes: practical work must be done.
