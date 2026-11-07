@@ -5,7 +5,7 @@ import { sections, lessons, alphabet, keyboardRows } from "../assets/lessons.js"
 
 test("main interface completes a lesson, switches language, and opens writing canvas", () => {
   const source = readFileSync(new URL("../assets/app.js", import.meta.url), "utf8")
-    .replace(/^import .*?;$/m, "");
+    .replace(/^import .*?;$/gm, "");
   const events = {}, windowEvents = {}, storage = new Map();
   const app = { innerHTML: "" };
   const toast = { hidden: true, textContent: "" };
@@ -37,7 +37,7 @@ test("main interface completes a lesson, switches language, and opens writing ca
   const navigator = {};
   const run = new Function("sections","lessons","alphabet","keyboardRows","document","window","location","navigator","localStorage",source);
   run(sections,lessons,alphabet,keyboardRows,document,window,location,navigator,localStorage);
-  const click=(action,props={})=>events.click({target:{closest:()=>({dataset:{action,...props}})}});
+  const click=(action,props={})=>events.click({target:{closest:selector=>selector==="[data-action]"?{dataset:{action,...props}}:null}});
   assert.match(app.innerHTML,/Your learning path/);
   click("open-lesson",{id:"vowels"});
   assert.match(app.innerHTML,/10 Russian vowels/);

@@ -1,9 +1,10 @@
 import { sections, lessons, alphabet, keyboardRows } from "./lessons.js";
+import { academyHtml, handleAcademyAction, handleAcademySubmit } from "./academy-ui.js";
 
 const STORAGE_KEY = "shaira-progress-v1";
 const dictionary = {
   en: {
-    tagline:"Russian, from the very first letter", home:"Learn", review:"Review", write:"Write", settings:"Settings",
+    tagline:"Russian, from the very first letter", home:"Learn", academy:"School", review:"Review", write:"Write", settings:"Settings",
     hello:"Hi, Shaira! 🌷", start:"A little Russian every day.", completed:"lessons completed",
     keep:"Your learning path", group:"Explore lessons", done:"Completed", begin:"Start lesson", continue:"Open lesson",
     back:"Back to lessons", goal:"Today's idea", card:"Study card", next:"Next card", check:"Check what you learned",
@@ -27,7 +28,7 @@ const dictionary = {
     footer:"Made for learning, not for collecting data.", about:"Shaira • Russian from zero"
   },
   tl: {
-    tagline:"Ruso, mula sa unang titik", home:"Aralin", review:"Balikan", write:"Sumulat", settings:"Mga setting",
+    tagline:"Ruso, mula sa unang titik", home:"Aralin", academy:"Akademya", review:"Balikan", write:"Sumulat", settings:"Mga setting",
     hello:"Kumusta, Shaira! 🌷", start:"Kaunting Ruso bawat araw.", completed:"araling natapos",
     keep:"Iyong landas sa pag-aaral", group:"Pumili ng aralin", done:"Tapos na", begin:"Simulan", continue:"Buksan",
     back:"Bumalik sa mga aralin", goal:"Ideya ngayong araw", card:"Kard ng aralin", next:"Susunod na kard",
@@ -68,6 +69,10 @@ let lessonCardIndex = 0;
 let feedback = null;
 let reviewLesson = lessons[0].id;
 let letterIndex = 0;
+let writingMode = "letters";
+let lowerCase = false;
+const handwritingWords = ["мама","папа","дом","кот","мир","вода","книга","семья","привет","спасибо","солнце","язык","друзья","любовь","письмо","здравствуйте"];
+const handwritingSentences = ["Это дом.","Меня зовут Шаира.","Я учу русский.","Как дела?","У меня есть книга.","Мне нравится музыка.","Я читаю письмо.","Я тебя люблю."];
 let drawingCleanup = null;
 
 const el = document.getElementById("app");
@@ -95,7 +100,7 @@ function navigate(route) {
 function currentRoute() {
   const hash = decodeURIComponent(location.hash.slice(1));
   if (hash.startsWith("lesson/") && lessons.some(l => l.id === hash.slice(7))) return hash;
-  return ["home","review","write","settings"].includes(hash) ? hash : "home";
+  return hash === "academy" || hash.startsWith("academy/") ? hash : ["home","review","write","settings"].includes(hash) ? hash : "home";
 }
 function speak(text) {
   if (!("speechSynthesis" in window)) { showToast(phrase("audioUnavailable")); return; }
@@ -109,11 +114,11 @@ function speak(text) {
   window.speechSynthesis.speak(utterance);
 }
 function icon(id) {
-  return {home:"⌂",review:"✦",write:"✎",settings:"⚙"}[id];
+  return {home:"⌂",academy:"🎓",review:"✦",write:"✎",settings:"⚙"}[id];
 }
 function navBar(route) {
-  const active = route.split("/")[0] === "lesson" ? "home" : route;
-  return `<nav class="bottom-nav" aria-label="Main navigation">${["home","review","write","settings"].map(id =>
+  const active = route.startsWith("academy") ? "academy" : route.split("/")[0] === "lesson" ? "home" : route;
+  return `<nav class="bottom-nav" aria-label="Main navigation">${["home","academy","review","write","settings"].map(id =>
     `<a href="#${id}" class="nav-item ${active === id ? "active" : ""}" ${active === id ? 'aria-current="page"' : ""}><span aria-hidden="true">${icon(id)}</span><small>${phrase(id)}</small></a>`).join("")}</nav>`;
 }
 function header() {
@@ -122,6 +127,7 @@ function header() {
 function home() {
   return `<section class="hero"><div class="hero-copy"><span class="pill">🇷🇺 ${phrase("learn")}</span><h1>${phrase("hello")}</h1><p>${phrase("welcomeDesc")}</p></div><div class="hero-flower" aria-hidden="true">Ж</div></section>
   <section class="progress-card" aria-label="${phrase("progress")}"><div class="progress-top"><strong>${phrase("keep")}</strong><span>${progressPercent()}%</span></div><div class="progress-track"><div class="progress-fill" style="width:${progressPercent()}%"></div></div><small>${state.completed.length} ${phrase("progressSuffix")} ${lessons.length} ${phrase("completed")}</small></section>
+  <a href="#academy" class="academy-shortcut"><span class="academy-shortcut-icon">🎓</span><span><strong>${state.language==="tl"?"Rusong mula zero hanggang B2":"Russian from zero to B2"}</strong><small>${state.language==="tl"?"Alpabeto • Pagbasa • Pakikinig • Gramatika • Pagsulat":"Alphabet • Reading • Listening • Grammar • Writing"}</small></span><span aria-hidden="true">›</span></a>
   <h2 class="section-heading">${phrase("group")}</h2>
   ${sections.map(section => {
     const items = lessons.filter(l => l.section === section.id);
@@ -168,12 +174,31 @@ function reviewPage() {
     <button class="secondary-button wide" type="button" data-action="new-question">${phrase("newQuestion")} ↻</button>`;
 }
 function writePage() {
-  const letter = alphabet[letterIndex % alphabet.length];
-  return `<div class="page-intro"><span class="eyebrow">✎ ${phrase("write")}</span><h1>${phrase("freehand")}</h1><p>${phrase("writeIntro")}</p></div>
-    <div class="write-card"><div class="writing-guide"><span>${phrase("letter")} ${letterIndex%alphabet.length+1}/${alphabet.length}</span><button class="sound-button" type="button" data-action="speak" data-text="${letter}">🔊 ${phrase("listen")}</button></div>
-      <div class="letter-large" lang="ru">${letter} <span>${letter.toLowerCase()}</span></div>
-      <div class="canvas-wrap"><div class="guide-letter" aria-hidden="true">${letter}</div><canvas id="writing-canvas" aria-label="${phrase("freehand")}" role="img"></canvas></div>
-      <p class="canvas-caption">${phrase("tip")}</p><div class="write-buttons"><button class="secondary-button" type="button" data-action="clear-canvas">${phrase("clear")}</button><button class="primary-button" type="button" data-action="next-letter">${phrase("newLetter")} →</button></div></div>`;
+  const items = writingMode==="words" ? handwritingWords : writingMode==="sentences" ? handwritingSentences : alphabet;
+  const position=letterIndex%items.length,raw=items[position];
+  const target=writingMode==="letters"&&lowerCase?raw.toLowerCase():raw;
+  const t=state.language==="tl"?{
+    letters:"Mga titik",words:"Mga salita",sentences:"Mga pangungusap",case:"Malaki/maliit na titik",
+    description:"Magsanay sa mga titik, salita at pangungusap. Sundan ang mapusyaw na hugis gamit ang daliri o stylus.",
+    explanation:"Hindi awtomatikong sinusuri ng app ang sinulat mo. Pakinggan, kopyahin, saka ihambing ang hugis."
+  }:{
+    letters:"Letters",words:"Words",sentences:"Sentences",case:"Uppercase / lowercase",
+    description:"Practise letters, words and full sentences. Trace the pale guide with your finger or stylus.",
+    explanation:"Drawing is not automatically marked. Listen, copy, then compare your shapes."
+  };
+  const modeButtons=["letters","words","sentences"].map(id=>
+    '<button type="button" data-action="write-mode" data-value="'+id+'" aria-pressed="'+(writingMode===id)+'" class="'+(writingMode===id?"selected":"")+'">'+t[id]+'</button>').join("");
+  const heading=writingMode==="letters" ?
+    '<div class="letter-large" lang="ru">'+escapeHtml(target)+' <span>'+escapeHtml(target===raw?raw.toLowerCase():raw.toUpperCase())+'</span></div>'+
+      '<button class="case-toggle" type="button" data-action="letter-case">'+t.case+' ⇆</button>' :
+    '<div class="writing-target" lang="ru">'+escapeHtml(target)+'</div>';
+  return '<div class="page-intro"><span class="eyebrow">✎ '+phrase("write")+'</span><h1>'+phrase("freehand")+'</h1><p>'+t.description+'</p></div>'+
+    '<div class="writing-modes" role="group" aria-label="'+phrase("write")+'">'+modeButtons+'</div>'+
+    '<div class="write-card"><div class="writing-guide"><span>'+(position+1)+'/'+items.length+'</span><button class="sound-button" type="button" data-action="speak" data-text="'+escapeHtml(target)+'">🔊 '+phrase("listen")+'</button></div>'+
+    heading+
+    '<div class="canvas-wrap"><div class="guide-letter '+(writingMode==="sentences"?"sentence":writingMode==="words"?"long":"")+'" aria-hidden="true">'+escapeHtml(target)+'</div><canvas id="writing-canvas" aria-label="'+phrase("freehand")+'" role="img"></canvas></div>'+
+    '<p class="canvas-caption">'+t.explanation+'</p><div class="write-buttons"><button class="secondary-button" type="button" data-action="clear-canvas">'+phrase("clear")+'</button><button class="primary-button" type="button" data-action="next-letter">'+phrase("newLetter")+' →</button></div>'+
+    '<a class="writing-academy-link" href="#academy">'+(state.language==="tl"?"📚 Magpatuloy sa kursong pagsulat":"📚 Continue sentence writing in the Academy")+' →</a></div>';
 }
 function settingsPage() {
   return `<div class="page-intro"><span class="eyebrow">⚙ ${phrase("settings")}</span><h1>${phrase("settings")}</h1></div>
@@ -188,7 +213,7 @@ function settingsPage() {
 function render() {
   if (drawingCleanup) { drawingCleanup(); drawingCleanup = null; }
   const route = currentRoute();
-  const page = route === "home" ? home() : route === "review" ? reviewPage() : route === "write" ? writePage() :
+  const page = route === "home" ? home() : route.startsWith("academy") ? academyHtml(route,state.language) : route === "review" ? reviewPage() : route === "write" ? writePage() :
     route === "settings" ? settingsPage() : lessonPage(route.slice(7));
   document.documentElement.lang = state.language === "tl" ? "fil" : "en";
   document.title = "Shaira · Learn Russian";
@@ -232,6 +257,8 @@ function initializeCanvas() {
   drawingCleanup = () => {canvas.removeEventListener("pointerdown",down);canvas.removeEventListener("pointermove",move);canvas.removeEventListener("pointerup",up);canvas.removeEventListener("pointercancel",up);};
 }
 document.addEventListener("click", event => {
+  const academyButton=event.target.closest("[data-aca]");
+  if(academyButton){handleAcademyAction(academyButton,{language:()=>state.language,route:currentRoute,render,speak,navigate});return;}
   const button=event.target.closest("[data-action]");
   if (!button) return;
   const action=button.dataset.action;
@@ -248,6 +275,8 @@ document.addEventListener("click", event => {
     feedback=null;render();
   }
   else if (action === "next-letter") {letterIndex++;render();}
+  else if (action === "write-mode") {writingMode=["letters","words","sentences"].includes(button.dataset.value)?button.dataset.value:"letters";letterIndex=0;render();}
+  else if (action === "letter-case") {lowerCase=!lowerCase;render();}
   else if (action === "clear-canvas") {const canvas=document.getElementById("writing-canvas");canvas?.getContext("2d")?.clearRect(0,0,canvas.width,canvas.height);}
   else if (action === "language") { state.language=button.dataset.value === "tl" ? "tl" : "en"; save();feedback=null;render(); }
   else if (action === "reset") { if (window.confirm(phrase("resetConfirm"))) {state.completed=[];save();render();} }
@@ -263,6 +292,7 @@ document.addEventListener("click", event => {
   }
 });
 document.addEventListener("submit", event => {
+  if(handleAcademySubmit(event,{language:()=>state.language,route:currentRoute,render,speak}))return;
   if (event.target.id !== "answer-form") return;
   event.preventDefault();
   const value=document.getElementById("answer-input")?.value;
