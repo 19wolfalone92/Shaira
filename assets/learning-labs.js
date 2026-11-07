@@ -5,7 +5,7 @@ import {readingLibrary,readingsForStage} from "./reading-library.js";
 const KEY="shaira-labs-v1";
 const TXT={
   en:{
-    go:"Back to Academy",learn:"Independent practice",home:"Practice centre",intro:"Study a rule, try new examples, read authentic-style texts, then write your own answer. No rushing.",grammar:"Grammar trainer",reading:"Reading library",
+    go:"Back to Academy",question:"Question",learn:"Independent practice",home:"Practice centre",intro:"Study a rule, try new examples, read authentic-style texts, then write your own answer. No rushing.",grammar:"Grammar trainer",reading:"Reading library",
     grammarDesc:"100 separate, explained questions in realistic Russian contexts.",readingDesc:"20 original graded texts; comprehension plus independent writing.",
     choose:"Choose one answer",questions:"questions",next:"Next question",finish:"Practice summary",again:"Practise again",done:"Correct",wrong:"Learn from this answer",
     explanation:"Why?",answer:"Correct answer",best:"Best score",progress:"Your result",review:"Try more",mastered:"Practice checkpoint passed",notCertified:"This is a practice result, not a certified CEFR level.",
@@ -21,7 +21,7 @@ const TXT={
     audioLabel:"Play Russian text"
   },
   tl:{
-    go:"Bumalik sa Akademya",learn:"Sariling pagsasanay",home:"Sentro ng pagsasanay",intro:"Aralin ang tuntunin, subukan ang halimbawa, basahin ang teksto, at sumulat ng sarili mong sagot. Walang pagmamadali.",grammar:"Pagsasanay sa gramatika",reading:"Aklatan sa pagbabasa",
+    go:"Bumalik sa Akademya",question:"Tanong",learn:"Sariling pagsasanay",home:"Sentro ng pagsasanay",intro:"Aralin ang tuntunin, subukan ang halimbawa, basahin ang teksto, at sumulat ng sarili mong sagot. Walang pagmamadali.",grammar:"Pagsasanay sa gramatika",reading:"Aklatan sa pagbabasa",
     grammarDesc:"100 magkakaibang tanong na may paliwanag at makatotohanang konteksto.",readingDesc:"20 orihinal na teksto; pag-unawa at sariling pagsusulat.",
     choose:"Pumili ng isang sagot",questions:"tanong",next:"Susunod na tanong",finish:"Buod ng pagsasanay",again:"Magsanay muli",done:"Tama",wrong:"Matuto mula sa sagot",
     explanation:"Bakit?",answer:"Tamang sagot",best:"Pinakamataas na marka",progress:"Iyong resulta",review:"Subukan uli",mastered:"Natapos ang pagsasanay",notCertified:"Pagsasanay lamang ito, hindi sertipikasyon ng CEFR.",
@@ -70,7 +70,7 @@ function overview(l){
   '<small class="lp-muted">'+TXT[l].examples+'</small>';
 }
 function grammarMenu(l){
-  return link("academy/lab","← "+TXT[l].go)+top("A1 → B2",TXT[l].grammar,TXT[l].grammarDesc)+listStages("grammar",l);
+  return link("academy/lab","← "+TXT[l].go)+top("Pre-A1 → B2",TXT[l].grammar,TXT[l].grammarDesc)+listStages("grammar",l);
 }
 let session=null;
 function shuffle(arr){const a=arr.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[j],a[i]]=[a[i],a[j]];}return a;}
@@ -110,7 +110,7 @@ function grammarPage(stage,l){
     '</section>';
 }
 function libraryMenu(l){
- return link("academy/lab","← "+TXT[l].go)+top("A1 → B2",TXT[l].reading,TXT[l].readingDesc)+
+ return link("academy/lab","← "+TXT[l].go)+top("Pre-A1 → B2",TXT[l].reading,TXT[l].readingDesc)+
   stages.map(stage=>{
    const books=readingsForStage(stage.id);
    return '<section class="lp-shelf"><div><strong>'+stage.icon+' '+stage.label+'</strong><small>'+books.filter(x=>data.readings[x.id]?.passed).length+'/'+books.length+' '+TXT[l].lessonProgress+'</small></div>'+
