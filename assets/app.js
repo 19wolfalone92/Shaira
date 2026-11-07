@@ -1,5 +1,6 @@
 import { sections, lessons, alphabet, keyboardRows } from "./lessons.js";
-import { academyHtml, handleAcademyAction, handleAcademySubmit } from "./academy-ui.js";
+import { academyHtml, handleAcademyAction, handleAcademySubmit, academyStatistics } from "./academy-ui.js";
+import { downloadBackup, restoreBackup } from "./backup.js";
 
 const STORAGE_KEY = "shaira-progress-v1";
 const dictionary = {
@@ -201,12 +202,15 @@ function writePage() {
     '<a class="writing-academy-link" href="#academy">'+(state.language==="tl"?"📚 Magpatuloy sa kursong pagsulat":"📚 Continue sentence writing in the Academy")+' →</a></div>';
 }
 function settingsPage() {
+  const academy = academyStatistics();
   return `<div class="page-intro"><span class="eyebrow">⚙ ${phrase("settings")}</span><h1>${phrase("settings")}</h1></div>
     <section class="settings-card"><h2>${phrase("language")}</h2><p>${phrase("langInfo")}</p><div class="lang-switch" role="group" aria-label="${phrase("language")}">
       <button type="button" data-action="language" data-value="en" class="${state.language==="en"?"selected":""}" aria-pressed="${state.language==="en"}">🇬🇧 English</button>
       <button type="button" data-action="language" data-value="tl" class="${state.language==="tl"?"selected":""}" aria-pressed="${state.language==="tl"}">🇵🇭 Filipino</button></div></section>
     <section class="settings-card"><h2>${phrase("progress")}</h2><p>${state.completed.length}/${lessons.length} ${phrase("completed")}. ${phrase("local")}</p>
       <button type="button" class="danger-button" data-action="reset">${phrase("reset")}</button></section>
+    <section class="settings-card"><h2>🎓 ${state.language==="tl"?"Pag-usad sa Akademya":"Academy progress"}</h2><p>${academy.completed}/${academy.activities} ${state.language==="tl"?"gawaing nasanay":"activities practised"} · ${academy.knownWords} ${state.language==="tl"?"salitang napag-aralan":"studied words"} · ${academy.dueWords} ${state.language==="tl"?"dapat balikan":"due to review"}</p></section>
+    <section class="settings-card"><h2>💾 ${state.language==="tl"?"I-save at ibalik ang pag-usad":"Export and restore progress"}</h2><p>${state.language==="tl"?"I-save ang progreso at mga draft sa isang pribadong JSON file. Ang pag-import ay papalit sa kasalukuyang pag-usad sa device na ito.":"Save your lessons and writing drafts in a private JSON file. Import replaces progress on this device. Keep this file private."}</p><div class="backup-buttons"><button class="secondary-button" type="button" data-action="export-backup">📤 ${state.language==="tl"?"I-export":"Export progress"}</button><button class="secondary-button" type="button" data-action="import-backup">📥 ${state.language==="tl"?"I-import":"Import backup"}</button></div><input id="backup-file" type="file" accept=".json,application/json" hidden aria-label="Shaira JSON backup"></section>
     <section class="settings-card"><h2>📱 ${phrase("install")}</h2><p>${phrase("installInfo")}</p></section>
     <section class="settings-card"><h2>☁ ${phrase("offline")}</h2><p>${phrase("offlineInfo")}</p></section>`;
 }
@@ -279,6 +283,8 @@ document.addEventListener("click", event => {
   else if (action === "letter-case") {lowerCase=!lowerCase;render();}
   else if (action === "clear-canvas") {const canvas=document.getElementById("writing-canvas");canvas?.getContext("2d")?.clearRect(0,0,canvas.width,canvas.height);}
   else if (action === "language") { state.language=button.dataset.value === "tl" ? "tl" : "en"; save();feedback=null;render(); }
+  else if (action === "export-backup") { try {downloadBackup();}catch(error){showToast(String(error.message||error));} }
+  else if (action === "import-backup") { document.getElementById("backup-file")?.click(); }
   else if (action === "reset") { if (window.confirm(phrase("resetConfirm"))) {state.completed=[];save();render();} }
   else if (action === "type-key" || action === "delete-key") {
     const input=document.getElementById("answer-input");if(!input)return;
@@ -297,6 +303,20 @@ document.addEventListener("submit", event => {
   event.preventDefault();
   const value=document.getElementById("answer-input")?.value;
   if (value) checkAnswer(value);
+});
+document.addEventListener("change", async event => {
+  if(event.target.id!=="backup-file")return;
+  const file=event.target.files?.[0];
+  if(!file)return;
+  try {
+    if(file.size>3000000)throw new Error("Backup file is too large.");
+    const data=await file.text();
+    const confirmMessage=state.language==="tl"?"Papalitan ng backup ang kasalukuyang progreso at draft sa device. Magpatuloy?":"Importing will replace current progress and drafts on this device. Continue?";
+    if(!window.confirm(confirmMessage))return;
+    restoreBackup(data);
+    window.location.reload();
+  } catch(error){showToast(String(error.message||error));}
+  finally{event.target.value="";}
 });
 window.addEventListener("hashchange",() => {lessonCardIndex=0;feedback=null;render();});
 render();
