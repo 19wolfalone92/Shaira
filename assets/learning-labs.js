@@ -67,7 +67,8 @@ const listStages=(path,l)=>'<div class="lp-level-grid">'+stages.map(s=>{
 function overview(l){
   return back(l)+top("SHAIRA · STUDY",TXT[l].home,TXT[l].intro)+
   '<div class="lp-advice">'+esc(TXT[l].introAdvice)+'</div>'+
-  '<div class="lp-paths"><a href="#academy/grammar"><span>✳</span><div><strong>'+TXT[l].grammar+'</strong><p>'+TXT[l].grammarDesc+'</p></div><b>›</b></a>'+
+  '<div class="lp-paths"><a href="#academy/mix"><span>✦</span><div><strong>Variety Lab</strong><p>13 different formats, adaptive practice and targeted review of mistakes.</p></div><b>›</b></a>'+
+  '<a href="#academy/grammar"><span>✳</span><div><strong>'+TXT[l].grammar+'</strong><p>'+TXT[l].grammarDesc+'</p></div><b>›</b></a>'+
   '<a href="#academy/library"><span>▤</span><div><strong>'+TXT[l].reading+'</strong><p>'+TXT[l].readingDesc+'</p></div><b>›</b></a>'+
   '<a href="#academy/writing"><span>✎</span><div><strong>'+b("Writing portfolio","Portfolio ng pagsusulat",l)+'</strong><p>'+b("45 adult writing tasks, from simple notes to balanced essays.","30 gawain sa pagsusulat: mula mensahe hanggang sanaysay.",l)+'</p></div><b>›</b></a>'+  '<a href="#academy/cases"><span>Аа</span><div><strong>'+b("Russian case trainer","Pagsasanay sa mga kaso",l)+'</strong><p>'+b("288 singular/plural noun forms and independent endings practice.","288 anyo ng pangngalan at pagsasanay sa hulihan.",l)+'</p></div><b>›</b></a>'+
   '<a href="#academy/handbook"><span>А</span><div><strong>'+b("Grammar handbook","Manwal sa gramatika",l)+'</strong><p>'+b("30 illustrated grammar explanations, from Cyrillic to B2 prose.","30 paliwanag sa gramatika, mula Cyrillic hanggang B2.",l)+'</p></div><b>›</b></a></div>'+
