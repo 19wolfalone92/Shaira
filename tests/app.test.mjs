@@ -5,7 +5,7 @@ import { sections, lessons, alphabet, keyboardRows } from "../assets/lessons.js"
 
 test("main interface completes a lesson, switches language, and opens writing canvas", () => {
   const source = readFileSync(new URL("../assets/app.js", import.meta.url), "utf8")
-    .replace(/^import .*?;$/m, "");
+    .replace(/^import .*?;$/gm, "");
   const events = {}, windowEvents = {}, storage = new Map();
   const app = { innerHTML: "" };
   const toast = { hidden: true, textContent: "" };
