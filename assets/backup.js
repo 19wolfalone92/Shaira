@@ -147,6 +147,17 @@ function cleanCasePractice(x){
  }
  return {items,sessions};
 }
+function cleanListening(x){
+  const items=Object.create(null);
+  const clips=safeObj(safeObj(x).items);
+  for(const [id,v] of Object.entries(clips).slice(0,100)){
+    if(!/^audio-[a-z0-9-]{1,60}$/.test(id)||!object(v))continue;
+    const attempts=Number(v.attempts),last=Number(v.last);
+    if(!Number.isInteger(attempts)||attempts<0||attempts>100000||!Number.isFinite(last)||last<0)continue;
+    items[id]={attempts,last,passed:v.passed===true,lastPassed:v.lastPassed===true};
+  }
+  return {items};
+}
 function parseExisting(storage,key){
   try{return JSON.parse(storage.getItem(key)||"{}");}
   catch{return {};}
