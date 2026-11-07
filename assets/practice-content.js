@@ -55,7 +55,7 @@ E("starter","Я пью воду.","Я пью вода.","Воду is accusative 
 E("starter","Здесь есть парк.","Здесь парк есть ли.","Здесь есть парк is a natural statement."),
 E("starter","Добрый день!","Доброе день!","День is masculine: добрый."),
 E("a1","Мы говорим по-русски.","Мы говорит по-русски.","Мы takes first-person plural говорим."),
-E("a1","Ты читаешь книгу.","Ты читает книгу.","Ты takes читаешь."),
+E("a1","Ты читаешь книгу.","Ты читает книгу.","Ты requires the second-person singular verb читаешь."),
 E("a1","У меня нет брата.","У меня нет брат.","Нет requires genitive: брата."),
 E("a1","Она живёт в Минске.","Она живёт в Минск.","Static location in the city uses prepositional."),
 E("a1","Я вижу сестру.","Я вижу сестра.","Direct object сестра → сестру."),
