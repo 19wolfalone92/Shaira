@@ -13,7 +13,7 @@ turn("Вы живёте здесь?","Confirm that you live here.",["Да, я ж
 ]),
 mission("request-water","starter","Ask for drinking water","You are visiting a small café and need a glass of water.",[
 turn("Добрый день! Чем могу помочь?","Ask politely for water.",["Вода!","Мне нужна вода, пожалуйста.","Я вода."],1,"Мне нужна вода, пожалуйста is a polite everyday request.","Конечно, сейчас принесу.","Простите, можно уточнить заказ?"),
-turn("Вот ваша вода.","Thank the server.",["Спасибо большое!","Пока вода.","Нет спасибо нет."],0,"Спасибо большое is a natural way to express gratitude.","Пожалуйста!","Извините, я не понял."),
+turn("Вот ваша вода.","Thank the server politely for the water.",["Спасибо большое!","Пока вода.","Нет спасибо нет."],0,"Спасибо большое is a natural way to express gratitude.","Пожалуйста!","Извините, я не понял."),
 turn("Вам ещё что-нибудь нужно?","Say you don't need anything else.",["Да, окно.","Нет, спасибо.","Я нужен."],1,"Нет, спасибо is a conventional polite refusal.","Хорошего дня!","Простите, что именно вам нужно?")
 ]),
 mission("small-library","starter","Find a book","You want to borrow a Russian book in a library.",[
