@@ -98,3 +98,16 @@ The **Writing Portfolio** contains six original assignments per stage (30 in tot
 ## Offline grammatical reference (added)
 
 The handbook contains **30 bilingual rules** from Cyrillic and stress to six cases, verb aspect, motion, adverbial participles, relative clauses and B2 argument structure, each with four Russian examples and a common mistake. It complements, but cannot substitute for, a full morphology textbook, many independent practice contexts and review by a qualified native speaker. The handbook is offline, searchable through its topic menu, and uses device Russian TTS if present.
+
+
+---
+
+## Daily adult teaching route (November 2026)
+
+The Home-screen learner route is now **Today**, an implemented 210-session structured study schedule covering all five levels of course-target material, not 210 calendar days or certification. See [DAILY_TEACHING_PLAN.md](DAILY_TEACHING_PLAN.md) for the actual 14 first sessions and the 7-day cycle.
+
+Each study session binds a genuine app lesson activity to an explanation-led Russian question, Cyrillic spelling task (device or built-in keyboard), and spoken rehearsal. Vocabulary SRS is linked for review. Scores are factual and recent; quizzes cannot be completed by selecting the first choice repeatedly. Stage progress describes curriculum coverage rather than an assessment of real communication.
+
+An adult learner can choose a comfortable study-time target (20/40/60 minutes), pause without penalties, and review a six-skill learning passport that distinguishes scored grammar/reading from self-reported speaking and ungraded writing. A local JSON backup includes the current daily lesson, finished sessions, and mistakes for feedback.
+
+**Important:** Full independent B2 requires thousands of varied words and contexts, native-speaker audio/listening comprehension, independent oral assessment, teacher-standard writing correction, and external four-skill tests. The current system is a substantive practical daily foundation, not proof of having learned everything.
