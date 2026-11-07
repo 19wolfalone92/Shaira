@@ -81,7 +81,6 @@ const optionsFor=day=>{
     seed=(Math.imul(seed,1664525)+1013904223)>>>0;
     const j=seed%(i+1);[array[i],array[j]]=[array[j],array[i]];
   }
-  if(array[0]===day.quiz.answer){[array[0],array[1]]=[array[1],array[0]];}
   return array;
 };
 function todayHeader(day,state,summary,l){
