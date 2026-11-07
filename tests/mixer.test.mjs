@@ -5,6 +5,7 @@ import {VERBS,VERB_FORMS,SUBJECTS,PAST_SUBJECTS} from "../assets/verb-paradigms.
 import {sentencePatterns,corrections} from "../assets/practice-content.js";
 import {bankForStage,selectMix,gradeMixAnswer,recordMixAnswer,recordMixSession,loadMix,mixStats,MIX_TYPES,MIX_LENGTH} from "../assets/practice-engine.js";
 import {mixerHtml,mixerAction,mixerSubmit} from "../assets/practice-ui.js";
+import {verbHtml,verbAction} from "../assets/verb-ui.js";
 import {buildBackup,restoreBackup} from "../assets/backup.js";
 import {makeDay,beginDay,saveDayState,snapshot,stepComplete} from "../assets/daily-plan.js";
 const store=()=>{const m=new Map();return {getItem:k=>m.get(k)??null,setItem:(k,v)=>m.set(k,String(v)),removeItem:k=>m.delete(k)};};
@@ -45,6 +46,20 @@ test("all 80 authored construction/repair examples are distinct and stage-approp
   assert.match(c.correct,/[\u0400-\u052F]/u);
   assert.match(c.wrong,/[\u0400-\u052F]/u);
  }
+});
+test("verb reference exposes every person and Russian sample in English",()=>{
+ const list=verbHtml("academy/verbs");
+ assert.match(list,/Russian Verb Lab/);
+ assert.match(list,/24 everyday verbs/);
+ for(const v of VERBS){
+  assert.ok(list.includes('#academy/verbs/'+v.id));
+  const html=verbHtml("academy/verbs/"+v.id);
+  for(const form of [...v.now,...v.past])assert.ok(html.includes(form),v.id+" "+form);
+  assert.match(html,/data-verb="speak"/);
+ }
+ let spoken="";
+ verbAction({dataset:{verb:"speak",russian:"Я живу в Минске."}},{speak:x=>spoken=x});
+ assert.equal(spoken,"Я живу в Минске.");
 });
 test("the adaptive bank spans up to 13 different meaningful tasks per stage",()=>{
  for(const stage of stageIds){
