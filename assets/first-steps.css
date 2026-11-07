@@ -1,0 +1,68 @@
+/* SHAIRA first 78 MICRO-steps: calm adult interface, one letter/idea at a time. */
+.ms-hero{padding:25px 19px;background:linear-gradient(160deg,#f2edfa,#faf5ef);border:1px solid #e1d9ed;border-radius:20px;color:#3d3254}
+.ms-hero>span{font-size:10px;letter-spacing:.14em;color:#765b9c;font-weight:900}
+.ms-hero h1{font-size:clamp(27px,7.5vw,38px);line-height:1.13;margin:12px 0;color:#372b50}
+.ms-hero p{font-size:14px;line-height:1.7;color:#625576}
+.ms-progress-numbers{display:flex;gap:12px;align-items:baseline;margin-top:18px}
+.ms-progress-numbers strong{color:#5f488c;font-size:24px}
+.ms-progress-numbers span{font-size:12px;color:#776985}
+.ms-progress,.ms-qbar{height:9px;background:#e4dce9;border-radius:10px;overflow:hidden;margin:11px 0}
+.ms-progress i,.ms-qbar i{display:block;height:100%;background:#8e72bc;border-radius:10px}
+.ms-next{margin:12px 0 0!important;font-size:12px!important;color:#564b68!important}
+.ms-mode,.ms-study,.ms-question,.ms-fast-cta,.ms-fast-intro,.ms-success{background:#fff;border:1px solid #e7e0ed;border-radius:17px;padding:19px 17px;margin:14px 0}
+.ms-mode h2,.ms-study h2,.ms-question h2,.ms-fast-intro h2{font-size:19px;line-height:1.35;color:#392d51;margin:6px 0 11px}
+.ms-mode p,.ms-study>p,.ms-fast-cta p,.ms-fast-intro p,.ms-success p{font-size:13px;line-height:1.7;color:#6c5d78}
+.ms-mode-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:17px 0 10px}
+.ms-mode-row button{min-height:63px;min-width:0;background:#fcfaff;border:1px solid #e1d8ee;border-radius:11px;color:#594875;display:flex;flex-direction:column;justify-content:center;gap:5px;padding:9px 4px}
+.ms-mode-row button strong{font-size:12px}
+.ms-mode-row button small{font-size:10px}
+.ms-mode-row button.selected,.ms-mode-row button[aria-pressed="true"]{background:#655093;color:#fff;border-color:#655093}
+.ms-mode .ms-hint,.ms-hint{font-size:11px;line-height:1.65;color:#7a6d86}
+.ms-section-label{font-size:10px;font-weight:900;letter-spacing:.13em;color:#7258a2;margin-bottom:12px}
+.ms-large{font-size:clamp(80px,27vw,128px);line-height:1.1;font-weight:700;letter-spacing:.025em;text-align:center;background:#f8f5fd;color:#40305b;padding:19px 5px;border-radius:16px;margin:17px 0;overflow-wrap:anywhere}
+.ms-large span{font-size:.55em;vertical-align:baseline;margin-left:13px;color:#74618b}
+.ms-large.ms-word{font-size:clamp(34px,11vw,66px);line-height:1.35}
+.ms-pronounce{color:#5e4d76;padding:11px 13px;border-left:3px solid #9d80c4;background:#f8f5fb;border-radius:8px;font-size:13px;line-height:1.65}
+.ms-study-buttons{display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin:18px 0}
+.ms-outline{font-size:13px;color:#60498c;background:#fff;border:1px solid #cfc1e3;border-radius:11px;padding:11px 13px;font-weight:800;min-height:42px}
+.ms-outline:disabled{opacity:.5}
+.ms-primary,.ms-link{display:inline-block;box-sizing:border-box;border:1px solid #614b93;background:#614b93;color:white;min-height:47px;text-decoration:none;padding:13px 16px;border-radius:11px;font-size:13px;font-weight:850;margin:13px 0 0;line-height:1.5}
+.ms-primary:disabled{opacity:.5}
+.ms-qlabel{display:block;font-size:12px;font-weight:800;color:#6d5a8b;margin:11px 0 5px}
+.ms-question h2{font-size:19px;line-height:1.6;color:#423651;margin:16px 0}
+.ms-choices{display:grid;gap:10px;margin:19px 0}
+.ms-choices button{min-height:54px;border:1px solid #e4dbea;background:#fcfaff;color:#403154;border-radius:11px;text-align:center;font-size:17px;line-height:1.5;padding:12px 15px;overflow-wrap:anywhere}
+.ms-choices button:disabled{opacity:.55}
+#micro-answer-form label{display:block;font-size:12px;font-weight:850;color:#665182;margin:17px 0 10px}
+#micro-typed{display:block;box-sizing:border-box;border:1px solid #dcd1e8;color:#382b52;background:white;border-radius:10px;min-height:54px;font-size:19px;padding:13px 14px;width:100%}
+.ms-feedback{margin:17px 0 3px;border:1px solid #dfd1e5;border-radius:11px;padding:15px;font-size:13px;line-height:1.65}
+.ms-feedback.good{color:#275d3e;border-color:#cae2d0;background:#eff8f0}
+.ms-feedback.retry{color:#85512f;border-color:#ebd1b7;background:#fff3e8}
+.ms-feedback p{margin:8px 0}
+.ms-feedback span{font-size:18px}
+.ms-fast-cta{background:#fbf8ff}
+.ms-fast-cta strong{color:#614785;font-size:14px}
+.ms-fast-intro{background:#fffaf3}
+.ms-back{min-height:37px;background:#fff;color:#71588d;border:1px solid #e1d3e6;border-radius:9px;font-size:12px;padding:10px;font-weight:800}
+.ms-success{text-align:center;padding:25px 18px}
+.ms-success>span{font-size:50px;color:#785aaa}
+.ms-success h1{font-size:26px;color:#3a2c51;margin:9px 0}
+.ms-success.ms-almost>span{color:#ae8d60}
+.ms-roadmap{background:#fff;border-radius:14px;border:1px solid #e7dfed;padding:14px;margin:16px 0}
+.ms-roadmap summary{font-size:12px;color:#665184;font-weight:850;cursor:pointer}
+.ms-roadmap>div{margin-top:12px}
+.ms-roadmap>div>div{display:grid;grid-template-columns:1fr 45px;gap:6px;align-items:center;border-top:1px solid #efe9f2;padding:10px 0}
+.ms-roadmap span{font-size:12px;color:#665973}
+.ms-roadmap b{font-size:12px;color:#57416e;text-align:right}
+.ms-roadmap i{grid-column:1/-1;height:6px;background:#efe9f4;border-radius:9px}
+.ms-roadmap em{height:100%;display:block;background:#9476c2;border-radius:9px}
+.ms-home-preview{display:block;text-decoration:none;padding:16px 17px;background:#f0eafc;color:#514075;border:1px solid #ded4eb;border-radius:14px;margin:14px 0}
+.ms-home-preview strong{display:block;font-size:14px}
+.ms-home-preview span{display:block;font-size:12px;line-height:1.6;margin-top:6px}
+.ms-keyboard{border:1px solid #e4dced;border-radius:10px;padding:10px;margin:13px 0}
+.ms-keyboard summary{font-size:11px;font-weight:900;color:#614c8b;cursor:pointer}
+.ms-keyboard>div{display:flex;gap:3px;margin:7px 0}
+.ms-keyboard button{flex:1;min-width:0;min-height:35px;padding:5px 0;border-radius:6px;border:1px solid #d9ceea;color:#483359;background:#fff;font-size:13px}
+.ms-keyboard button.ms-space{flex:5}
+@media(max-width:370px){.ms-hero,.ms-mode,.ms-study,.ms-question,.ms-fast-cta,.ms-fast-intro,.ms-success{padding:15px 11px}.ms-large{font-size:clamp(72px,23vw,110px)}.ms-mode-row{gap:5px}.ms-mode-row button strong{font-size:11px}.ms-choices button{font-size:16px}}
+@media(prefers-reduced-motion:reduce){.ms-progress i,.ms-qbar i{transition:none}}
