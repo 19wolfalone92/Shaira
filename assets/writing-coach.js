@@ -12,39 +12,39 @@ export const WRITING_RUBRIC={
 // Patterns use narrowly bounded fixed constructions: don't flag every form of a
 // word or attempt linguistic parsing with regex. Context may make any suggestion inapplicable.
 const rules=[
- ["incorrect-name",/(?:^|[.!?]\s*|\n)\s*(я зовут)\b/giu,"Меня зовут","To give your name, use «Меня зовут …», not «Я зовут …»."],
- ["incorrect-self",/(?:^|[.!?]\s*|\n)\s*(меня зовут меня)\b/giu,"Меня зовут","The name formula does not repeat «меня»."],
- ["first-person-read",/\bя\s+(читать)(?=\s|[.!?]|$)/giu,"читаю","After «я», use the first-person present «читаю», not an infinitive."],
- ["first-person-speak",/\bя\s+(говорить)(?=\s|[.!?]|$)/giu,"говорю","After «я», use «говорю» in the present tense."],
- ["first-person-work",/\bя\s+(работать)(?=\s|[.!?]|$)/giu,"работаю","After «я», use «работаю» in the present tense."],
- ["we-speaks",/\bмы\s+(говорит)(?=\s|[.!?]|$)/giu,"говорим","With «мы», use the plural verb form «говорим»."],
- ["he-write",/\bон\s+(пишут)(?=\s|[.!?]|$)/giu,"пишет","With «он», use singular «пишет»."],
- ["you-read",/\bты\s+(читает)(?=\s|[.!?]|$)/giu,"читаешь","With informal «ты», use «читаешь»."],
- ["my-book",/\b(мой книга)\b/giu,"моя книга","«Книга» is feminine; its possessive is «моя»."],
- ["my-house",/\b(моя дом)\b/giu,"мой дом","«Дом» is masculine; its possessive is «мой»."],
- ["good-day",/\b(доброе день)\b/giu,"добрый день","«День» is masculine; this greeting is «Добрый день»."],
- ["no-sugar",/\b(без сахар)(?=\s|[.!?]|$)/giu,"без сахара","«Без» takes genitive: «без сахара»."],
- ["no-brother",/\b(нет брат)(?=\s|[.!?]|$)/giu,"нет брата","«Нет» takes genitive: «нет брата»."],
- ["location-city",/\b(жив[уюёеимтш][а-яё]*)\s+(в минск)(?=\s|[.!?]|$)/giu,"в Минске","Static location in Minsk uses the prepositional «в Минске»."],
- ["past-female",/\b(она работал)(?=\s|[.!?]|$)/giu,"она работала","Past singular verb forms agree with a feminine subject."],
- ["past-sister",/\b(сестра пришёл)(?=\s|[.!?]|$)/giu,"сестра пришла","Past singular feminine uses «пришла»."],
- ["past-robot",/\b(машина сломался)(?=\s|[.!?]|$)/giu,"машина сломалась","«Машина» is feminine; use «сломалась»."],
- ["want-future",/\b(буду работаю)(?=\s|[.!?]|$)/giu,"буду работать","Analytic imperfective future uses «буду» + infinitive."],
- ["need-subject",/\b(меня нужно)(?=\s|[.!?]|$)/giu,"мне нужно","Necessity about yourself normally uses dative «мне нужно»."],
- ["according-report",/\b(согласно отчёт)(?=\s|[,.!?]|$)/giu,"согласно отчёту","«Согласно» governs the dative: «согласно отчёту»."],
- ["despite-delay",/\b(несмотря задержку)(?=\s|[,.!?]|$)/giu,"несмотря на задержку","«Несмотря на» is a fixed preposition taking accusative."],
- ["contrary",/\b(вопреки ожидания)(?=\s|[,.!?]|$)/giu,"вопреки ожиданиям","«Вопреки» governs dative plural: «ожиданиям»."],
- ["you-need",/\b(мне нужен вода)(?=\s|[,.!?]|$)/giu,"мне нужна вода","«Вода» is feminine; use «нужна»."],
- ["with-key",/\b(дверь ключ)(?=\s|[,.!?]|$)/giu,"дверь ключом","The instrumental case «ключом» expresses the tool."],
- ["in-park",/\b(в парку)(?=\s|[,.!?]|$)/giu,"в парке","Static location in a park is «в парке»."],
- ["go-moscow",/\b(ехать в москва)(?=\s|[,.!?]|$)/giu,"ехать в Москву","Destination towards Moscow uses accusative «в Москву»."],
- ["some-words",/\b(пять книги)(?=\s|[,.!?]|$)/giu,"пять книг","After «пять», the counted noun is genitive plural: «книг»."],
- ["i-know",/\b(я знает)(?=\s|[,.!?]|$)/giu,"я знаю","With «я», use first-person «знаю»."],
- ["he-lives",/\b(он живут)(?=\s|[,.!?]|$)/giu,"он живёт","With «он», use third-person singular «живёт»."]
+ ["incorrect-name",/(?:^|[.!?]\s*|\n)\s*(я зовут)(?![\p{L}\p{N}])/giu,"Меня зовут","To give your name, use «Меня зовут …», not «Я зовут …»."],
+ ["incorrect-self",/(?:^|[.!?]\s*|\n)\s*(меня зовут меня)(?![\p{L}\p{N}])/giu,"Меня зовут","The name formula does not repeat «меня»."],
+ ["first-person-read",/(?:^|[^\p{L}\p{N}])я\s+(читать)(?=\s|[.!?]|$)/giu,"читаю","After «я», use the first-person present «читаю», not an infinitive."],
+ ["first-person-speak",/(?:^|[^\p{L}\p{N}])я\s+(говорить)(?=\s|[.!?]|$)/giu,"говорю","After «я», use «говорю» in the present tense."],
+ ["first-person-work",/(?:^|[^\p{L}\p{N}])я\s+(работать)(?=\s|[.!?]|$)/giu,"работаю","After «я», use «работаю» in the present tense."],
+ ["we-speaks",/(?:^|[^\p{L}\p{N}])мы\s+(говорит)(?=\s|[.!?]|$)/giu,"говорим","With «мы», use the plural verb form «говорим»."],
+ ["he-write",/(?:^|[^\p{L}\p{N}])он\s+(пишут)(?=\s|[.!?]|$)/giu,"пишет","With «он», use singular «пишет»."],
+ ["you-read",/(?:^|[^\p{L}\p{N}])ты\s+(читает)(?=\s|[.!?]|$)/giu,"читаешь","With informal «ты», use «читаешь»."],
+ ["my-book",/(?:^|[^\p{L}\p{N}])(мой книга)(?![\p{L}\p{N}])/giu,"моя книга","«Книга» is feminine; its possessive is «моя»."],
+ ["my-house",/(?:^|[^\p{L}\p{N}])(моя дом)(?![\p{L}\p{N}])/giu,"мой дом","«Дом» is masculine; its possessive is «мой»."],
+ ["good-day",/(?:^|[^\p{L}\p{N}])(доброе день)(?![\p{L}\p{N}])/giu,"добрый день","«День» is masculine; this greeting is «Добрый день»."],
+ ["no-sugar",/(?:^|[^\p{L}\p{N}])(без сахар)(?=\s|[.!?]|$)/giu,"без сахара","«Без» takes genitive: «без сахара»."],
+ ["no-brother",/(?:^|[^\p{L}\p{N}])(нет брат)(?=\s|[.!?]|$)/giu,"нет брата","«Нет» takes genitive: «нет брата»."],
+ ["location-city",/(?:^|[^\p{L}\p{N}])(жив[уюёеимтш][а-яё]*)\s+(в минск)(?=\s|[.!?]|$)/giu,"в Минске","Static location in Minsk uses the prepositional «в Минске»."],
+ ["past-female",/(?:^|[^\p{L}\p{N}])(она работал)(?=\s|[.!?]|$)/giu,"она работала","Past singular verb forms agree with a feminine subject."],
+ ["past-sister",/(?:^|[^\p{L}\p{N}])(сестра пришёл)(?=\s|[.!?]|$)/giu,"сестра пришла","Past singular feminine uses «пришла»."],
+ ["past-robot",/(?:^|[^\p{L}\p{N}])(машина сломался)(?=\s|[.!?]|$)/giu,"машина сломалась","«Машина» is feminine; use «сломалась»."],
+ ["want-future",/(?:^|[^\p{L}\p{N}])(буду работаю)(?=\s|[.!?]|$)/giu,"буду работать","Analytic imperfective future uses «буду» + infinitive."],
+ ["need-subject",/(?:^|[^\p{L}\p{N}])(меня нужно)(?=\s|[.!?]|$)/giu,"мне нужно","Necessity about yourself normally uses dative «мне нужно»."],
+ ["according-report",/(?:^|[^\p{L}\p{N}])(согласно отчёт)(?=\s|[,.!?]|$)/giu,"согласно отчёту","«Согласно» governs the dative: «согласно отчёту»."],
+ ["despite-delay",/(?:^|[^\p{L}\p{N}])(несмотря задержку)(?=\s|[,.!?]|$)/giu,"несмотря на задержку","«Несмотря на» is a fixed preposition taking accusative."],
+ ["contrary",/(?:^|[^\p{L}\p{N}])(вопреки ожидания)(?=\s|[,.!?]|$)/giu,"вопреки ожиданиям","«Вопреки» governs dative plural: «ожиданиям»."],
+ ["you-need",/(?:^|[^\p{L}\p{N}])(мне нужен вода)(?=\s|[,.!?]|$)/giu,"мне нужна вода","«Вода» is feminine; use «нужна»."],
+ ["with-key",/(?:^|[^\p{L}\p{N}])(дверь ключ)(?=\s|[,.!?]|$)/giu,"дверь ключом","The instrumental case «ключом» expresses the tool."],
+ ["in-park",/(?:^|[^\p{L}\p{N}])(в парку)(?=\s|[,.!?]|$)/giu,"в парке","Static location in a park is «в парке»."],
+ ["go-moscow",/(?:^|[^\p{L}\p{N}])(ехать в москва)(?=\s|[,.!?]|$)/giu,"ехать в Москву","Destination towards Moscow uses accusative «в Москву»."],
+ ["some-words",/(?:^|[^\p{L}\p{N}])(пять книги)(?=\s|[,.!?]|$)/giu,"пять книг","After «пять», the counted noun is genitive plural: «книг»."],
+ ["i-know",/(?:^|[^\p{L}\p{N}])(я знает)(?=\s|[,.!?]|$)/giu,"я знаю","With «я», use first-person «знаю»."],
+ ["he-lives",/(?:^|[^\p{L}\p{N}])(он живут)(?=\s|[,.!?]|$)/giu,"он живёт","With «он», use third-person singular «живёт»."]
 ];
 const RU=/[\u0400-\u052F]/u, LATIN=/[A-Za-z]/u;
-const connectors=/\b(?:однако|поэтому|потому\s+что|хотя|поскольку|следовательно|во-первых|во-вторых|наконец|несмотря\s+на|вопреки|таким\s+образом|с\s+другой\s+стороны|в\s+то\s+же\s+время|вместе\s+с\s+тем|кроме\s+того|например|в\s+частности|прежде\s+чем|следует|итак)\b/giu;
-const mayConnect=s=>s.match(connectors)||[];
+const connectors=/(?:^|[^\p{L}\p{N}])((?:однако|поэтому|потому\s+что|хотя|поскольку|следовательно|во-первых|во-вторых|наконец|несмотря\s+на|вопреки|таким\s+образом|с\s+другой\s+стороны|в\s+то\s+же\s+время|вместе\s+с\s+тем|кроме\s+того|например|в\s+частности|прежде\s+чем|следует|итак))(?![\p{L}\p{N}])/giu;
+const mayConnect=s=>[...s.matchAll(connectors)].map(m=>m[1]);
 export const russianWords=text=>String(text??"").match(/[\u0400-\u052F]+(?:[-'][\u0400-\u052F]+)*/gu)||[];
 export function inspectRussianDraft(text,stage="starter"){
  const draft=String(text??"").slice(0,18000);
