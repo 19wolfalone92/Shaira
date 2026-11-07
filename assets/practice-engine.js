@@ -118,15 +118,13 @@ export function bankForStage(stage,{audio=false,random=Math.random}={}){
  for(const p of readingLibrary.filter(x=>x.stage===stage))
   p.questions.forEach((q,i)=>out.push(make("read",p.id+"-"+i,q.ask.en,q.answer,q.explain.en,
    shuffled(q.choices,random),{display:p.text,source:p.id})));
- if(cards.length>=4){
-  for(let i=0;i<Math.min(15,cards.length/4);i++){
-   const words=shuffled(cards,random).slice(0,4);
-   // Exclude collisions on exact English/Russian strings within each matching grid.
-   if(new Set(words.map(x=>x.en)).size!==4||new Set(words.map(x=>x.ru)).size!==4)continue;
-   out.push(make("match",stage+"-"+i,"Match each Russian word with its English meaning.","4 correct pairs",
-    "All four Russian words were correctly matched.",null,{
-     pairs:words.map(x=>({ru:x.ru,en:x.en})),source:stage+"-"+i}));
-  }
+ const matchPacks=firstWordPacks.filter((p,i)=>(p.stage||(i<20?"starter":"a1"))===stage);
+ for(const p of matchPacks){
+  const words=p.words.slice(0,4);
+  if(words.length<4||new Set(words.map(x=>x.en)).size!==4||new Set(words.map(x=>x.ru)).size!==4)continue;
+  out.push(make("match",p.id,"Match each Russian word with its English meaning.","4 correct pairs",
+   "All four Russian words were correctly matched.",null,{
+    pairs:words.map(x=>({ru:x.ru,en:x.en})),source:p.id}));
  }
  return out;
 }
