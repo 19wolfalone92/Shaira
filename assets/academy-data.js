@@ -289,7 +289,8 @@ export const activityModes=[
   {id:"grammar",emoji:"📐",en:"Grammar & phrase",tl:"Gramatika at parirala",graded:true},
   {id:"read",emoji:"📖",en:"Read & understand",tl:"Bumasa at umunawa",graded:true},
   {id:"write",emoji:"✍️",en:"Spelling & sentence",tl:"Baybay at pangungusap",graded:true},
-  {id:"journal",emoji:"📝",en:"Writing workshop",tl:"Pagsasanay sa pagsusulat",graded:false}
+  {id:"journal",emoji:"📝",en:"Writing workshop",tl:"Pagsasanay sa pagsusulat",graded:false},
+  {id:"speak",emoji:"🗣️",en:"Speak & repeat",tl:"Magsalita at umulit",graded:false}
 ];
 export const getUnit = id => units.find(unit=>unit.id===id);
 export const getStage = id => stages.find(stage=>stage.id===id);
