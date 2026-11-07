@@ -47,6 +47,11 @@ function studyCard(step){
  '0.7× Slowly</button></div>'+
  (!hasAudio()?'<p class="ms-hint">Russian audio is unavailable here. Look at the Russian letters and read them aloud if you can. This is not scored as listening.</p>':"")+
  '<p class="ms-hint">Spend a minute looking and listening. You do not need to rush. Say the model aloud if you feel comfortable.</p>'+
+ (letter?'<div class="ms-trace-box"><strong>Optional: trace this one letter</strong>'+
+ '<p>Use your finger or stylus. Handwriting is free practice and is not automatically marked.</p>'+
+ '<div class="ms-trace-pad"><span lang="ru" aria-hidden="true">'+esc(letter.upper)+'</span>'+
+ '<canvas id="micro-trace" aria-label="Freehand Cyrillic letter tracing pad" role="img"></canvas></div>'+
+ '<button type="button" data-micro="clear-trace" class="ms-outline">Clear drawing ↻</button></div>':"")+
  '<button type="button" class="ms-primary" data-micro="start">I am ready for a tiny check →</button></section>';
 }
 function questionCard(q,index,total,session,fast=false){
@@ -176,6 +181,11 @@ export function firstStepsAction(button,api){
   const mode=button.dataset.value;
   if(changeMicroMode(mode)){makeSession(readMicro());api.render();}
   else api.notice?.("Could not save your difficulty preference.");
+  return;
+ }
+ if(action==="clear-trace"){
+  const canvas=document.getElementById("micro-trace"),ctx=canvas?.getContext?.("2d");
+  if(canvas&&ctx){const b=canvas.getBoundingClientRect();ctx.clearRect(0,0,b.width,b.height);}
   return;
  }
  if(action==="hear"||action==="hear-slow"){
