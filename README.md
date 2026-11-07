@@ -12,7 +12,7 @@ An adult-first, free-to-use iPhone PWA for **Shaira** to learn Russian from the 
 | Vocabulary | 40 bilingual themed packs × 6 cards = **240 cards** (120 early words + 120 practical adult words) |
 | Academy path | 32 original topic units across **Pre-A1, A1, A2, B1 and B2** |
 | Unit practice | 7 formats per unit: vocabulary, listen/choose, phrase/grammar basics, reading, controlled writing, shadowing and open writing |
-| Conversation | 20 contextual Russian dialogues |
+| Conversation | 20 contextual Russian dialogues; optional private microphone recording and playback in speaking lessons (browser permitting) |
 | Independent grammar | **100 contextual questions** (20 per stage), with answer-specific explanations in EN and Filipino |
 | Reading | **20 original levelled texts**, 40 comprehension questions, word glossary, speaking aloud and associated writing tasks |
 | Writing portfolio | **30 guided tasks**, from basic sentences to extended B2-style arguments, on-device drafts and format-only self-review |
@@ -24,7 +24,7 @@ An adult-first, free-to-use iPhone PWA for **Shaira** to learn Russian from the 
 
 **These are teaching-path targets, not CEFR certificates.** The app includes materials labelled through B2 but does **not** yet constitute a complete, independently validated route to real B2. Thousands of additional reviewed lexical entries, varied grammar/reading/writing tasks, native-speaker recordings, dependable audio and speaking assessment, teacher-quality essay feedback and independent examinations are still needed. A user cannot reliably establish B2 by completion counters alone.
 
-Synthetic Russian speech uses the browser/device voice when available; it may not work offline. The handwritten canvas permits tracing but **does not recognise writing**, and the writing portfolio does **not** judge grammar or semantics automatically. No mandatory account, ad, analytics, paid API or server is included.
+Synthetic Russian speech uses the browser/device voice when available; it may not work offline. Optional recorded speaking samples are kept only in temporary browser memory and never uploaded. The handwritten canvas permits tracing but **does not recognise writing**, and the writing portfolio does **not** judge grammar or semantics automatically. No mandatory account, ad, analytics, paid API or server is included.
 
 ## Learning strategy
 
