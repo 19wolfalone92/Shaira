@@ -130,7 +130,7 @@ function firstWordsPage(route,l){
   }
   const p=firstWordPacks.find(x=>x.id===packId);if(!p)return firstWordsPage("academy/first-words",l);
   const s=ensureSession(route,l);
-  const header='<a class="aca-back" href="#academy/first-words">← '+UI[l].back+'</a>'+top(p.icon+" Pre-A1",val(p.title,l),tx("Look, say and remember.","Tingnan, sabihin at tandaan.",l));
+  const header='<a class="aca-back" href="#academy/first-words">← '+UI[l].back+'</a>'+top(p.icon+" "+(p.stage?p.stage.toUpperCase():"Pre-A1"),val(p.title,l),tx("Look, say and remember.","Tingnan, sabihin at tandaan.",l));
   if(s.phase==="done")return header+'<div class="aca-celebrate">🌟<h2>'+UI[l].finish+'</h2><a class="aca-cta aca-link" href="#academy/first-words">'+UI[l].studyNext+' →</a></div>';
   if(s.phase==="quiz")return header+answersHtml(s,l,"words");
   return header+'<section class="aca-panel"><h2>'+UI[l].learnFirst+'</h2><div class="aca-word-grid">'+p.words.map(w=>
