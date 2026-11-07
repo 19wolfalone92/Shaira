@@ -1,6 +1,7 @@
 import {stages,units,activityModes,getUnit,getStage,academyLessonTotal} from "./academy-data.js";
 import {firstWordPacks} from "./first-words.js";
 import {dialogues} from "./dialogues.js";
+import {startPrivateRecording,stopPrivateRecording,discardPrivateRecording,isRecordingSupported} from "./speaking-recorder.js";
 const KEY="shaira-academy-v1";
 const MS_DAY=86400000, STEPS=[1,3,7,14,30];
 const UI={
@@ -233,6 +234,11 @@ function lessonPage(id,mode,l){
       '<div class="aca-example"><button class="aca-sound" data-aca="sound" data-text="'+esc(u.example.ru)+'">🔊 '+UI[l].audio+'</button><strong lang="ru">'+esc(u.example.ru)+'</strong><small>'+esc(val(u.example,l))+'</small></div>'+
       '<div class="aca-reading" lang="ru">'+esc(u.reading.ru)+'</div>'+
       '<button class="aca-sound" data-aca="sound" data-text="'+esc(u.reading.ru)+'">🔊 '+UI[l].audio+'</button>'+
+      '<div class="aca-recorder"><h3>'+tx("Record and listen to yourself","I-record at pakinggan ang iyong sarili",l)+'</h3><p>'+tx("Optional. Microphone access requires permission. Audio stays in this session; nothing is uploaded or saved.","Opsyonal. Kailangan ng pahintulot sa mikropono. Sa session lang ang audio; walang ina-upload o sine-save.",l)+'</p>'+
+      '<div class="aca-recorder-buttons"><button class="aca-secondary" type="button" data-aca="record-start">'+tx("● Start recording","● Magsimulang mag-record",l)+'</button>'+
+      '<button class="aca-secondary" type="button" data-aca="record-stop" hidden>'+tx("■ Stop","■ Itigil",l)+'</button></div>'+
+      '<p id="aca-rec-status" role="status">'+(isRecordingSupported()?tx("Ready when you are.","Handa kung kailan ka handa.",l):tx("Microphone recording unavailable; speaking aloud still works.","Walang recording sa browser; maaari pa ring magsalita nang malakas.",l))+'</p>'+
+      '<audio id="aca-rec-play" controls hidden aria-label="'+tx("Your private recording","Pribadong recording",l)+'"></audio></div>'+
       '<button class="aca-cta aca-wide" data-aca="practice-done">'+UI[l].spoken+' ✓</button></section>';
   }
   if(mode==="journal"){
@@ -308,12 +314,39 @@ function moveNext(s,l,api){
   }else s.phase="done";
   api.render();
 }
-export function handleAcademyAction(button,api){
+export async function handleAcademyAction(button,api){
   const action=button.dataset.aca;
   const l=api.language() === "tl"?"tl":"en";
   const route=api.route(),s=ensureSession(route,l);
   if(action==="sound"){api.speak(button.dataset.text||"");return;}
   if(!s)return;
+  if(action==="record-start"&&s.mode==="speak"){
+    const status=document.getElementById("aca-rec-status");
+    const start=document.querySelector('[data-aca="record-start"]');
+    const stop=document.querySelector('[data-aca="record-stop"]');
+    if(status)status.textContent=tx("Requesting microphone permission…","Humihingi ng pahintulot sa mikropono…",l);
+    if(start)start.disabled=true;
+    try{
+      const key=s.key;
+      await startPrivateRecording(url=>{
+        if(session?.key!==key)return;
+        const player=document.getElementById("aca-rec-play");
+        if(player&&url){player.src=url;player.hidden=false;}
+        const statusNow=document.getElementById("aca-rec-status");
+        if(statusNow)statusNow.textContent=tx(url?"Play back your recording and compare it with the Russian model.":"No audio was captured.","Pakinggan ang recording at ihambing sa modelong Ruso.",l);
+        const startNow=document.querySelector('[data-aca="record-start"]');
+        const stopNow=document.querySelector('[data-aca="record-stop"]');
+        if(startNow){startNow.disabled=false;startNow.hidden=false;}
+        if(stopNow)stopNow.hidden=true;
+      });
+      if(session?.key!==key){discardPrivateRecording();return;}
+      if(start)start.hidden=true;
+      if(stop)stop.hidden=false;
+      if(status)status.textContent=tx("Recording locally… Tap Stop when finished.","Nagri-record sa device… Pindutin ang Itigil.",l);
+    }catch(e){if(start)start.disabled=false;if(status)status.textContent=String(e.message||e);}
+    return;
+  }
+  if(action==="record-stop"&&s.mode==="speak"){stopPrivateRecording();return;}
   if(action==="toggle-translation"){s.show=!s.show;api.render();return;}
   if(action==="dialogue-answer"&&s.mode==="dialogue"){
     if(s.answered)return;
@@ -346,7 +379,7 @@ export function handleAcademyAction(button,api){
     correctOne(s,options[Number(button.dataset.choice)],l,api);return;
   }
   if(action==="next-task"){moveNext(s,l,api);return;}
-  if(action==="practice-done"){mark(s.u,"speak");s.phase="done";api.render();return;}
+  if(action==="practice-done"){discardPrivateRecording();mark(s.u,"speak");s.phase="done";api.render();return;}
   if(action==="save-draft"){
     const input=document.getElementById("aca-draft"),draft=input?.value||"";
     store.drafts[s.u.id]=draft;
@@ -378,3 +411,5 @@ export function academyStatistics(){
   const m=memoryDue();
   return {units:units.length,firstWordPacks:firstWordPacks.length,dialogues:dialogues.length,activities:totalActivities,completed:Object.keys(store.done).length,knownWords:m.known.length,dueWords:m.due.length,points:store.points};
 }
+
+export function stopSpeakingRehearsal(){discardPrivateRecording();}
