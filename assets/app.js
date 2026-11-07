@@ -147,7 +147,10 @@ function home() {
     {href:first?"#lesson/"+first.id:"#academy/first-words",icon:"Аа",heading:sectionsText[0],sub:fil?"33 titik • tunog at baybay":"33 letters • sounds and spelling"},
     {href:"#academy/first-words",icon:"01",heading:sectionsText[1],sub:"486 words • practical topics"},
     {href:"#academy/lab",icon:"✳",heading:sectionsText[2],sub:"100 grammar questions • 35 graded texts"},
-    {href:"#academy/writing",icon:"✎",heading:sectionsText[3],sub:fil?"Sulat • mga draft • rebisyon":"Writing • drafts • revision"}
+    {href:"#academy/writing",icon:"✎",heading:sectionsText[3],sub:fil?"Sulat • mga draft • rebisyon":"Writing • drafts • revision"},
+    {href:"#academy/mix",icon:"✦",heading:"Variety Lab",sub:"13 varied task types · adaptive review"},
+    {href:"#academy/verbs",icon:"Я",heading:"Russian Verb Lab",sub:"24 verbs · 240 present and past forms"},
+    {href:"#academy/scenarios",icon:"💬",heading:"Interactive conversations",sub:"15 adult roleplay missions"}
   ];
   return todayPreview(l)+'<section class="adult-welcome"><div class="adult-welcome-copy"><span class="adult-eyebrow">SHAIRA · LEARN RUSSIAN</span><h1>'+headline+'</h1><p>'+detail+'</p>'+
      '<a class="adult-cta" href="'+routeCards[0].href+'">'+(fil?"Simulan ang unang aralin":"Start the first lesson")+' →</a></div><div class="adult-russian" aria-hidden="true">Я</div></section>'+
