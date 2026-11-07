@@ -1,0 +1,113 @@
+/* SHAIRA DAILY TEACHER · calm and readable on adult iPhones. */
+.daily-home-link{display:flex;align-items:center;gap:12px;text-decoration:none;color:#302a44;background:#fff;border:1px solid #ded6ea;border-radius:15px;padding:15px 16px;margin:0 0 18px}
+.daily-home-link>span{font-size:28px;color:#6b55a2}.daily-home-link>div{min-width:0;flex:1}
+.daily-home-link strong{display:block;font-size:14px;line-height:1.45}
+.daily-home-link small{display:block;font-size:12px;line-height:1.4;color:#686075;margin-top:5px}
+.daily-home-link b{font-size:24px;color:#927fb1}
+.daily-hero{position:relative;padding:25px 22px;background:#ebe7f4;border:1px solid #dcd4e8;border-radius:20px;color:#342b4e;overflow:hidden}
+.daily-hero:after{content:"А";font-size:200px;color:#7860ab13;position:absolute;right:-15px;top:-55px;font-weight:900;pointer-events:none}
+.daily-overline{font-size:10px;letter-spacing:.13em;color:#66538f;font-weight:850;position:relative;z-index:1}
+.daily-hero h1{font-size:clamp(27px,6.3vw,40px);line-height:1.15;letter-spacing:-.04em;margin:12px 0 10px;position:relative;z-index:1}
+.daily-hero p{font-size:13px;line-height:1.65;color:#5e566d;margin:0;position:relative;z-index:1;max-width:570px}
+.daily-main-facts{display:flex;flex-wrap:wrap;gap:8px;margin-top:21px;position:relative;z-index:1}
+.daily-main-facts span{font-size:11px;font-weight:700;background:#fff9;border:1px solid #d9cfe7;padding:7px 10px;border-radius:99px}
+.daily-status,.daily-preferences,.daily-focus,.daily-task-area,.daily-micro,.daily-finish,.daily-history,.daily-complete{
+ background:#fff;border:1px solid #e4dfeb;border-radius:17px;margin:16px 0;padding:19px 18px}
+.daily-status>div:first-child{display:flex;justify-content:space-between;gap:12px;align-items:center;font-size:13px}
+.daily-status>div:first-child strong{font-size:15px}
+.daily-status>div:first-child span{font-size:12px;color:#625589}
+.daily-total-bar{height:9px;background:#efebf5;border-radius:20px;margin:13px 0 11px;overflow:hidden}
+.daily-total-bar i{height:100%;display:block;background:#745da8;border-radius:20px;transition:width .15s}
+.daily-steps-head{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;font-size:11px;color:#70697b}
+.daily-preferences h2,.daily-task-area>h2,.daily-micro>h2,.daily-history>h2{font-size:17px;color:#322a46;margin:0 0 15px}
+.daily-goals{display:flex;gap:8px}
+.daily-goals button{flex:1;background:#f9f8fc;border:1px solid #ded6ed;color:#625778;border-radius:10px;padding:10px 8px;min-height:43px;font-size:13px;font-weight:750}
+.daily-goals button.daily-selected{background:#e9e1f7;border:2px solid #7d65ae;color:#4e397d}
+.daily-preferences>p,.daily-hint{font-size:11px;line-height:1.65;color:#686275;margin:11px 0 0}
+.daily-focus{background:#f8f6fc}
+.daily-week-label{font-size:11px;font-weight:850;text-transform:uppercase;letter-spacing:.075em;color:#74639b}
+.daily-focus h2{margin:10px 0;font-size:20px;line-height:1.35;color:#352d4c}
+.daily-focus>p{font-size:13px;color:#584d67;line-height:1.7}
+.daily-note{border-left:3px solid #967cbd;padding:8px 13px;background:#f0ebf7;border-radius:9px;font-size:12px;color:#524661;line-height:1.65}
+.daily-note p{margin:5px 0}
+.daily-review{display:flex;gap:12px;align-items:center;border:1px solid #d8dfd8;border-radius:15px;padding:15px;text-decoration:none;color:#344b43;background:#f7faf6;margin:16px 0}
+.daily-review>span{background:#e9f3e6;color:#467454;font-size:21px;border-radius:10px;padding:6px 10px}
+.daily-review>div{flex:1;min-width:0}.daily-review strong{font-size:14px;display:block}
+.daily-review small{display:block;font-size:11px;line-height:1.5;color:#577064;margin-top:5px}.daily-review>b{color:#66826a;font-size:23px}
+.daily-task-list{display:grid;gap:12px}
+.daily-task{display:flex;align-items:flex-start;gap:10px;border:1px solid #ebe5f0;border-radius:13px;padding:14px 11px;background:#fdfcff;flex-wrap:wrap}
+.daily-task.daily-task-done{border-color:#ccddcf;background:#f7faf7}
+.daily-task-number{display:grid;place-items:center;width:30px;height:30px;border-radius:9px;background:#eae5f4;color:#67518f;font-weight:850;flex:none}
+.daily-task-done .daily-task-number{background:#dbecdf;color:#287144}
+.daily-task-info{flex:1;min-width:160px}.daily-task-info strong{font-size:14px;line-height:1.45;color:#382f4b;display:block}
+.daily-task-info small{display:block;font-size:11px;margin-top:6px;color:#756d81}
+.daily-task-actions{display:flex;flex-direction:column;align-items:flex-end;gap:7px;max-width:100%}
+.daily-task-actions a{font-size:12px;color:#5c4a99;background:#eeeaf6;padding:10px 11px;border-radius:10px;text-decoration:none;font-weight:800;display:inline-block;text-align:center;min-height:39px;box-sizing:border-box}
+.daily-task-actions button{border:1px solid #b1a2d4;background:#fff;color:#554387;border-radius:9px;font-size:11px;font-weight:750;line-height:1.4;padding:8px 9px;max-width:190px;min-height:40px}
+.daily-warning{font-size:11px;color:#935426;line-height:1.6}
+.daily-caution{font-size:11px;color:#736d7b;line-height:1.6}
+.daily-primary{background:#57469b;border:1px solid #57469b;color:white;border-radius:12px;font-weight:850;font-size:13px;padding:12px 17px;min-height:44px;display:inline-block;text-decoration:none;text-align:center;cursor:pointer}
+.daily-primary:disabled{opacity:.43;cursor:not-allowed}
+.daily-resume{display:block;margin-top:17px}
+.daily-micro{background:transparent;border:0;padding:0}
+.daily-micro>h2{padding-left:4px}
+.daily-exercise{background:white;border:1px solid #e5deeb;border-radius:16px;padding:18px 16px;margin:12px 0}
+.daily-exercise-caption{display:flex;align-items:center;gap:10px;color:#362e4b}
+.daily-exercise-caption>span{display:grid;place-items:center;width:35px;height:35px;border-radius:10px;background:#efeaf7;color:#55448b;font-size:12px;font-weight:900}
+.daily-exercise-caption strong{font-size:15px;flex:1;line-height:1.5}
+.daily-exercise-caption b{font-size:20px;color:#27894b}
+.daily-question{font-size:16px;font-weight:650;line-height:1.55;color:#342b4b;margin:15px 0 5px}
+.daily-exercise .daily-hint{margin:9px 0 13px}
+.daily-choices{display:grid;gap:9px;margin-top:17px}
+.daily-choices button{width:100%;min-height:48px;border:1px solid #dfd7eb;border-radius:10px;text-align:left;font-size:14px;color:#373048;background:#fdfcff;padding:11px 12px;font-weight:600;line-height:1.5;overflow-wrap:anywhere}
+.daily-choices button:hover,.daily-choices button:focus-visible{border-color:#8f78bd;background:#f4effb}
+.daily-feedback{padding:14px;border-radius:11px;font-size:12px;line-height:1.7;margin:15px 0 0}
+.daily-feedback.ok,.daily-passed{background:#e9f5ea;border:1px solid #cfe6d2;color:#286e49}
+.daily-feedback.wrong{background:#fff5ec;border:1px solid #f2dcc2;color:#865327}
+.daily-passed{border-radius:11px;padding:12px 13px;margin:16px 0 3px;font-size:13px;font-weight:800}
+.daily-exercise form{margin:14px 0}
+.daily-exercise label{display:block;font-size:12px;font-weight:800;color:#4a405d;margin-bottom:8px}
+#daily-spell{width:100%;min-height:49px;box-sizing:border-box;font:inherit;font-size:18px;border:1px solid #cfc6e3;padding:11px 12px;border-radius:11px;color:#2f293e;outline-offset:4px}
+.daily-exercise form small{display:block;color:#776e83;font-size:11px;line-height:1.6;margin:9px 0}
+.daily-play,.daily-secondary{background:#f4eff9;border:1px solid #d7cbe8;color:#5a438d;border-radius:11px;font-size:12px;font-weight:750;padding:10px 13px;min-height:43px}
+.daily-ru{background:#f8f6fc;color:#342947;font-weight:750;font-size:clamp(20px,4.8vw,25px);line-height:1.6;border-radius:11px;padding:15px;margin:12px 0 16px}
+.daily-secondary{margin-top:12px}
+.daily-keyboard{margin:10px 0;border:1px solid #e2daee;border-radius:12px;padding:10px 8px}
+.daily-keyboard summary{cursor:pointer;font-size:12px;font-weight:800;color:#61508a}
+.daily-board{margin-top:13px}.daily-board>div{display:flex;justify-content:center;gap:3px;margin:4px 0}
+.daily-board button{flex:1;min-width:0;border:1px solid #ded5ed;border-radius:6px;background:#fff;font-size:14px;color:#493c65;padding:8px 0;min-height:36px}
+.daily-board .daily-space{flex:5}
+.daily-finish{text-align:center;background:#faf8fc}
+.daily-finish p{font-size:12px;line-height:1.6;margin:0 0 14px}
+.daily-done-text{color:#397051;font-weight:750}
+.daily-finish .daily-primary{width:100%}
+.daily-extra{padding:16px;border:1px solid #e5deed;border-radius:14px;background:#fcfbff;margin:17px 0;font-size:12px;color:#665a74;line-height:1.6}
+.daily-extra h3{font-size:15px;margin:0 0 9px;color:#3d3055}
+.daily-extra a{color:#6a51a7;font-weight:750}
+.daily-history h2{font-size:16px}
+.daily-levels{display:grid;gap:10px}
+.daily-levels>div{display:grid;grid-template-columns:70px 1fr;align-items:center;gap:10px;font-size:12px}
+.daily-levels strong{font-size:12px;color:#423754}
+.daily-levels>div>span{text-align:right;color:#7d7486;font-weight:650}
+.daily-levels i{grid-column:1/-1;width:100%;display:block;background:#eeeaf6;height:6px;border-radius:9px;overflow:hidden;margin-top:-3px}
+.daily-levels em{display:block;background:#806aac;height:100%;border-radius:9px}
+.daily-date{display:inline-block;background:#f3f0f8;color:#665986;border-radius:7px;padding:3px 6px;margin:4px 2px 0 0;font-size:10px}
+.daily-guidance{font-size:12px;color:#765729;background:#fff8e9;border-radius:9px;padding:11px;margin-top:13px;line-height:1.5}
+.daily-complete{text-align:center;padding:36px 21px;background:#f7f4fb}
+.daily-complete-icon{width:60px;height:60px;display:grid;place-items:center;border-radius:50%;background:#e3efdf;color:#28713d;font-size:35px;font-weight:900;margin:0 auto 14px}
+.daily-complete h1{font-size:clamp(25px,6vw,35px);line-height:1.2}
+.daily-complete>p{font-size:13px;line-height:1.7;color:#6c5e7c;max-width:500px;margin:15px auto}
+.daily-complete>strong{display:block;font-size:14px;color:#584a7e;margin:15px auto}
+.daily-complete>div{margin:19px auto}
+@media(min-width:680px){.daily-task{flex-wrap:nowrap}.daily-task-actions{min-width:175px}.daily-micro{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.daily-micro>h2{grid-column:1/-1;margin-bottom:2px}.daily-exercise{margin:0}.daily-exercise:last-child{grid-column:1/-1}}
+@media(max-width:370px){.daily-hero,.daily-status,.daily-preferences,.daily-focus,.daily-task-area,.daily-exercise,.daily-finish,.daily-history{padding:15px 12px}.daily-task-actions{flex-basis:100%;align-items:stretch;padding-left:40px}.daily-task-actions a{width:100%}.daily-hero h1{font-size:27px}.daily-goals button{font-size:12px}}
+@media(prefers-reduced-motion:reduce){.daily-total-bar i{transition:none}}
+
+.daily-skill-title{font-size:14px;margin:22px 0 11px;color:#3c3151}
+.daily-skill-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
+.daily-skill-grid>div{background:#f9f7fc;border:1px solid #e9e3ef;border-radius:11px;padding:11px 10px}
+.daily-skill-grid>div>div{display:flex;justify-content:space-between;gap:6px;align-items:center;font-size:11px;line-height:1.5}
+.daily-skill-grid strong{color:#403650}.daily-skill-grid span{color:#736585;font-weight:750;white-space:nowrap}
+.daily-skill-grid i{display:block;height:6px;background:#e8e3ef;border-radius:8px;margin-top:9px;overflow:hidden}
+.daily-skill-grid em{display:block;height:100%;background:#826ba9;border-radius:8px}
+@media(max-width:350px){.daily-skill-grid{grid-template-columns:1fr}}

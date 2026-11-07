@@ -38,7 +38,8 @@ function persist(){
 }
 function mark(u,mode){
   const key=u.id+"/"+mode;
-  if(!store.done[key]){store.done[key]=Date.now();store.points+=10;persist();}
+  if(!store.done[key])store.points+=10;
+  store.done[key]=Date.now();persist();
 }
 const tokens=s=>String(s||"").trim().split(/\s+/).filter(Boolean);
 const standard=s=>String(s).toLocaleLowerCase("ru-RU").normalize("NFC").replace(/[«»"„”“!?.:,;—–\s]+/g," ").trim();
@@ -46,8 +47,12 @@ function randomOrder(n){const a=Array.from({length:n},(_,i)=>i);for(let i=a.leng
 function buildWordQuiz(u,l,mode,reviewItems){
   const all=reviewItems||u.words.map(w=>({u,w}));
   return all.map(({u:unit,w})=>{
-    const distractors=(reviewItems?reviewItems.map(x=>x.w):unit.words).filter(x=>x.ru!==w.ru && val(x,l)!==val(w,l));
-    const choices=[w,...distractors.slice(0,Math.min(3,distractors.length))].map(x=>val(x,l));
+    const pool=reviewItems ? reviewItems.map(x=>x.w).concat(units.flatMap(x=>x.words),firstWordPacks.flatMap(x=>x.words)) : unit.words;
+    const seen=new Set([val(w,l)]);
+    const distractors=[];
+    for(const d of pool){if(d.ru===w.ru||seen.has(val(d,l)))continue;seen.add(val(d,l));distractors.push(d);if(distractors.length>=12)break;}
+    const chosen=randomOrder(distractors.length).slice(0,3).map(i=>distractors[i]);
+    const choices=[w,...chosen].map(x=>val(x,l));
     const order=randomOrder(choices.length);
     return {u:unit,w,choices:order.map(i=>choices[i]),correct:val(w,l)};
   });
@@ -76,12 +81,12 @@ function ensureSession(route,l){
   const pack=firstWordPacks.find(p=>p.id===id);
   const dialogue=dialogues.find(d=>d.id===id);
   if(tag==="dialogues"&&dialogue){
-    session={key:route,lang:l,mode:"dialogue",phase:"quiz",d:dialogue,answered:false,good:false,correct:dialogue.answer,show:false};
+    session={key:route,lang:l,mode:"dialogue",phase:"quiz",d:dialogue,choices:randomOrder(dialogue.choices.length).map(i=>dialogue.choices[i]),answered:false,good:false,correct:dialogue.answer,show:false};
   }else if(tag==="first-words"&&pack){
     const pseudo=wordPackUnit(pack);
     session={key:route,lang:l,u:pseudo,mode:"first-words",phase:"study",index:0,mistakes:0,answered:false,show:false,tasks:buildWordQuiz(pseudo,l,"words"),message:""};
   }else if(tag==="lesson"&&u&&activityModes.some(m=>m.id===mode)){
-    session={key:route,lang:l,u,mode,phase:"study",index:0,mistakes:0,answered:false,show:false,
+    session={key:route,lang:l,u,mode,phase:"study",index:0,mistakes:0,answered:false,show:false,choices:randomOrder(u.question.choices.length).map(i=>u.question.choices[i]),
       tasks:["words","listen"].includes(mode)?buildWordQuiz(u,l,mode):[],options:[],correct:"",message:""};
   }else if(route==="academy/review"){
     const {known,due}=memoryDue(),items=due.length?due.slice(0,10):known.slice(0,8);
@@ -140,7 +145,7 @@ function dialoguesPage(route,l){
     '<section class="aca-panel"><h2>🗣️ '+UI[l].speak+'</h2><p class="aca-muted">'+UI[l].speechInfo+'</p>'+
     '<div class="aca-dialogue">'+d.lines.map(line=>'<div class="aca-dialogue-line '+(line.who==="А"?"aca-speaker-a":"aca-speaker-b")+'"><b>'+line.who+'</b><div><strong lang="ru">'+esc(line.ru)+'</strong>'+(s.show?'<small>'+esc(val(line,l))+'</small>':"")+'</div><button class="aca-sound" data-aca="sound" data-text="'+esc(line.ru)+'">🔊</button></div>').join("")+'</div>'+
     '<button class="aca-text-btn" data-aca="toggle-translation">'+(s.show?UI[l].hide:UI[l].show)+'</button></section>'+
-    '<section class="aca-task"><h2>'+UI[l].question+'</h2><p>'+esc(val(d.question,l))+'</p><div class="aca-choices">'+buttons(d.choices,"dialogue-answer")+'</div>'+
+    '<section class="aca-task"><h2>'+UI[l].question+'</h2><p>'+esc(val(d.question,l))+'</p><div class="aca-choices">'+buttons(s.choices,"dialogue-answer")+'</div>'+
     (s.answered?'<div class="aca-feedback '+(s.good?"aca-ok":"aca-not")+'" role="status"><strong>'+(s.good?UI[l].good:UI[l].tryAgain)+'</strong><p>'+(s.good?"⭐ +10":"")+'</p>'+
     '<button data-aca="dialogue-next" class="aca-cta">'+(s.good?UI[l].studyNext:UI[l].retry)+' →</button></div>':"")+
     '</section>';
@@ -218,7 +223,7 @@ function lessonPage(id,mode,l){
       '<button class="aca-text-btn" data-aca="toggle-translation">'+(s.show?UI[l].hide:UI[l].show)+'</button>'+
       (s.show?'<p class="aca-translation">'+esc(val(u.reading,l))+'</p>':"")+'</section>'+
       '<section class="aca-task"><h2>'+UI[l].readQuestion+'</h2><p>'+esc(val(u.question.prompt,l))+'</p>'+
-       '<div class="aca-choices">'+buttons(u.question.choices,"single")+'</div>'+feedback(s,l)+'</section>';
+       '<div class="aca-choices">'+buttons(s.choices,"single")+'</div>'+feedback(s,l)+'</section>';
   }
   if(mode==="write"){
     return header+'<section class="aca-panel"><h2>'+UI[l].writeCourse+'</h2><p>'+esc(val(u.writing.prompt,l))+'</p>'+
@@ -305,6 +310,7 @@ function moveNext(s,l,api){
       }else{
         if(s.mode==="first-words")mark(s.u,"words");
         else if(s.mode==="words"||(s.mode==="listen"&&speechAvailable()))mark(s.u,s.mode);
+        if(s.mode==="review"){store.lastReview=Date.now();persist();}
         s.phase="done";
       }
     }
@@ -351,7 +357,7 @@ export async function handleAcademyAction(button,api){
   if(action==="toggle-translation"){s.show=!s.show;api.render();return;}
   if(action==="dialogue-answer"&&s.mode==="dialogue"){
     if(s.answered)return;
-    s.answered=true;s.good=s.d.choices[Number(button.dataset.choice)]===s.d.answer;
+    s.answered=true;s.good=s.choices[Number(button.dataset.choice)]===s.d.answer;
     if(s.good)mark({id:"dialogue/"+s.d.id},"complete");
     api.render();return;
   }
@@ -376,7 +382,7 @@ export async function handleAcademyAction(button,api){
   if(action==="single"){
     if(s.mode==="grammar"&&s.options.length===0)prepareChoices(s,l);
     s.correct=s.mode==="read"?s.u.question.answer:s.u.example.ru;
-    const options=s.mode==="read"?s.u.question.choices:s.options;
+    const options=s.mode==="read"?s.choices:s.options;
     correctOne(s,options[Number(button.dataset.choice)],l,api);return;
   }
   if(action==="next-task"){moveNext(s,l,api);return;}

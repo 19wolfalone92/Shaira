@@ -1,12 +1,13 @@
 import { sections, lessons, alphabet, keyboardRows } from "./lessons.js";
 import { academyHtml, handleAcademyAction, handleAcademySubmit, academyStatistics, stopSpeakingRehearsal } from "./academy-ui.js";
 import { downloadBackup, restoreBackup } from "./backup.js";
+import {todayHtml,todayPreview,todayAction,todaySubmit,todayInput} from "./daily-ui.js";
 import {labHtml,labAction,labInput,labStats} from "./learning-labs.js";
 
 const STORAGE_KEY = "shaira-progress-v1";
 const dictionary = {
   en: {
-    tagline:"Russian, from the very first letter", home:"Learn", academy:"School", review:"Review", write:"Write", settings:"Settings",
+    tagline:"Russian, from the very first letter", home:"Learn", today:"Today", academy:"School", review:"Review", write:"Write", settings:"Settings",
     hello:"Hi, Shaira! 🌷", start:"A little Russian every day.", completed:"lessons completed",
     keep:"Your learning path", group:"Explore lessons", done:"Completed", begin:"Start lesson", continue:"Open lesson",
     back:"Back to lessons", goal:"Today's idea", card:"Study card", next:"Next card", check:"Check what you learned",
@@ -30,7 +31,7 @@ const dictionary = {
     footer:"Made for learning, not for collecting data.", about:"Shaira • Russian from zero"
   },
   tl: {
-    tagline:"Ruso, mula sa unang titik", home:"Aralin", academy:"Akademya", review:"Balikan", write:"Sumulat", settings:"Mga setting",
+    tagline:"Ruso, mula sa unang titik", home:"Aralin", today:"Ngayon", academy:"Akademya", review:"Balikan", write:"Sumulat", settings:"Mga setting",
     hello:"Kumusta, Shaira! 🌷", start:"Kaunting Ruso bawat araw.", completed:"araling natapos",
     keep:"Iyong landas sa pag-aaral", group:"Pumili ng aralin", done:"Tapos na", begin:"Simulan", continue:"Buksan",
     back:"Bumalik sa mga aralin", goal:"Ideya ngayong araw", card:"Kard ng aralin", next:"Susunod na kard",
@@ -102,7 +103,7 @@ function navigate(route) {
 function currentRoute() {
   const hash = decodeURIComponent(location.hash.slice(1));
   if (hash.startsWith("lesson/") && lessons.some(l => l.id === hash.slice(7))) return hash;
-  return hash === "academy" || hash.startsWith("academy/") ? hash : ["home","review","write","settings"].includes(hash) ? hash : "home";
+  return hash === "academy" || hash.startsWith("academy/") ? hash : ["home","today","review","write","settings"].includes(hash) ? hash : "today";
 }
 function speak(text) {
   if (!("speechSynthesis" in window)) { showToast(phrase("audioUnavailable")); return; }
@@ -116,15 +117,15 @@ function speak(text) {
   window.speechSynthesis.speak(utterance);
 }
 function icon(id) {
-  return {home:"⌂",academy:"🎓",review:"✦",write:"✎",settings:"⚙"}[id];
+  return {home:"⌂",today:"◷",academy:"🎓",review:"✦",write:"✎",settings:"⚙"}[id];
 }
 function navBar(route) {
-  const active = route.startsWith("academy") ? "academy" : route.split("/")[0] === "lesson" ? "home" : route;
-  return `<nav class="bottom-nav" aria-label="Main navigation">${["home","academy","review","write","settings"].map(id =>
-    `<a href="#${id}" class="nav-item ${active === id ? "active" : ""}" ${active === id ? 'aria-current="page"' : ""}><span aria-hidden="true">${icon(id)}</span><small>${phrase(id)}</small></a>`).join("")}</nav>`;
+  const active = route==="academy/review" ? "review" : route.startsWith("academy") ? "academy" : route.split("/")[0] === "lesson" ? "today" : route==="home"?"today":route;
+  return `<nav class="bottom-nav" aria-label="Main navigation">${["today","academy","review","write","settings"].map(id =>
+    `<a href="#${id==="review"?"academy/review":id}" class="nav-item ${active === id ? "active" : ""}" ${active === id ? 'aria-current="page"' : ""}><span aria-hidden="true">${icon(id)}</span><small>${phrase(id)}</small></a>`).join("")}</nav>`;
 }
 function header() {
-  return `<header class="topbar"><div class="brand-mark" aria-hidden="true">Ш</div><div><div class="brand">shaira<span class="brand-dot">.</span></div><div class="brand-caption">${phrase("tagline")}</div></div><a class="top-counter" href="#academy" aria-label="${phrase("progress")}">${academyStatistics().completed} ✓</a></header>`;
+  return `<header class="topbar"><a href="#home" class="brand-mark" aria-label="Shaira · Home">Ш</a><div><div class="brand">shaira<span class="brand-dot">.</span></div><div class="brand-caption">${phrase("tagline")}</div></div><a class="top-counter" href="#today" aria-label="${phrase("progress")}">${academyStatistics().completed} ✓</a></header>`;
 }
 function home() {
   const a=academyStatistics(),labs=labStats();
@@ -138,11 +139,11 @@ function home() {
     ["Alphabet and first syllables","Essential vocabulary","Grammar and reading","Independent writing"];
   const routeCards=[
     {href:first?"#lesson/"+first.id:"#academy/first-words",icon:"Аа",heading:sectionsText[0],sub:fil?"33 titik • tunog at baybay":"33 letters • sounds and spelling"},
-    {href:"#academy/first-words",icon:"01",heading:sectionsText[1],sub:fil?"120 salita • maiikling paksa":"120 words • practical topics"},
+    {href:"#academy/first-words",icon:"01",heading:sectionsText[1],sub:fil?"240 salita • mga praktikal na paksa":"240 words • practical topics"},
     {href:"#academy/lab",icon:"✳",heading:sectionsText[2],sub:fil?"100 tanong • 20 mahabang teksto":"100 questions • 20 graded texts"},
     {href:"#academy/writing",icon:"✎",heading:sectionsText[3],sub:fil?"Sulat • mga draft • rebisyon":"Writing • drafts • revision"}
   ];
-  return '<section class="adult-welcome"><div class="adult-welcome-copy"><span class="adult-eyebrow">SHAIRA · LEARN RUSSIAN</span><h1>'+headline+'</h1><p>'+detail+'</p>'+
+  return todayPreview(l)+'<section class="adult-welcome"><div class="adult-welcome-copy"><span class="adult-eyebrow">SHAIRA · LEARN RUSSIAN</span><h1>'+headline+'</h1><p>'+detail+'</p>'+
      '<a class="adult-cta" href="'+routeCards[0].href+'">'+(fil?"Simulan ang unang aralin":"Start the first lesson")+' →</a></div><div class="adult-russian" aria-hidden="true">Я</div></section>'+
    '<section class="adult-progress"><h2>'+summaryTitle+'</h2><div class="adult-progress-row"><span><strong>'+state.completed.length+'</strong><small>/'+lessons.length+' '+(fil?"panimulang aralin":"foundation lessons")+'</small></span>'+
    '<span><strong>'+a.completed+'</strong><small>/'+a.activities+' '+(fil?"pagsasanay":"course activities")+'</small></span>'+
@@ -237,7 +238,7 @@ function render() {
   if (drawingCleanup) { drawingCleanup(); drawingCleanup = null; }
   const route = currentRoute();
   if(!route.startsWith("academy/lesson/") || !route.endsWith("/speak"))stopSpeakingRehearsal();
-  const page = route === "home" ? home() : route === "academy/lab" || route.startsWith("academy/grammar") || route.startsWith("academy/library") || route.startsWith("academy/writing") || route.startsWith("academy/handbook") ? labHtml(route,state.language) : route.startsWith("academy") ? academyHtml(route,state.language) : route === "review" ? reviewPage() : route === "write" ? writePage() :
+  const page = route === "today" ? todayHtml(state.language) : route === "home" ? home() : route === "academy/lab" || route.startsWith("academy/grammar") || route.startsWith("academy/library") || route.startsWith("academy/writing") || route.startsWith("academy/handbook") ? labHtml(route,state.language) : route.startsWith("academy") ? academyHtml(route,state.language) : route === "review" ? reviewPage() : route === "write" ? writePage() :
     route === "settings" ? settingsPage() : lessonPage(route.slice(7));
   document.documentElement.lang = state.language === "tl" ? "fil" : "en";
   document.title = "Shaira · Learn Russian";
@@ -281,6 +282,8 @@ function initializeCanvas() {
   drawingCleanup = () => {canvas.removeEventListener("pointerdown",down);canvas.removeEventListener("pointermove",move);canvas.removeEventListener("pointerup",up);canvas.removeEventListener("pointercancel",up);};
 }
 document.addEventListener("click", event => {
+  const todayButton=event.target.closest("[data-daily]");
+  if(todayButton){todayAction(todayButton,{language:()=>state.language,route:currentRoute,render,speak,navigate,notice:showToast});return;}
   const labButton=event.target.closest("[data-lab]");
   if(labButton){labAction(labButton,{language:()=>state.language,route:currentRoute,render,speak,navigate,notice:showToast});return;}
   const academyButton=event.target.closest("[data-aca]");
@@ -319,8 +322,9 @@ document.addEventListener("click", event => {
     input.focus();
   }
 });
-document.addEventListener("input", event => {labInput(event,{language:()=>state.language});});
+document.addEventListener("input", event => {if(todayInput(event))return;labInput(event,{language:()=>state.language});});
 document.addEventListener("submit", event => {
+  if(todaySubmit(event,{language:()=>state.language,route:currentRoute,render,speak,navigate,notice:showToast}))return;
   if(handleAcademySubmit(event,{language:()=>state.language,route:currentRoute,render,speak}))return;
   if (event.target.id !== "answer-form") return;
   event.preventDefault();
