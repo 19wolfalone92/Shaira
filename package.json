@@ -1,12 +1,12 @@
 {
   "name": "shaira-russian-pwa",
   "private": true,
-  "version": "0.5.0",
+  "version": "0.6.0",
   "type": "module",
   "description": "Bilingual offline-capable Russian learning PWA",
   "scripts": {
     "test": "node --test tests/*.test.mjs",
-    "check": "node --check assets/app.js && node --check assets/daily-plan.js && node --check assets/daily-content.js && node --check assets/daily-ui.js && node --check assets/studio-lessons.js && node --check assets/stage-checkpoints.js && node --check assets/mastery-engine.js && node --check assets/mastery-ui.js && node --check assets/declension-tables.js && node --check assets/case-trainer.js && node --check assets/listening-clips.js && node --check assets/listening-ui.js && node --check assets/extended-word-packs.js && node --check assets/lessons.js && node --check assets/academy-data.js && node --check assets/first-words.js && node --check assets/adult-word-packs.js && node --check assets/dialogues.js && node --check assets/academy-ui.js && node --check assets/backup.js && node --check assets/grammar-drills.js && node --check assets/grammar-handbook.js && node --check assets/reading-library.js && node --check assets/learning-labs.js && node --check assets/writing-tasks.js && node --check assets/speaking-recorder.js && node --check sw.js && npm test"
+    "check": "node --check assets/app.js && node --check assets/daily-plan.js && node --check assets/daily-content.js && node --check assets/daily-ui.js && node --check assets/studio-lessons.js && node --check assets/stage-checkpoints.js && node --check assets/mastery-engine.js && node --check assets/mastery-ui.js && node --check assets/declension-tables.js && node --check assets/case-trainer.js && node --check assets/listening-clips.js && node --check assets/listening-ui.js && node --check assets/verb-paradigms.js && node --check assets/practice-content.js && node --check assets/practice-engine.js && node --check assets/practice-ui.js && node --check assets/extended-word-packs.js && node --check assets/lessons.js && node --check assets/academy-data.js && node --check assets/first-words.js && node --check assets/adult-word-packs.js && node --check assets/dialogues.js && node --check assets/academy-ui.js && node --check assets/backup.js && node --check assets/grammar-drills.js && node --check assets/grammar-handbook.js && node --check assets/reading-library.js && node --check assets/learning-labs.js && node --check assets/writing-tasks.js && node --check assets/speaking-recorder.js && node --check sw.js && npm test"
   },
   "engines": {
     "node": ">=20"
