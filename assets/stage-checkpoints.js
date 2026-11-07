@@ -8,7 +8,67 @@ const choice=(ru,choices,correct,whyEn,whyTl,kind="choice")=>({
 const type=(en,tl,answer,whyEn,whyTl,variants=[])=>({
  type:"type",prompt:b(en,tl),answer,variants,explanation:b(whyEn,whyTl)
 });
-const pack=(stage,title,passage,questions)=>({stage,title:b(...title),passage,questions});
+const STAGE_PROMPTS_TL={
+ starter:[
+  "Aling titik sa «русский» ang tunog /s/?","Aling titik Cyrillic ang tunog /v/?",
+  "Piliin ang salitang nangangahulugang 'nanay'.","Alin ang nangangahulugang 'salamat'?",
+  "Aling pagbati ang magalang para sa hindi kilalang matanda?","Batay sa teksto, sino ang nag-aaral ng Ruso?",
+  "Batay sa teksto, ano ang «мой дом»?","Aling salita ang may malambot na panandang ь?"
+ ],
+ a1:[
+  "Punan: «Это ___ комната».","Punan: «Мы ___ по-русски каждый день».","Punan: «Я сейчас вижу ___».",
+  "Punan: «Она работает ___ Казани».","Punan: «Кто ___ дома?»","Punan: «У неё ___ брат».",
+  "Batay sa binasa, saan nagtatrabaho si Olga?","Batay sa binasa, ano ang ginagawa niya sa gabi?"
+ ],
+ a2:[
+  "Punan: «У нас нет ___».","Punan: «Я отправила письмо ___».","Punan: «Она открыла дверь ___».",
+  "Punan: «Вчера мы ___ в музей».","Punan: «Завтра я ___ новый телефон».","Punan: «Здесь три ___».",
+  "Bakit huli nang umuwi si Marina?","Ano ang bibilhin ni Marina bukas?"
+ ],
+ b1:[
+  "Punan: «Каждый день я ___ на занятия пешком».","Punan: «Я уже ___ это письмо и отправила его».",
+  "Punan: «Если бы мы ___ раньше, мы бы успели».","Punan: «Он спросил, есть ___ свободные места».",
+  "Punan: «Я подготовила документы, ___ ничего не забыть».","Punan: «___ усталость, он закончил работу».",
+  "Batay sa teksto, ano ang paulit-ulit na ginawa ni Katya matapos lumipat?",
+  "Ano ang haka-hakang mangyayari ayon sa huling pangungusap?"
+ ],
+ b2:[
+  "Punan: «Решение, ___ на совещании, потребует проверки».",
+  "Punan: «___ исследование, авторы опубликовали отчёт».",
+  "Punan: «Источники, ___ мы доверяем, необходимо проверить».",
+  "Punan: «___ имеющимся данным, изменения пока незначительны».",
+  "Punan: «Учитывая ограничения, ___».",
+  "Piliin ang pinakaangkop na pormal na pangdugtong para sa makatwirang konklusyon.",
+  "Ano ang pinakamalaking limitasyon sa paggamit ng resulta para sa lahat ng organisasyon?",
+  "Ano ang pangunahing posisyon ng may-akda?"
+ ]
+};
+const STAGE_CHOICES_TL={
+ starter:{
+  6:["aking bahay","aking paaralan","aking aklat","aking nanay"]
+ },
+ a1:{
+  6:["sa café","sa paaralan","sa ospital","sa bahay"],
+  7:["nagbabasa ng aklat","nagsusulat ng liham","bumibiyahe","naglalaro ng tennis"]
+ },
+ a2:{
+  6:["naantala ang tren","nawala ang telepono niya","namili siya","hindi siya umabot sa pulong"],
+  7:["bagong tiket","aklat","bag","tren"]
+ },
+ b1:{
+  6:["nagpapadala ng résumé","bumibisita sa museo","sumusulat ng nobela","nagtatrabaho sa café"],
+  7:["kung hindi lumipat, hindi niya makikilala ang grupo","nakilala niya ang grupo sa paaralan","gusto niyang bumalik","umiwas siya sa lahat ng panayam"]
+ },
+ b2:{
+  6:["isang kompanya at dalawang buwan lang","walang iniulat na kasiyahan ng empleyado","sampung taong pag-aaral","ilang bansa"],
+  7:["kawili-wili ang datos ngunit kulang para sa pangkalahatang konklusyon","kailangang ipatupad ang reporma saanman","tiyak na bigo ang reporma","pareho ang resulta sa lahat ng kompanya"]
+ }
+};
+const pack=(stage,title,passage,questions)=>({
+ stage,title:b(...title),passage,
+ questions:questions.map((q,i)=>q.type==="choice"?
+  {...q,prompt:b(q.prompt,STAGE_PROMPTS_TL[stage][i]),choicesTl:STAGE_CHOICES_TL[stage]?.[i]}:q)
+});
 export const stageCheckpoints=[
  pack("starter",["First steps in Russian","Mga unang hakbang sa Ruso"],
  "Анна: Привет! Меня зовут Анна. Я учу русский. Это мой дом. Здесь мама и папа. Пока!",
