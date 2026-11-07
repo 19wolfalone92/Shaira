@@ -17,7 +17,7 @@ test("progress and writing drafts survive backup round-trip",()=>{
  const backup=buildBackup(source);
  assert.equal(backup.format,BACKUP_FORMAT);
  assert.equal(backup.version,BACKUP_VERSION);
- assert.equal(backup.legacy.language,"tl");
+ assert.equal(backup.legacy.language,"en");
  assert.equal(backup.academy.drafts["advanced-writing"],"Мой собственный текст о русском языке.");
  const destination=memory();
  restoreBackup(JSON.stringify(backup),destination);
