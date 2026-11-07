@@ -120,9 +120,9 @@ function icon(id) {
   return {home:"⌂",today:"◷",academy:"🎓",review:"✦",write:"✎",settings:"⚙"}[id];
 }
 function navBar(route) {
-  const active = route.startsWith("academy") ? "academy" : route.split("/")[0] === "lesson" ? "today" : route==="home"?"today":route;
+  const active = route==="academy/review" ? "review" : route.startsWith("academy") ? "academy" : route.split("/")[0] === "lesson" ? "today" : route==="home"?"today":route;
   return `<nav class="bottom-nav" aria-label="Main navigation">${["today","academy","review","write","settings"].map(id =>
-    `<a href="#${id}" class="nav-item ${active === id ? "active" : ""}" ${active === id ? 'aria-current="page"' : ""}><span aria-hidden="true">${icon(id)}</span><small>${phrase(id)}</small></a>`).join("")}</nav>`;
+    `<a href="#${id==="review"?"academy/review":id}" class="nav-item ${active === id ? "active" : ""}" ${active === id ? 'aria-current="page"' : ""}><span aria-hidden="true">${icon(id)}</span><small>${phrase(id)}</small></a>`).join("")}</nav>`;
 }
 function header() {
   return `<header class="topbar"><a href="#home" class="brand-mark" aria-label="Shaira · Home">Ш</a><div><div class="brand">shaira<span class="brand-dot">.</span></div><div class="brand-caption">${phrase("tagline")}</div></div><a class="top-counter" href="#today" aria-label="${phrase("progress")}">${academyStatistics().completed} ✓</a></header>`;
