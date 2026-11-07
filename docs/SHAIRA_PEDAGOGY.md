@@ -143,3 +143,11 @@ Authentic Russian recordings and independent language assessment remain required
 ## v0.7 real language skill extensions
 
 A phonetics lab trains 30 Russian sound contrasts (60 possible listening targets) with distinct auditory choices and explanations. The learner is not assigned a fake listening score if Russian speech cannot run. Writing now includes structured English rubrics, 29 specific and context-limited error patterns, a Cyrillic keyboard and spoken draft readback. Seven actual practice categories inform the personal Study Coach, while English and Russian queries can locate 800+ indexed resources in the offline learning library. For actual B2, native recordings, independently evaluated spontaneous speaking and authoritative essay assessment remain essential.
+
+## Absolute-zero learner: prerequisite-first pedagogy (v0.8)
+
+The new entry route is intentionally **smaller than one old Day 1**. A tiny step teaches one letter/sound, a two-letter blend, one short word or one practical sentence. The first 66 steps interleave exactly 33 individually taught Cyrillic letters with syllable/word/review activities; 12 final pre-course steps provide useful everyday phrases. No mandatory syllable or word introduces unlearned characters. Each step is approximately 2–5 minutes; it is not tied to the date.
+
+The learner can explicitly choose Gentle, Steady or Challenge at any time. The default Gentle avoids mandatory Cyrillic typing and uses just two small recognition prompts. Harder modes gradually add typed Russian output; a freehand canvas offers optional tracing, not handwriting scoring. After the first three steps, a voluntary 6/6 check can prove three further rungs and move ahead. The normal path never rushes or punishes a wrong attempt.
+
+The original 210 study sessions start after these first 78 micro-rungs for new learners only. Existing learner records and backups are preserved. See `docs/TRUE_BEGINNER_STAIRCASE.md` for all constraints and rationale.

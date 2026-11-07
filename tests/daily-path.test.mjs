@@ -203,5 +203,5 @@ test("daily UI and the offline shell include all new materials and interaction p
  const sw=readFileSync(new URL("../sw.js",import.meta.url),"utf8");
  for(const file of ["daily-plan.js","daily-content.js","daily-ui.js","daily.css"])assert.ok(sw.includes(file),file);
  const app=readFileSync(new URL("../assets/app.js",import.meta.url),"utf8");
- assert.match(app,/route === "today" \? todayHtml/);
+ assert.match(app,/route === "today" \? \(\(needsMicroStart\(\)\|\|microCelebrationPending\(\)\)\?firstStepsHtml\(\):todayHtml/);
 });
