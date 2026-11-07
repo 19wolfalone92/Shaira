@@ -6,7 +6,7 @@
   "description": "Bilingual offline-capable Russian learning PWA",
   "scripts": {
     "test": "node --test tests/*.test.mjs",
-    "check": "node --check assets/app.js && node --check assets/lessons.js && node --check assets/academy-data.js && node --check assets/first-words.js && node --check assets/adult-word-packs.js && node --check assets/dialogues.js && node --check assets/academy-ui.js && node --check assets/backup.js && node --check assets/grammar-drills.js && node --check assets/reading-library.js && node --check assets/learning-labs.js && node --check assets/writing-tasks.js && node --check sw.js && npm test"
+    "check": "node --check assets/app.js && node --check assets/lessons.js && node --check assets/academy-data.js && node --check assets/first-words.js && node --check assets/adult-word-packs.js && node --check assets/dialogues.js && node --check assets/academy-ui.js && node --check assets/backup.js && node --check assets/grammar-drills.js && node --check assets/reading-library.js && node --check assets/learning-labs.js && node --check assets/writing-tasks.js && node --check assets/speaking-recorder.js && node --check sw.js && npm test"
   },
   "engines": {
     "node": ">=20"
