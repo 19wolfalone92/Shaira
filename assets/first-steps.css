@@ -1,23 +1,26 @@
 /* SHAIRA first 78 MICRO-steps: calm adult interface, one letter/idea at a time. */
-.ms-hero{padding:25px 19px;background:linear-gradient(160deg,#f2edfa,#faf5ef);border:1px solid #e1d9ed;border-radius:20px;color:#3d3254}
+.ms-hero{padding:17px 15px;background:linear-gradient(160deg,#f2edfa,#faf5ef);border:1px solid #e1d9ed;border-radius:20px;color:#3d3254}
 .ms-hero>span{font-size:10px;letter-spacing:.14em;color:#765b9c;font-weight:900}
-.ms-hero h1{font-size:clamp(27px,7.5vw,38px);line-height:1.13;margin:12px 0;color:#372b50}
-.ms-hero p{font-size:14px;line-height:1.7;color:#625576}
-.ms-progress-numbers{display:flex;gap:12px;align-items:baseline;margin-top:18px}
+.ms-hero h1{font-size:clamp(27px,7.5vw,38px);line-height:1.13;margin:7px 0;color:#372b50}
+.ms-hero p{font-size:14px;line-height:1.7;color:#625576;margin:6px 0}
+.ms-progress-numbers{display:flex;gap:12px;align-items:baseline;margin-top:10px}
 .ms-progress-numbers strong{color:#5f488c;font-size:24px}
 .ms-progress-numbers span{font-size:12px;color:#776985}
-.ms-progress,.ms-qbar{height:9px;background:#e4dce9;border-radius:10px;overflow:hidden;margin:11px 0}
+.ms-progress,.ms-qbar{height:7px;background:#e4dce9;border-radius:10px;overflow:hidden;margin:7px 0}
 .ms-progress i,.ms-qbar i{display:block;height:100%;background:#8e72bc;border-radius:10px}
-.ms-next{margin:12px 0 0!important;font-size:12px!important;color:#564b68!important}
+.ms-next{margin:8px 0 0!important;font-size:12px!important;color:#564b68!important}
 .ms-mode,.ms-study,.ms-question,.ms-fast-cta,.ms-fast-intro,.ms-success{background:#fff;border:1px solid #e7e0ed;border-radius:17px;padding:19px 17px;margin:14px 0}
-.ms-mode h2,.ms-study h2,.ms-question h2,.ms-fast-intro h2{font-size:19px;line-height:1.35;color:#392d51;margin:6px 0 11px}
+.ms-mode{padding:11px 14px;margin:10px 0}
+.ms-mode h2{font-size:14px;color:#392d51;margin:0 0 7px}
+.ms-study h2,.ms-question h2,.ms-fast-intro h2{font-size:19px;line-height:1.35;color:#392d51;margin:6px 0 11px}
 .ms-mode p,.ms-study>p,.ms-fast-cta p,.ms-fast-intro p,.ms-success p{font-size:13px;line-height:1.7;color:#6c5d78}
-.ms-mode-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:17px 0 10px}
-.ms-mode-row button{min-height:63px;min-width:0;background:#fcfaff;border:1px solid #e1d8ee;border-radius:11px;color:#594875;display:flex;flex-direction:column;justify-content:center;gap:5px;padding:9px 4px}
+.ms-mode-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:0 0 6px}
+.ms-mode-row button{min-height:45px;min-width:0;background:#fcfaff;border:1px solid #e1d8ee;border-radius:11px;color:#594875;display:flex;flex-direction:column;justify-content:center;gap:3px;padding:4px}
 .ms-mode-row button strong{font-size:12px}
 .ms-mode-row button small{font-size:10px}
 .ms-mode-row button.selected,.ms-mode-row button[aria-pressed="true"]{background:#655093;color:#fff;border-color:#655093}
-.ms-mode .ms-hint,.ms-hint{font-size:11px;line-height:1.65;color:#7a6d86}
+.ms-mode .ms-hint{margin:0}
+.ms-hint{font-size:11px;line-height:1.65;color:#7a6d86}
 .ms-section-label{font-size:10px;font-weight:900;letter-spacing:.13em;color:#7258a2;margin-bottom:12px}
 .ms-large{font-size:clamp(80px,27vw,128px);line-height:1.1;font-weight:700;letter-spacing:.025em;text-align:center;background:#f8f5fd;color:#40305b;padding:19px 5px;border-radius:16px;margin:17px 0;overflow-wrap:anywhere}
 .ms-large span{font-size:.55em;vertical-align:baseline;margin-left:13px;color:#74618b}
@@ -75,3 +78,11 @@
 .ms-trace-pad>span{position:absolute;inset:0;display:grid;place-items:center;font-size:135px;line-height:1;color:#eee8f4;pointer-events:none}
 #micro-trace{position:relative;display:block;width:100%;height:100%;touch-action:none;z-index:1;cursor:crosshair}
 .ms-trace-box>.ms-outline{margin-top:12px}
+
+.ms-revisit section,.ms-revisit form{display:grid;gap:8px}
+.ms-revisit section{padding-top:12px}
+.ms-revisit label{font-size:13px;font-weight:700}
+.ms-revisit select{width:100%;min-height:44px;padding:8px;color:#35254d;background:#fff;border:1px solid #9b85be;border-radius:9px;font:inherit}
+.ms-revisit .ms-outline{min-height:44px}
+.ms-question h2,.ms-study h2,.ms-feedback,.ms-success h1{scroll-margin-top:84px}
+.ms-question .ms-outline{margin-top:12px}

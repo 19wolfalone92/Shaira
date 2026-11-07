@@ -1,9 +1,9 @@
 import {
   GUIDED_STUDY_DAYS,makeDay,beginDay,readDayState,snapshot,dayStatus,
-  markQuick,addMistake,markReference,changeGoal,finishDay,skillsReport,
+  markQuick,addMistake,markReference,chooseReadingAlternative,usesReadingAlternative,changeGoal,finishDay,skillsReport,
   normalizedRussian,wordTotal,skillOverview
 } from "./daily-plan.js";
-import {goals} from "./daily-content.js";
+import {hasRussianVoice} from "./russian-audio.js";
 
 const TXT={
  en:{
@@ -29,7 +29,7 @@ const TXT={
   fullCourse:"Explore the complete lesson library",history:"Your recent study days",nothing:"Your course begins with Cyrillic. Just one small step first.",
   weakness:"Areas to revisit",ongoing:"In progress",wordReview:"Review earlier words",start:"Start",
   handbookConfirm:"I studied these examples",handbookInfo:"This note is self-reported. The independent grammar trainer checks your understanding.",
-  fallback:"No audio detected. Use the reading comprehension activity instead; it does not count as listening.",
+  fallback:"Complete the reading comprehension activity to earn credit for this daily step.",
   recent:"Recent practice",noSkip:"Learning progress is practice evidence, not a CEFR qualification.",
   notSaved:"The browser could not save progress. Check storage permissions.",
   keyboard:"Cyrillic typing help",listenWord:"Listen before spelling",word:"word",words:"words",
@@ -69,7 +69,6 @@ const TXT={
 };
 const esc=x=>String(x??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const text=(v,l)=>typeof v==="string"?v:v?.[l]||v?.en||"";
-const audioAvailable=()=>typeof window!=="undefined"&&"speechSynthesis" in window&&typeof SpeechSynthesisUtterance!=="undefined";
 const letters=["ё й ц у к е н г ш щ з х ъ","ф ы в а п р о л д ж э","я ч с м и т ь б ю"];
 let ephemeral={index:-1,quiz:"",spell:"",entered:"",revealed:false,success:0};
 const stateMessage=(k,l)=>TXT[l][k]||k;
@@ -103,21 +102,26 @@ function focusPanel(day,l){
   '<h2>'+text(day.intro,l)+'</h2><p><strong>'+TXT[l].teacher+':</strong> '+esc(aim)+'</p>'+
   '<div class="daily-note"><strong>'+TXT[l].note+'</strong><p>'+esc(text(day.intro.note,l))+'</p></div></section>';
 }
-function studyTasks(day,summary,l){
+function studyTasks(state,summary,l,audioAvailable){
  const firstUnfinished=summary.steps.find(s=>!s.complete);
+ const readButton=(step,label,classes="")=>'<button type="button" class="'+classes+'" data-daily="read-instead" data-id="'+esc(step.id)+'">'+label+'</button>';
  return '<section class="daily-task-area"><h2>'+TXT[l].yourPath+'</h2>'+
   '<div class="daily-task-list">'+summary.steps.map((step,i)=>{
-    const href=["listen","audio","sound"].includes(step.kind)&&!audioAvailable()?"#academy/lesson/"+step.unitId+"/read":step.href;
+    const reading=usesReadingAlternative(step,state,audioAvailable);
     return '<div class="daily-task '+(step.complete?"daily-task-done":"")+'"><span class="daily-task-number">'+(step.complete?"✓":i+1)+'</span>'+
       '<div class="daily-task-info"><strong>'+esc(text(step.title,l))+'</strong><small>'+step.minutes+' '+TXT[l].minutes+
       ' · '+TXT[l][step.complete?"done":"notDone"]+'</small>'+
-      (["listen","audio","sound"].includes(step.kind)&&!audioAvailable()?'<p class="daily-warning">'+TXT[l].fallback+'</p>':"")+
+      (reading&&!step.complete?'<p class="daily-warning">'+TXT[l].fallback+'</p>':"")+
       (step.kind==="handbook"&&!step.complete?'<p class="daily-caution">'+TXT[l].handbookInfo+'</p>':"")+
-      '</div><div class="daily-task-actions"><a href="'+esc(href)+'">'+TXT[l].mission+' ↗</a>'+
+      '</div><div class="daily-task-actions">'+
+      (reading&&!step.complete?readButton(step,"Open reading ↗"):'<a href="'+esc(step.href)+'">'+TXT[l].mission+' ↗</a>')+
+      (step.fallback&&!reading&&!step.complete?readButton(step,"Use reading instead"):"")+
       (step.kind==="handbook"&&!step.complete?'<button type="button" data-daily="confirm-reference" data-id="'+esc(step.id)+'">'+TXT[l].handbookConfirm+'</button>':"")+
       '</div></div>';
   }).join("")+'</div>'+
-  (firstUnfinished?'<a class="daily-primary daily-resume" href="'+esc(["listen","audio","sound"].includes(firstUnfinished.kind)&&!audioAvailable()?"#academy/lesson/"+firstUnfinished.unitId+"/read":firstUnfinished.href)+'">'+TXT[l].resume+' →</a>':"")+'</section>';
+  (firstUnfinished?(usesReadingAlternative(firstUnfinished,state,audioAvailable)?
+   readButton(firstUnfinished,TXT[l].resume+' →',"daily-primary daily-resume"):
+   '<a class="daily-primary daily-resume" href="'+esc(firstUnfinished.href)+'">'+TXT[l].resume+' →</a>'):"")+'</section>';
 }
 function dailyKeyboard(l){
  return '<details class="daily-keyboard"><summary>⌨ '+TXT[l].keyboard+'</summary><div class="daily-board">'+
@@ -154,7 +158,7 @@ function miniExercises(day,summary,l){
     '<button class="daily-play" data-daily="play" data-text="'+esc(day.voiceLine)+'">🔊 '+TXT[l].speak+'</button>'+
     (oralDone?'<p class="daily-passed">✓ '+TXT[l].spoken+'</p>':
       '<button data-daily="oral" class="daily-secondary" type="button">'+TXT[l].spoke+'</button>')+
-    (!audioAvailable()?'<p class="daily-hint">'+TXT[l].soundFail+'</p>':"")+
+    (!hasRussianVoice()?'<p class="daily-hint">'+TXT[l].soundFail+'</p>':"")+
     '</article></section>';
 }
 function progressHistory(state,l){
@@ -190,14 +194,15 @@ export function todayHtml(l="en"){
    '<a href="#academy" class="daily-primary">'+TXT[l].fullCourse+' →</a></section>'+progressHistory(state,l);
  }
  if(ephemeral.index!==day.index)ephemeral={index:day.index,quiz:"",spell:"",entered:"",revealed:false,success:0};
- const summary=dayStatus(day,state,snapshot(),audioAvailable());
- const academy=snapshot().academy||{},memory=academy.memory||{};
+ const snap=snapshot(),audioAvailable=hasRussianVoice();
+ const summary=dayStatus(day,state,snap,audioAvailable);
+ const memory=snap.academy.memory||{};
  const reviewDue=Object.values(memory).filter(rec=>rec?.seen>0&&Number(rec.due)<=Date.now()).length;
  const review='<a class="daily-review" href="#academy/review"><span>↺</span><div><strong>'+TXT[l].review+'</strong><small>'+reviewDue+' '+TXT[l].reviewDue+' · '+TXT[l].reviewHint+'</small></div><b>›</b></a>';
  const goalExtra=state.goal===60?'<div class="daily-extra"><h3>'+TXT[l].optional+'</h3><p>'+TXT[l].moreTime+'</p><a href="#academy/library">'+TXT[l].fullCourse+' ↗</a></div>':
    state.goal===20?'<p class="daily-guidance">'+TXT[l].shortTime+'</p>':"";
  return todayHeader(day,state,summary,l)+preferences(state,l)+focusPanel(day,l)+review+
-   studyTasks(day,summary,l)+miniExercises(day,summary,l)+goalExtra+
+   studyTasks(state,summary,l,audioAvailable)+miniExercises(day,summary,l)+goalExtra+
    '<section class="daily-finish"><p class="'+(summary.complete?"daily-done-text":"daily-hint")+'">'+TXT[l][summary.complete?"ready":"finishLocked"]+'</p>'+
    '<button class="daily-primary" type="button" data-daily="finish" '+(!summary.complete?"disabled":"")+'>'+TXT[l].finish+' →</button></section>'+
    progressHistory(state,l)+'<p class="daily-hint">'+TXT[l].notebook+'</p>';
@@ -219,6 +224,13 @@ export function todayAction(button,api){
    api.render();return;
  }
  if(action==="play"){api.speak(button.dataset.text||"");return;}
+ if(action==="read-instead"){
+   const step=day.tasks.find(task=>task.id===button.dataset.id&&task.fallback);
+   if(!step)return;
+   if(chooseReadingAlternative(step.id))api.navigate("academy/lesson/"+step.fallback);
+   else api.notice?.(TXT[l].notSaved);
+   return;
+ }
  if(action==="quiz"){
    const chosen=optionsFor(day)[Number(button.dataset.choice)];
    if(chosen===undefined)return;
@@ -251,7 +263,7 @@ export function todayAction(button,api){
    ephemeral.entered=input.value;input.focus();return;
  }
  if(action==="finish"){
-   const result=finishDay(undefined,new Date(),audioAvailable());
+   const result=finishDay(undefined,new Date(),hasRussianVoice());
    if(result.success){lastCompleted=day.number;ephemeral={index:-1,quiz:"",spell:"",entered:"",success:0};api.render();}
    else api.notice?.(result.reason||TXT[l].notSaved);
    return;

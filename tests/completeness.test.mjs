@@ -5,7 +5,7 @@ import {SOUND_PAIRS,SOUND_STAGES,soundForStage} from "../assets/phonetics-conten
 import {phoneticsHtml,phoneticsAction,loadSounds,recordSound,soundStats} from "../assets/phonetics-ui.js";
 import {studyCoachData,coachHtml} from "../assets/study-coach.js";
 import {WRITING_RUBRIC,inspectRussianDraft,russianWords} from "../assets/writing-coach.js";
-import {makeDay,beginDay,saveDayState,snapshot,stepComplete} from "../assets/daily-plan.js";
+import {makeDay,beginDay,readDayState,saveDayState,snapshot,stepComplete,chooseReadingAlternative} from "../assets/daily-plan.js";
 import {buildBackup,restoreBackup} from "../assets/backup.js";
 const db=()=>{const m=new Map();return{getItem:k=>m.get(k)??null,setItem:(k,v)=>m.set(k,String(v)),removeItem:k=>m.delete(k)};};
 test("30 original Russian sound contrasts cover 5 stages and 60 distinct target positions",()=>{
@@ -43,15 +43,15 @@ test("phonetics listing, playback gating and offline fallback distinguish practi
  const id=SOUND_PAIRS[0].id;
  try{
   assert.match(phoneticsHtml("academy/sounds"),/Hear the Difference/);
-  assert.match(phoneticsHtml("academy/sounds/"+id),/Russian audio is not supported/);
-  const api={route:()=>"academy/sounds/"+id,render(){},speak(){throw Error("Unsupported speech should not run");}};
+  assert.match(phoneticsHtml("academy/sounds/"+id),/data-sound="answer"[^>]*disabled/);
+  const api={route:()=>"academy/sounds/"+id,render(){},speak(_text,_rate,done){done(false);}};
   phoneticsAction({dataset:{sound:"answer",answer:"0"}},api);
   assert.equal(soundStats(storage).targets,0);
   phoneticsAction({dataset:{sound:"play"}},api);
   assert.equal(soundStats(storage).targets,0);
-  globalThis.window={speechSynthesis:{}};globalThis.SpeechSynthesisUtterance=function(){};
+  assert.match(phoneticsHtml("academy/sounds/"+id),/Could not play this example/);
   let heard="";
-  const liveApi={...api,speak:x=>heard=x};
+  const liveApi={...api,speak(text,_rate,done,clip){heard=text;assert.match(clip,/^luk-lyuk-[01]$/);done(true);}};
   phoneticsAction({dataset:{sound:"play"}},liveApi);
   assert.ok([SOUND_PAIRS[0].a.ru,SOUND_PAIRS[0].b.ru].includes(heard));
   const visible=phoneticsHtml("academy/sounds/"+id);
@@ -86,7 +86,9 @@ test("guided session uses a new phonetic discrimination on each listening-focuse
  assert.equal(stepComplete(step,state,snapshot(s)),false);
  assert.equal(stepComplete(step,state,snapshot(s),false),false);
  s.setItem("shaira-academy-v1",JSON.stringify({done:{[step.fallback]:t+30}}));
- assert.equal(stepComplete(step,state,snapshot(s),false),true);
+ assert.equal(stepComplete(step,state,snapshot(s),false),false,"built-in audio works without a system voice");
+ assert.equal(chooseReadingAlternative(step.id,s),true);
+ assert.equal(stepComplete(step,readDayState(s),snapshot(s),true),true);
 });
 test("phonetics practice survives portable backup and prototype keys cannot be restored",()=>{
  const s=db(),id=SOUND_PAIRS[0].id;

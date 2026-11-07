@@ -4,7 +4,7 @@ import {readFileSync} from "node:fs";
 import {FIRST_STEPS,FIRST_LETTERS,FIRST_GROUPS,FIRST_PHRASES,
  MICRO_TOTAL,modeInfo,microQuestions,microStepAt} from "../assets/first-steps-data.js";
 import {readMicro,changeMicroMode,needsMicroStart,finishMicroRung,microSkipRungs,
- recordMicroMistake,matchesMicroAnswer,microNormal,MICRO_KEY} from "../assets/first-steps-engine.js";
+ recordMicroMistake,matchesMicroAnswer,microNormal,MICRO_KEY,fastTrackQuestions,finishMicroReview,enrolInMicroPath} from "../assets/first-steps-engine.js";
 import {firstStepsHtml,firstStepsAction,firstStepsSubmit,firstStepsInput,firstStepsHomePreview,microCelebrationPending} from "../assets/first-steps-ui.js";
 import {buildBackup,restoreBackup} from "../assets/backup.js";
 const db=()=>{const m=new Map();return{getItem:k=>m.get(k)??null,setItem:(k,v)=>m.set(k,String(v)),
@@ -95,18 +95,20 @@ test("no progress by merely pressing a button, changing modes, or giving incorre
 test("fast-track explicitly requires 6/6 previously unmastered checks and records demonstrated progress",()=>{
  const storage=db();
  assert.equal(microSkipRungs(0,[],storage).ok,false);
- const steps=FIRST_STEPS.slice(0,3);
- const questions=steps.flatMap(s=>microQuestions(s).slice(0,2).map(q=>({id:s.id+":"+q.id,value:q.answer})));
+ assert.deepEqual(fastTrackQuestions(0),[]);
+ for(let i=0;i<3;i++)assert.equal(finishMicroRung(i,answerFor(FIRST_STEPS[i]),storage).ok,true);
+ const questions=fastTrackQuestions(3).map(q=>({id:q.id,value:q.answer}));
+ assert.equal(fastTrackQuestions(3).filter(q=>q.kind==="type").length,3);
  const wrong=questions.map(x=>({...x}));
  wrong[1]={...wrong[1],value:"a completely wrong answer"};
- assert.equal(microSkipRungs(0,wrong,storage).ok,false);
- assert.equal(readMicro(storage).index,0);
- const result=microSkipRungs(0,questions,storage,1800000000000);
- assert.equal(result.ok,true);
+ assert.equal(microSkipRungs(3,wrong,storage).ok,false);
  assert.equal(readMicro(storage).index,3);
- assert.equal(readMicro(storage).totalPractice,6);
- assert.deepEqual(readMicro(storage).finished.map(x=>x.method),["tested","tested","tested"]);
- assert.equal(microSkipRungs(0,questions,storage).ok,false,"cannot replay old test to progress");
+ const result=microSkipRungs(3,questions,storage,1800000000000);
+ assert.equal(result.ok,true);
+ assert.equal(readMicro(storage).index,6);
+ assert.equal(readMicro(storage).totalPractice,12);
+ assert.deepEqual(readMicro(storage).finished.slice(-3).map(x=>x.method),["tested","tested","tested"]);
+ assert.equal(microSkipRungs(3,questions,storage).ok,false,"cannot replay old test to progress");
 });
 test("string normalisation preserves ё and Cyrillic vs Latin code points while ignoring punctuation",()=>{
  assert.equal(microNormal("МОЁ!"),"моё");
@@ -187,9 +189,11 @@ test("English-first micro UI finishes actual first-letter practice and allows op
   assert.match(firstStepsHtml(),/Question 1 \/ 4/);
  }finally{globalThis.localStorage=oldStorage;globalThis.window=oldWindow;globalThis.document=oldDoc;}
 });
-test("optional UI fast-track is hidden at the beginning and verifies six choices before a skip",()=>{
- const oldStorage=globalThis.localStorage,oldWindow=globalThis.window;
+test("optional UI fast-track requires three typed and three recognition answers",()=>{
+ const oldStorage=globalThis.localStorage,oldWindow=globalThis.window,oldDoc=globalThis.document;
  const storage=db();globalThis.localStorage=storage;globalThis.window={};
+ const typed={value:""};
+ globalThis.document={getElementById:id=>id==="micro-typed"?typed:null};
  const api={render(){},speak(){},notice(){}};
  try{
   assert.doesNotMatch(firstStepsHtml(),/data-micro="fast-track"/);
@@ -199,18 +203,24 @@ test("optional UI fast-track is hidden at the beginning and verifies six choices
   firstStepsAction({dataset:{micro:"fast-track"}},api);
   for(let i=0;i<6;i++){
    const html=firstStepsHtml();
-   const step=FIRST_STEPS[3+Math.floor(i/2)],q=microQuestions(step)[i%2];
+   const q=fastTrackQuestions(3)[i];
+   if(q.kind==="type"){
+    assert.match(html,/Submit answer/);
+    typed.value=q.answer;
+    firstStepsSubmit({target:{id:"micro-answer-form"},preventDefault(){}},api);
+    continue;
+   }
    const choices=[...html.matchAll(/data-micro="skip-choice" data-choice="(\d+)"[^>]*>([^<]+)<\/button>/g)];
    assert.equal(choices.length,3);
    const correct=choices.find(c=>c[2]===q.answer);
-   assert.ok(correct,step.id+" "+q.id);
+   assert.ok(correct,q.id);
    firstStepsAction({dataset:{micro:"skip-choice",choice:correct[1]}},api);
   }
   assert.equal(readMicro(storage).index,6);
   assert.match(firstStepsHtml(),/Three steps checked!/);
   firstStepsAction({dataset:{micro:"back"}},api);
   assert.match(firstStepsHtml(),/One new letter: Т/);
- }finally{globalThis.localStorage=oldStorage;globalThis.window=oldWindow;}
+ }finally{globalThis.localStorage=oldStorage;globalThis.window=oldWindow;globalThis.document=oldDoc;}
 });
 test("new iPhone student routing, curriculum links, CSS and offline precache all include micro-stairs",()=>{
  const get=p=>readFileSync(new URL("../"+p,import.meta.url),"utf8");
@@ -223,4 +233,23 @@ test("new iPhone student routing, curriculum links, CSS and offline precache all
  assert.ok(academy.includes("#academy/first-steps"));
  for(const f of ["first-steps-data.js","first-steps-engine.js","first-steps-ui.js","first-steps.css"])assert.ok(sw.includes(f),f);
  const html=get("index.html");assert.ok(html.includes("first-steps.css"));
+});
+
+test("review keeps the current rung and older saves remain usable",()=>{
+ const storage=db();
+ assert.equal(enrolInMicroPath(storage),true);
+ storage.setItem("shaira-academy-v1",JSON.stringify({done:{"other/words":150}}));
+ assert.equal(needsMicroStart(storage),true);
+ recordMicroMistake(storage,0);
+ assert.equal(finishMicroRung(0,answerFor(FIRST_STEPS[0]),storage).ok,true);
+ assert.equal(readMicro(storage).mistakes[0],1);
+ const target=db();restoreBackup(JSON.stringify(buildBackup(storage)),target);
+ assert.equal(readMicro(target).mistakes[0],1);
+ assert.equal(finishMicroReview(1,answerFor(FIRST_STEPS[1]),target),false);
+ assert.equal(finishMicroReview(0,answerFor(FIRST_STEPS[0]),target),true);
+ assert.equal(readMicro(target).index,1);
+ assert.equal(readMicro(target).mistakes[0],undefined);
+ const [, , upper,lower]=microQuestions(FIRST_STEPS[0]);
+ assert.equal(matchesMicroAnswer(upper,"а"),false);
+ assert.equal(matchesMicroAnswer(lower,"А"),false);
 });

@@ -12,7 +12,7 @@ import {extraDialogues} from "../assets/extra-dialogues.js";
 import {listeningClips,listeningForStage} from "../assets/listening-clips.js";
 import {listeningHtml,listeningAction,recordListening,listeningStats,loadListening} from "../assets/listening-ui.js";
 import {buildBackup,restoreBackup} from "../assets/backup.js";
-import {readDayState,beginDay,saveDayState,makeDay,snapshot,stepComplete} from "../assets/daily-plan.js";
+import {readDayState,beginDay,saveDayState,makeDay,snapshot,stepComplete,chooseReadingAlternative} from "../assets/daily-plan.js";
 const storage=()=>{const rows=new Map();return{
  getItem:key=>rows.get(key)??null,setItem:(key,value)=>rows.set(key,String(value)),removeItem:key=>rows.delete(key),get map(){return rows}
 };};
@@ -116,8 +116,8 @@ test("listening practice cannot be passed before playback and keeps the transcri
  globalThis.window={speechSynthesis:{cancel(){},speak(){}}};
  globalThis.SpeechSynthesisUtterance=function(){};
  try{
-  let played=0,rendered=0;
-  const api={route:()=>"academy/listening/"+id,render(){rendered++},speak(){played++}};
+  let played=0,complete;
+  const api={route:()=>"academy/listening/"+id,render(){},speak(_text,_rate,done,clip){played++;complete=done;assert.equal(clip,id);}};
   assert.match(listeningHtml("academy/listening"),/Listen to Russian/);
   assert.match(listeningHtml("academy/listening/"+id),/The transcript stays hidden until you have answered/);
   const clip=listeningClips[0];
@@ -131,6 +131,10 @@ test("listening practice cannot be passed before playback and keeps the transcri
   assert.equal(played,1);
   const good=options.find(o=>o[2]===clip.answer);
   assert.ok(good);
+  listeningAction({dataset:{listening:"answer",choice:good[1]}},api);
+  assert.equal(listeningStats(db).correct,0);
+  complete(true);
+  assert.doesNotMatch(listeningHtml("academy/listening/"+id),/data-listening="answer"[^>]*disabled/);
   listeningAction({dataset:{listening:"answer",choice:good[1]}},api);
   assert.equal(listeningStats(db).correct,1);
   assert.match(listeningHtml("academy/listening/"+id),/Привет! Меня зовут Анна/);
@@ -147,9 +151,9 @@ test("revealing Russian text cancels a graded listening attempt; unsupported aud
  globalThis.localStorage=db;globalThis.window={};
  delete globalThis.SpeechSynthesisUtterance;
  try{
-  const api={route:()=>"academy/listening/"+id,render(){},speak(){}};
-  assert.match(listeningHtml("academy/listening/"+id),/cannot count as listening/);
+  const api={route:()=>"academy/listening/"+id,render(){},speak(_text,_rate,done){done(false);}};
   listeningAction({dataset:{listening:"play"}},api);
+  assert.match(listeningHtml("academy/listening/"+id),/Could not play this clip/);
   listeningAction({dataset:{listening:"reveal"}},api);
   listeningAction({dataset:{listening:"answer",choice:"0"}},api);
   assert.equal(listeningStats(db).correct,0);
@@ -170,7 +174,9 @@ test("daily progression only records current-session listening evidence, with ho
  assert.equal(stepComplete(step,state,snapshot(db)),false);
  assert.equal(stepComplete(step,state,snapshot(db),false),false);
  db.setItem("shaira-academy-v1",JSON.stringify({done:{[step.fallback]:t+30}}));
- assert.equal(stepComplete(step,state,snapshot(db),false),true);
+ assert.equal(stepComplete(step,state,snapshot(db),false),false);
+ assert.equal(chooseReadingAlternative(step.id,db),true);
+ assert.equal(stepComplete(step,readDayState(db),snapshot(db),true),true);
 });
 test("English-only backup preserves real listening achievements and rejects arbitrary ids",()=>{
  const db=storage(),id=listeningClips[0].id;

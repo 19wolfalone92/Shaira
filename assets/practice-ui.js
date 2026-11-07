@@ -1,6 +1,7 @@
 import {stages} from "./academy-data.js";
 import {bankForStage,selectMix,gradeMixAnswer,loadMix,mixStats,
  recordMixAnswer,recordMixSession,MIX_LENGTH,MIX_STAGES} from "./practice-engine.js";
+import {hasRussianVoice} from "./russian-audio.js";
 const labels={
  recognize:"Russian → English",recall:"English → Russian",spell:"Write a Russian word",
  grammar:"Grammar in context",case:"Declension challenge",verb:"Conjugate a verb",
@@ -8,13 +9,12 @@ const labels={
  read:"Read and infer",match:"Match four pairs",hear:"Listen and understand",dictate:"Russian dictation"
 };
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-const speechAvailable=()=>typeof window!=="undefined"&&"speechSynthesis" in window&&typeof SpeechSynthesisUtterance!=="undefined";
 const russianKeys=["ё й ц у к е н г ш щ з х ъ","ф ы в а п р о л д ж э","я ч с м и т ь б ю"];
 let session=null;
-function start(stage){
- session={stage,items:selectMix(stage,loadMix(),{audio:speechAvailable()}),index:0,
+function start(stage,audio=hasRussianVoice()){
+ session={stage,items:selectMix(stage,loadMix(),{audio}),index:0,
  answered:[],feedback:null,entered:"",chosenTokens:[],matchRu:null,matched:[],matchedWrong:false,hadWrongMatch:false,choices:null,
- played:false,started:Date.now(),result:null,saveError:false};
+ played:false,audioError:false,result:null,saveError:false};
 }
 function goStage(stage){
  if(!MIX_STAGES.includes(stage))stage="starter";
@@ -63,17 +63,19 @@ function question(s){
    (s.matchedWrong?'<p class="mx-warning" role="status">Not this pair. Try a different match.</p>':""):
  ["spell","case","verb","translate","dictate"].includes(q.mode)?
   '<form id="mx-answer-form"><label for="mx-answer">Type in Russian</label>'+
-   '<input id="mx-answer" lang="ru" required spellcheck="false" autocorrect="off" autocomplete="off" value="'+esc(s.entered)+'" '+(done?"disabled":"")+'>'+
+   '<input id="mx-answer" lang="ru" required spellcheck="false" autocorrect="off" autocomplete="off" value="'+esc(s.entered)+'" '+(done||q.audio&&!s.played?"disabled":"")+'>'+
    '<p class="mx-muted">Check exact spelling, word forms and ё. Punctuation and letter case do not affect this drill.</p>'+
-   (!done?'<button class="mx-primary" type="submit">Check my writing</button>'+keyboard():"")+'</form>':
+   (!done&&(!q.audio||s.played)?'<button class="mx-primary" type="submit">Check my writing</button>'+keyboard():"")+'</form>':
  '<div class="mx-options">'+s.choices.map((v,i)=>
    '<button type="button" data-mix="choice" data-choice="'+i+'" '+(done||q.audio&&!s.played?"disabled":"")+
    ' class="'+(done?(v===q.answer?"mx-correct":s.selected===v?"mx-wrong":""):"")+'">'+esc(v)+'</button>').join("")+'</div>';
  const display=q.mode==="hear"||q.mode==="dictate"?"":q.display?
   '<div class="mx-display" '+(/[\u0400-\u052F]/u.test(q.display)?'lang="ru"':"")+'>'+esc(q.display)+'</div>':"";
- const audio=q.audio?
+ const audio=q.audio&&!done?
  '<div class="mx-audio"><button type="button" data-mix="play">🔊 Play Russian</button>'+
- '<button type="button" data-mix="slow">0.7× Slow playback</button><small>'+(s.played?"Audio played":"Listen before answering")+'</small></div>':"";
+ '<button type="button" data-mix="slow">Slow playback</button><small>'+(s.played?"Audio played":"Listen to the full example before answering")+'</small></div>'+
+ (s.audioError?'<p class="mx-warning" role="status">Russian audio could not play.</p>'+
+  '<button type="button" class="mx-primary" data-mix="restart-text">Start a round without audio</button>':""):"";
  return '<section class="mx-question"><div class="mx-top"><span>'+esc(title)+'</span><b>Question '+idx+'/'+s.items.length+'</b></div>'+
  '<div class="mx-progress"><i style="width:'+Math.round((idx-1)/s.items.length*100)+'%"></i></div>'+
  '<h2>'+esc(q.prompt)+'</h2>'+display+audio+inner+
@@ -120,7 +122,7 @@ function gradeAndShow(s,answer,api){
  api.render();
 }
 function next(s,api){
- s.index++;s.feedback=null;s.entered="";s.selected=null;s.played=false;
+ s.index++;s.feedback=null;s.entered="";s.selected=null;s.played=false;s.audioError=false;
  s.chosenTokens=[];s.matchRu=null;s.matched=[];s.matchedWrong=false;s.hadWrongMatch=false;s.matchOptions=null;s.choices=null;
  if(s.index>=s.items.length){
   s.result=recordMixSession(s.stage,s.answered);
@@ -130,13 +132,22 @@ function next(s,api){
 }
 export function mixerAction(btn,api){
  const stage=api.route().split("/")[2],s=goStage(stage),q=s.items[s.index],a=btn.dataset.mix;
- if(a==="restart"){start(stage);api.render();return;}
+ if(a==="restart"||a==="restart-text"){start(stage,a==="restart-text"?false:undefined);api.render();return;}
  if(s.result||!q)return;
  if(a==="next"&&s.feedback){next(s,api);return;}
  if(s.feedback)return;
  if(a==="play"||a==="slow"){
-  if(!q.audio||!speechAvailable())return;
-  s.played=true;api.speak(q.audio,a==="slow"?0.62:0.82);return;
+  if(!q.audio)return;
+  const route=api.route(),index=s.index;
+  api.speak(q.audio,a==="slow"?0.62:0.82,ok=>{
+   if(session!==s||api.route()!==route||s.index!==index||s.feedback)return;
+   const input=document.getElementById("mx-answer");
+   if(input)s.entered=input.value;
+   if(ok)s.played=true;
+   s.audioError=!ok;
+   api.render();
+  });
+  return;
  }
  if(a==="key"||a==="backspace"){
   const input=document.getElementById("mx-answer");if(!input)return;
