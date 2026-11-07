@@ -136,6 +136,7 @@ function lessonPage(id,mode,l){
   const u=getUnit(id);if(!u)return overview(l);
   const m=activityModes.find(x=>x.id===mode);if(!m)return unitPage(id,l);
   const s=ensureSession("academy/lesson/"+id+"/"+mode,l);
+  if(s.mode==="grammar" && !s.options.length)prepareChoices(s,l);
   const header='<a class="aca-back" href="#academy/unit/'+id+'">← '+UI[l].back+'</a>'+
    top(u.icon+' '+getStage(u.stage).label,tx(m.en,m.tl,l),val(u.title,l))+
    '<div class="aca-session-meter"><span style="width:'+Math.round((s.index/Math.max(s.tasks.length,1))*100)+'%"></span></div>';
