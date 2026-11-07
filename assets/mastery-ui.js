@@ -110,7 +110,7 @@ function question(s,l,m){
    '<p class="ms-muted">'+m.formHelp+'</p>'+(s.feedback?"":'<button type="submit" class="ms-primary">'+m.confirm+'</button>'+keyboard(m))+'</form>':
    '<div class="ms-options">'+choices.map((v,i)=>
      '<button type="button" data-mastery="choose" data-choice="'+i+'" '+(s.kind==="studio"&&s.feedback?"disabled":"")+
-     ' class="'+(s.kind==="studio"&&s.feedback?(v===q.answer?"ms-good":s.selected===v?"ms-bad":""):"")+'">'+e(v)+'</button>').join("")+'</div>')+
+     ' class="'+(s.kind==="studio"&&s.feedback?(v===q.answer?"ms-good":s.selected===v?"ms-bad":""):"")+'">'+e(l==="tl"&&q.choicesTl?q.choicesTl[q.choices.indexOf(v)]||v:v)+'</button>').join("")+'</div>')+
  (s.kind==="studio"&&s.feedback?'<section class="ms-feedback '+(s.feedback.correct?"ms-feedback-good":"ms-feedback-bad")+'" role="status">'+
    '<strong>'+(s.feedback.correct?m.correct:m.wrong)+'</strong><p>'+m.model+': <span lang="ru">'+e(q.answer)+'</span></p>'+
    '<p>'+e(tr(q.reason||{en:"Read the model and repeat with your own example.",tl:"Basahin ang halimbawa at ulitin sa sariling pangungusap."},l))+'</p>'+
