@@ -142,7 +142,7 @@ function home() {
     ["Alphabet and first syllables","Essential vocabulary","Grammar and reading","Independent writing"];
   const routeCards=[
     {href:first?"#lesson/"+first.id:"#academy/first-words",icon:"Аа",heading:sectionsText[0],sub:fil?"33 titik • tunog at baybay":"33 letters • sounds and spelling"},
-    {href:"#academy/first-words",icon:"01",heading:sectionsText[1],sub:"480 words • practical topics"},
+    {href:"#academy/first-words",icon:"01",heading:sectionsText[1],sub:"486 words • practical topics"},
     {href:"#academy/lab",icon:"✳",heading:sectionsText[2],sub:"100 grammar questions • 35 graded texts"},
     {href:"#academy/writing",icon:"✎",heading:sectionsText[3],sub:fil?"Sulat • mga draft • rebisyon":"Writing • drafts • revision"}
   ];
