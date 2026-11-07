@@ -37,7 +37,7 @@ test("main interface completes a lesson, switches language, and opens writing ca
   const navigator = {};
   const run = new Function("sections","lessons","alphabet","keyboardRows","document","window","location","navigator","localStorage",source);
   run(sections,lessons,alphabet,keyboardRows,document,window,location,navigator,localStorage);
-  const click=(action,props={})=>events.click({target:{closest:()=>({dataset:{action,...props}})}});
+  const click=(action,props={})=>events.click({target:{closest:selector=>selector==="[data-action]"?{dataset:{action,...props}}:null}});
   assert.match(app.innerHTML,/Your learning path/);
   click("open-lesson",{id:"vowels"});
   assert.match(app.innerHTML,/10 Russian vowels/);
