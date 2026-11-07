@@ -2,6 +2,7 @@ import {stages} from "./academy-data.js";
 import {grammarDrills,drillsForStage} from "./grammar-drills.js";
 import {readingLibrary,readingsForStage} from "./reading-library.js";
 import {writingTasks,writingForStage,writingWordTargets} from "./writing-tasks.js";
+import {grammarHandbook,handbookForStage} from "./grammar-handbook.js";
 
 const KEY="shaira-labs-v1";
 const TXT={
@@ -210,9 +211,37 @@ function writingFeedback(task,l,text){
  e.checks.map(x=>'<li><strong>'+ (x.pass?"✓":"○") +'</strong> '+esc(x.label)+'</li>').join("")+'</ul>'+
  '<p>'+b("Review case endings, aspect, coherence and factual accuracy yourself. A teacher or skilled speaker should review your longer texts.","Suriin ang mga hulihan, aspekto, pagkakaugnay at katotohanan. Magpasuri sa guro o bihasang tagapagsalita.",l)+'</p></section>';
 }
+function handbookMenu(l){
+ return link("academy/lab","← "+TXT[l].go)+
+  top("АБВ · GRAMMAR",b("Russian grammar handbook","Manwal sa gramatikang Ruso",l),
+  b("An offline reference for rules and examples. Read it, listen and then practise in the grammar trainer.","Gabay sa mga tuntunin at halimbawa na magagamit offline. Basahin, pakinggan at magsanay.",l))+
+  stages.map(stage=>{
+    const entries=handbookForStage(stage.id);
+    return '<section class="lp-shelf"><div><strong>'+stage.icon+' '+stage.label+'</strong><small>'+entries.length+' '+b("topics","paksa",l)+'</small></div>'+
+      entries.map(entry=>'<a href="#academy/handbook/'+entry.id+'"><span>А</span><div><strong>'+esc(loc(entry.title,l))+'</strong>'+
+       '<small>'+esc(loc(entry.rule,l).slice(0,110))+'…</small></div><b>›</b></a>').join("")+'</section>';
+  }).join("");
+}
+function handbookPage(id,l){
+ const topic=grammarHandbook.find(x=>x.id===id);
+ if(!topic)return handbookMenu(l);
+ const index=grammarHandbook.indexOf(topic),next=grammarHandbook[index+1],prev=grammarHandbook[index-1];
+ return link("academy/handbook","← "+b("Handbook","Manwal",l))+
+   top(stageLabel(topic.stage),loc(topic.title,l),loc(topic.rule,l))+
+   '<section class="lp-text"><h2>'+b("Examples in context","Mga halimbawa sa konteksto",l)+'</h2>'+
+   '<div class="lp-handbook-examples">'+topic.examples.map(e=>
+      '<div><button data-lab="play-example" data-text="'+esc(e.ru)+'" class="lp-sound" type="button" aria-label="'+TXT[l].listen+'">🔊</button>'+
+      '<strong lang="ru">'+esc(e.ru)+'</strong><p>'+esc(loc(e,l))+'</p></div>').join("")+'</div></section>'+
+   '<div class="lp-advice"><strong>'+b("Common pitfall","Karaniwang pagkakamali",l)+'</strong><p>'+esc(loc(topic.pitfall,l))+'</p></div>'+
+   '<nav class="lp-handbook-nav">'+(prev?link("academy/handbook/"+prev.id,"← "+loc(prev.title,l),"lp-action-link"):'')+
+     (next?link("academy/handbook/"+next.id,loc(next.title,l)+" →","lp-action-link"):'')+'</nav>'+
+   link("academy/grammar/"+topic.stage,b("Practise this level","Magsanay sa antas na ito",l),"lp-action-link");
+}
 export function labHtml(route,l="en"){
  if(!TXT[l])l="en";
  if(route==="academy/lab")return overview(l);
+ if(route==="academy/handbook")return handbookMenu(l);
+ if(route.startsWith("academy/handbook/"))return handbookPage(route.split("/")[2],l);
  if(route==="academy/grammar")return grammarMenu(l);
  if(route.startsWith("academy/grammar/"))return grammarPage(route.split("/")[2],l);
  if(route==="academy/writing")return writingMenu(l);
@@ -223,6 +252,7 @@ export function labHtml(route,l="en"){
 }
 export function labAction(button,api){
  const a=button.dataset.lab,route=api.route(),l=api.language()==="tl"?"tl":"en";
+ if(a==="play-example"){api.speak(button.dataset.text||"");return;}
  if(a==="play-reading"){
    const id=route.split("/")[2],p=readingLibrary.find(x=>x.id===id);if(p)api.speak(p.text);return;
  }
