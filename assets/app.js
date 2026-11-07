@@ -259,7 +259,7 @@ function render() {
   document.documentElement.lang = "en";
   document.title = "Shaira · Learn Russian";
   el.innerHTML = `${header()}<main id="main-content" class="main-content">${page}<footer class="footer">${phrase("footer")}</footer></main>${navBar(route)}<div id="toast" class="toast" role="status" hidden></div>`;
-  if (route === "write") initializeCanvas();
+  if (route === "write" || route==="academy/first-steps" || (route==="today"&&needsMicroStart())) initializeCanvas();
 }
 function checkAnswer(value) {
   const route = currentRoute();
@@ -277,7 +277,7 @@ function checkAnswer(value) {
   if (!correct && lesson.quiz.type !== "choice") document.getElementById("answer-input")?.focus();
 }
 function initializeCanvas() {
-  const canvas = document.getElementById("writing-canvas");
+  const canvas = document.getElementById("writing-canvas")||document.getElementById("micro-trace");
   if (!canvas) return;
   const rect = canvas.getBoundingClientRect();
   const ratio = Math.min(window.devicePixelRatio || 1, 3);
