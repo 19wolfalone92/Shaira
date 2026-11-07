@@ -2,6 +2,7 @@
 const LEGACY="shaira-progress-v1";
 const ACADEMY="shaira-academy-v1";
 const LABS="shaira-labs-v1";
+const DAILY="shaira-daily-v1";
 export const BACKUP_FORMAT="shaira-learning-backup";
 export const BACKUP_VERSION=1;
 function object(x){return x!==null&&typeof x==="object"&&!Array.isArray(x);}
@@ -69,6 +70,39 @@ function cleanLabs(x){
   }
   return {grammar,readings,drafts,draftUpdated};
 }
+function cleanDaily(x){
+  const result={index:0,startedAt:0,startedDate:"",goal:40,marks:{},challenges:{},finished:[],errors:{}};
+  if(!object(x))return result;
+  if(Number.isInteger(x.index)&&x.index>=0&&x.index<=210)result.index=x.index;
+  if(Number.isFinite(x.startedAt)&&x.startedAt>=0)result.startedAt=x.startedAt;
+  if(typeof x.startedDate==="string"&&/^\d{4}-\d{2}-\d{2}$/.test(x.startedDate))result.startedDate=x.startedDate;
+  if([20,40,60].includes(x.goal))result.goal=x.goal;
+  const marks=Object.create(null),challenges=Object.create(null);
+  for(const [id,on] of Object.entries(safeObj(x.marks)).slice(0,1000)){
+    if(id.length<=150&&on===true)marks[id]=true;
+  }
+  for(const [id,record] of Object.entries(safeObj(x.challenges)).slice(0,250)){
+    if(!/^\d{1,3}$/.test(id)||Number(id)>209||!object(record))continue;
+    challenges[id]={
+      quiz:record.quiz===true,spell:record.spell===true,oral:record.oral===true,
+      wrongQuiz:Number.isInteger(record.wrongQuiz)&&record.wrongQuiz>=0&&record.wrongQuiz<=10000?record.wrongQuiz:0,
+      wrongSpell:Number.isInteger(record.wrongSpell)&&record.wrongSpell>=0&&record.wrongSpell<=10000?record.wrongSpell:0
+    };
+  }
+  result.marks=marks;result.challenges=challenges;
+  if(Array.isArray(x.finished)){
+    result.finished=x.finished.slice(-210).filter(item=>object(item)&&
+      Number.isInteger(item.day)&&item.day>=0&&item.day<210&&
+      ["starter","a1","a2","b1","b2"].includes(item.stage)&&
+      typeof item.date==="string"&&/^\d{4}-\d{2}-\d{2}$/.test(item.date)).map(item=>({
+        day:item.day,stage:item.stage,date:item.date,
+        completedAt:Number.isFinite(item.completedAt)&&item.completedAt>=0?item.completedAt:0,
+        wrongQuiz:Number.isInteger(item.wrongQuiz)&&item.wrongQuiz>=0?Math.min(10000,item.wrongQuiz):0,
+        wrongSpell:Number.isInteger(item.wrongSpell)&&item.wrongSpell>=0?Math.min(10000,item.wrongSpell):0
+    }));
+  }
+  return result;
+}
 function parseExisting(storage,key){
   try{return JSON.parse(storage.getItem(key)||"{}");}
   catch{return {};}
@@ -78,7 +112,8 @@ export function buildBackup(storage=globalThis.localStorage){
     format:BACKUP_FORMAT,version:BACKUP_VERSION,exportedAt:new Date().toISOString(),
     legacy:cleanProgress(parseExisting(storage,LEGACY)),
     academy:cleanAcademy(parseExisting(storage,ACADEMY)),
-    labs:cleanLabs(parseExisting(storage,LABS))
+    labs:cleanLabs(parseExisting(storage,LABS)),
+    daily:cleanDaily(parseExisting(storage,DAILY))
   };
 }
 export function readBackup(json){
@@ -86,20 +121,22 @@ export function readBackup(json){
   let data;try{data=JSON.parse(json);}catch{throw new Error("Invalid JSON backup.");}
   if(!object(data)||data.format!==BACKUP_FORMAT||data.version!==BACKUP_VERSION)throw new Error("Not a compatible Shaira backup.");
   if(!object(data.legacy)||!object(data.academy))throw new Error("The backup is missing required progress data.");
-  return {legacy:cleanProgress(data.legacy),academy:cleanAcademy(data.academy),labs:cleanLabs(data.labs)};
+  return {legacy:cleanProgress(data.legacy),academy:cleanAcademy(data.academy),labs:cleanLabs(data.labs),daily:cleanDaily(data.daily)};
 }
 export function restoreBackup(json,storage=globalThis.localStorage){
   const parsed=readBackup(json); // do all validation before changing device state
-  const beforeLegacy=storage.getItem(LEGACY),beforeAcademy=storage.getItem(ACADEMY),beforeLabs=storage.getItem(LABS);
+  const beforeLegacy=storage.getItem(LEGACY),beforeAcademy=storage.getItem(ACADEMY),beforeLabs=storage.getItem(LABS),beforeDaily=storage.getItem(DAILY);
   try{
     storage.setItem(LEGACY,JSON.stringify(parsed.legacy));
     storage.setItem(ACADEMY,JSON.stringify(parsed.academy));
     storage.setItem(LABS,JSON.stringify(parsed.labs));
+    storage.setItem(DAILY,JSON.stringify(parsed.daily));
   }catch(error){
     try{
       if(beforeLegacy===null)storage.removeItem?.(LEGACY);else storage.setItem(LEGACY,beforeLegacy);
       if(beforeAcademy===null)storage.removeItem?.(ACADEMY);else storage.setItem(ACADEMY,beforeAcademy);
       if(beforeLabs===null)storage.removeItem?.(LABS);else storage.setItem(LABS,beforeLabs);
+      if(beforeDaily===null)storage.removeItem?.(DAILY);else storage.setItem(DAILY,beforeDaily);
     }catch{}
     throw new Error("Could not write backup to this device: "+error.message);
   }
