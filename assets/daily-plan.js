@@ -113,6 +113,10 @@ export function makeDay(index){
    if(skill)tasks.unshift(task("studio:"+unit.id,"studio","#academy/mastery/"+unit.id,
       "Learn and practise: "+unit.title.en,"Aralin at sanayin: "+unit.title.tl,15,{key:unit.id}));
  }
+ if(weekday===1&&((level==="a1"&&week>=2)||level==="a2")){
+   tasks.push(task("cases:"+level,"case-quiz","#academy/cases/quiz",
+    "Practise all six noun cases: 8/10","Magsanay sa anim na kaso: 8/10",12,{key:"cases"}));
+ }
  if(within===DAYS_PER_STAGE-1){
    const checkpoint=checkpointForStage(level);
    if(checkpoint)tasks.push(task("checkpoint:"+level,"checkpoint","#academy/checkpoint/"+level,
@@ -153,7 +157,8 @@ export function snapshot(storage=globalThis.localStorage){
  const labs=parse(storage,"shaira-labs-v1");
  const legacy=parse(storage,"shaira-progress-v1");
  const mastery=loadMastery(storage);
- return {academy,labs,legacy,mastery};
+ const cases=parse(storage,"shaira-case-practice-v1");
+ return {academy,labs,legacy,mastery,cases};
 }
 export function stepComplete(step,state,snap,audioAvailable=true){
  const t=Number(state.startedAt)||0;
@@ -179,6 +184,11 @@ export function stepComplete(step,state,snap,audioAvailable=true){
    const row=safeRecord(safeRecord(snap.mastery).checkpoints)[step.key];
    return Number(row?.last)>=t&&row?.lastPassed===true&&
      Number(row?.lastScore)>=8&&Number(row?.correctTyped)>=1&&Number(row?.correctReading)>=1;
+ }
+ if(step.kind==="case-quiz"){
+   const sessions=Array.isArray(snap.cases?.sessions)?snap.cases.sessions:[];
+   const last=sessions.at(-1);
+   return Number(last?.last)>=t&&Number(last?.score)>=8&&last?.passed===true;
  }
  if(step.kind==="writing"){
    const rec=String(safeRecord(l.drafts)[step.key]||"");
