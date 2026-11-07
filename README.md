@@ -43,6 +43,6 @@ No npm installation or paid API keys required.
 GitHub Pages uses the included \`.github/workflows/pages.yml\` on pushes to \`main\`. Select **Settings → Pages → Build and deployment → GitHub Actions** once. CI workflow \`.github/workflows/ci.yml\` checks JS syntax and tests on pushes/PRs. Confirm both workflows report success before treating a release as deployed.
 
 ## Privacy
-All learning progress and drafts stay in the browser's localStorage; there is no server, sign-in or tracking. Clearing Safari site data removes them. There is currently no cloud sync or export. Do not rely on this as the only copy of important writing.
+All learning progress and drafts stay in the browser's localStorage; there is no server, sign-in or tracking. Clearing Safari site data removes them. There is no cloud sync. You can export both lesson progress and writing drafts as a local JSON file, then restore that file on another device from Settings. Keep exported files private.
 
 © 2026 Shaira learning project.
