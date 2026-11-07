@@ -1,3 +1,4 @@
+import {extraDialogues} from "./extra-dialogues.js";
 // Contextual Russian dialogues for shadowing, reading aloud and comprehension.
 // Speaker A/B are fictional. Explanations have English and Filipino versions.
 const pair=(en,tl)=>({en,tl});
@@ -129,3 +130,4 @@ scene("debate","b2","⚖️",["A balanced argument","Balanseng pangangatwiran"],
 ["Б","Вероятно, если учитывать потребности сотрудников.","Possibly, if employees' needs are considered.","Posible, kung isasaalang-alang ang pangangailangan ng mga empleyado."]],
 ["What is proposed as a compromise?","Ano ang mungkahing kompromiso?"],["сочетать оба формата","отказаться от работы","закрыть офис","запретить встречи"],"сочетать оба формата")
 ];
+dialogues.push(...extraDialogues);
