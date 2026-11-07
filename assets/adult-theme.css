@@ -82,3 +82,6 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,
 @media(min-width:650px){.adult-route-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.adult-route-grid>a{display:block}.adult-route-grid>a>div{margin-top:11px}.adult-route-grid>a>b{display:none}}
 @media(max-width:380px){.adult-welcome{padding:22px 18px}.adult-route-grid>a{padding:13px 10px;gap:7px}.adult-route-grid>a>span{width:30px;height:32px}.adult-progress{padding:14px 12px}}
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+
+/* Adult vocabulary cards remain easy to scan without outsized decorative emoji. */
+.aca-word-grid .aca-emoji{font-size:21px;font-weight:800;color:#675484;opacity:1}
