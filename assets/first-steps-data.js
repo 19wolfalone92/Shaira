@@ -142,7 +142,7 @@ export function microQuestions(step){
   const blendOpts=selectDifferent(g.blend,syllables.map(x=>x.blend).reverse().concat(["мо","та","на"]),3);
   if(step.kind==="blend")return [
    question("blend-recognise","Tap the two-letter Russian syllable for: "+g.pron,g.blend,blendOpts,"The model is «"+g.blend+"». "+g.notes),
-   question("blend-sound","Choose the printed syllable you just studied.",g.blend,selectDifferent(g.blend,[g.blend.split("").reverse().join(""),...blendOpts.slice(1),"ми"],3),"«"+g.blend+"» matches the taught Russian sounds."),
+   question("blend-sound","Choose the Cyrillic syllable pronounced: "+g.pron,g.blend,selectDifferent(g.blend,[g.blend.split("").reverse().join(""),...blendOpts.slice(1),"ми"],3),"«"+g.blend+"» matches the taught Russian sounds."),
    question("blend-type","Type the Russian syllable for: "+g.pron,g.blend,null,"Write «"+g.blend+"» from memory.","type"),
    question("blend-type-again","Write the same syllable in Cyrillic: "+g.pron,g.blend,null,"Build the sounds as «"+g.blend+"».","type")
   ];
