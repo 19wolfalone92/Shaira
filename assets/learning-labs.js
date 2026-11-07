@@ -215,6 +215,8 @@ export function labHtml(route,l="en"){
  if(route==="academy/lab")return overview(l);
  if(route==="academy/grammar")return grammarMenu(l);
  if(route.startsWith("academy/grammar/"))return grammarPage(route.split("/")[2],l);
+ if(route==="academy/writing")return writingMenu(l);
+ if(route.startsWith("academy/writing/task/"))return writingStudioPage(route.split("/")[3],l);
  if(route==="academy/library")return libraryMenu(l);
  if(route.startsWith("academy/library/"))return readingPage(route.split("/")[2],l);
  return overview(l);
