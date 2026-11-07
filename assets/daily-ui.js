@@ -69,7 +69,7 @@ const TXT={
 };
 const esc=x=>String(x??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const text=(v,l)=>typeof v==="string"?v:v?.[l]||v?.en||"";
-const audioAvailable=()=>typeof window!=="undefined"&&"speechSynthesis" in window;
+const audioAvailable=()=>typeof window!=="undefined"&&"speechSynthesis" in window&&typeof SpeechSynthesisUtterance!=="undefined";
 const letters=["ё й ц у к е н г ш щ з х ъ","ф ы в а п р о л д ж э","я ч с м и т ь б ю"];
 let ephemeral={index:-1,quiz:"",spell:"",entered:"",revealed:false,success:0};
 const stateMessage=(k,l)=>TXT[l][k]||k;
@@ -117,7 +117,7 @@ function studyTasks(day,summary,l){
       (step.kind==="handbook"&&!step.complete?'<button type="button" data-daily="confirm-reference" data-id="'+esc(step.id)+'">'+TXT[l].handbookConfirm+'</button>':"")+
       '</div></div>';
   }).join("")+'</div>'+
-  (firstUnfinished?'<a class="daily-primary daily-resume" href="'+esc(firstUnfinished.kind==="listen"&&!audioAvailable()?"#academy/lesson/"+firstUnfinished.unitId+"/read":firstUnfinished.href)+'">'+TXT[l].resume+' →</a>':"")+'</section>';
+  (firstUnfinished?'<a class="daily-primary daily-resume" href="'+esc(["listen","audio"].includes(firstUnfinished.kind)&&!audioAvailable()?"#academy/lesson/"+firstUnfinished.unitId+"/read":firstUnfinished.href)+'">'+TXT[l].resume+' →</a>':"")+'</section>';
 }
 function dailyKeyboard(l){
  return '<details class="daily-keyboard"><summary>⌨ '+TXT[l].keyboard+'</summary><div class="daily-board">'+
