@@ -227,3 +227,17 @@ export function skillsReport(state){
     grammarNeedsPractice:recent.filter(x=>Number(x.wrongQuiz)>0).length,
     lastStudied:completed.length?completed[completed.length-1].date:null};
 }
+
+export function skillOverview(snap){
+ const academy=safeRecord(snap.academy),labs=safeRecord(snap.labs),done=safeRecord(academy.done);
+ const memory=safeRecord(academy.memory),grammar=safeRecord(labs.grammar),readings=safeRecord(labs.readings),drafts=safeRecord(labs.drafts);
+ const trackedGrammar=new Set(Object.values(grammar).flatMap(stage=>Object.keys(safeRecord(stage?.items))));
+ return [
+  {id:"words",count:Object.values(memory).filter(r=>r&&Number(r.seen)>0).length,total:firstWordPacks.length*6+units.length*6},
+  {id:"grammar",count:trackedGrammar.size,total:grammarDrills.length},
+  {id:"listen",count:Object.keys(done).filter(k=>k.endsWith("/listen")).length,total:units.length},
+  {id:"reading",count:Object.values(readings).filter(x=>x?.passed===true).length,total:readingLibrary.length},
+  {id:"writing",count:Object.entries(drafts).filter(([k,v])=>k.startsWith("portfolio:")&&String(v||"").trim().length>0).length,total:writingTasks.length},
+  {id:"speaking",count:Object.keys(done).filter(k=>k.endsWith("/speak")).length,total:units.length}
+ ];
+}
