@@ -111,3 +111,9 @@ Every direction, navigation label, question, explanation and feedback message no
 The existing daily route now draws from **486 vocabulary cards**, **35 graded readings**, **45 independent writing tasks** and **30 adult dialogues**. Speaking/listening days include a new English-guided Russian listening scenario from a bank of 30. Its Russian transcript remains hidden until answering. A learner who opens the transcript before answering is in reading mode, **not scored listening**. The audio uses browser TTS, not native recordings; the app redirects to reading when device audio is unavailable.
 
 At each step, the target is productive comprehension and practice rather than completing counters. English-only instructions are a usability requirement, not a statement that Russian passages themselves should be translated or hidden permanently.
+
+## Weekly adaptive review (November 2026)
+
+After the first two weeks, the final lesson of each seven-session teaching cycle includes a twelve-question Variety Lab round, sampled from up to thirteen modalities. To count as completed, the latest round must have at least nine correct answers and at least two correct productive Russian answers (typed words, conjugated forms, written sentences or ordered words). Earlier scores cannot automatically unlock later study days. Errors and due questions return for spaced repetition.
+
+A separate Verb Lab documents 240 manually enumerated verb forms in English-guided tables. A separate library of 15 adult role-play situations includes 45 decisions with different scripted outcomes. The latter is not a substitute for spontaneous conversation with a native speaker.
