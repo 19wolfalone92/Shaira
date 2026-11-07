@@ -69,6 +69,10 @@ let lessonCardIndex = 0;
 let feedback = null;
 let reviewLesson = lessons[0].id;
 let letterIndex = 0;
+let writingMode = "letters";
+let lowerCase = false;
+const handwritingWords = ["мама","папа","дом","кот","мир","вода","книга","семья","привет","спасибо","солнце","язык","друзья","любовь","письмо","здравствуйте"];
+const handwritingSentences = ["Это дом.","Меня зовут Шаира.","Я учу русский.","Как дела?","У меня есть книга.","Мне нравится музыка.","Я читаю письмо.","Я тебя люблю."];
 let drawingCleanup = null;
 
 const el = document.getElementById("app");
@@ -170,12 +174,31 @@ function reviewPage() {
     <button class="secondary-button wide" type="button" data-action="new-question">${phrase("newQuestion")} ↻</button>`;
 }
 function writePage() {
-  const letter = alphabet[letterIndex % alphabet.length];
-  return `<div class="page-intro"><span class="eyebrow">✎ ${phrase("write")}</span><h1>${phrase("freehand")}</h1><p>${phrase("writeIntro")}</p></div>
-    <div class="write-card"><div class="writing-guide"><span>${phrase("letter")} ${letterIndex%alphabet.length+1}/${alphabet.length}</span><button class="sound-button" type="button" data-action="speak" data-text="${letter}">🔊 ${phrase("listen")}</button></div>
-      <div class="letter-large" lang="ru">${letter} <span>${letter.toLowerCase()}</span></div>
-      <div class="canvas-wrap"><div class="guide-letter" aria-hidden="true">${letter}</div><canvas id="writing-canvas" aria-label="${phrase("freehand")}" role="img"></canvas></div>
-      <p class="canvas-caption">${phrase("tip")}</p><div class="write-buttons"><button class="secondary-button" type="button" data-action="clear-canvas">${phrase("clear")}</button><button class="primary-button" type="button" data-action="next-letter">${phrase("newLetter")} →</button></div></div>`;
+  const items = writingMode==="words" ? handwritingWords : writingMode==="sentences" ? handwritingSentences : alphabet;
+  const position=letterIndex%items.length,raw=items[position];
+  const target=writingMode==="letters"&&lowerCase?raw.toLowerCase():raw;
+  const t=state.language==="tl"?{
+    letters:"Mga titik",words:"Mga salita",sentences:"Mga pangungusap",case:"Malaki/maliit na titik",
+    description:"Magsanay sa mga titik, salita at pangungusap. Sundan ang mapusyaw na hugis gamit ang daliri o stylus.",
+    explanation:"Hindi awtomatikong sinusuri ng app ang sinulat mo. Pakinggan, kopyahin, saka ihambing ang hugis."
+  }:{
+    letters:"Letters",words:"Words",sentences:"Sentences",case:"Uppercase / lowercase",
+    description:"Practise letters, words and full sentences. Trace the pale guide with your finger or stylus.",
+    explanation:"Drawing is not automatically marked. Listen, copy, then compare your shapes."
+  };
+  const modeButtons=["letters","words","sentences"].map(id=>
+    '<button type="button" data-action="write-mode" data-value="'+id+'" aria-pressed="'+(writingMode===id)+'" class="'+(writingMode===id?"selected":"")+'">'+t[id]+'</button>').join("");
+  const heading=writingMode==="letters" ?
+    '<div class="letter-large" lang="ru">'+escapeHtml(target)+' <span>'+escapeHtml(target===raw?raw.toLowerCase():raw.toUpperCase())+'</span></div>'+
+      '<button class="case-toggle" type="button" data-action="letter-case">'+t.case+' ⇆</button>' :
+    '<div class="writing-target" lang="ru">'+escapeHtml(target)+'</div>';
+  return '<div class="page-intro"><span class="eyebrow">✎ '+phrase("write")+'</span><h1>'+phrase("freehand")+'</h1><p>'+t.description+'</p></div>'+
+    '<div class="writing-modes" role="group" aria-label="'+phrase("write")+'">'+modeButtons+'</div>'+
+    '<div class="write-card"><div class="writing-guide"><span>'+(position+1)+'/'+items.length+'</span><button class="sound-button" type="button" data-action="speak" data-text="'+escapeHtml(target)+'">🔊 '+phrase("listen")+'</button></div>'+
+    heading+
+    '<div class="canvas-wrap"><div class="guide-letter '+(writingMode==="sentences"?"sentence":writingMode==="words"?"long":"")+'" aria-hidden="true">'+escapeHtml(target)+'</div><canvas id="writing-canvas" aria-label="'+phrase("freehand")+'" role="img"></canvas></div>'+
+    '<p class="canvas-caption">'+t.explanation+'</p><div class="write-buttons"><button class="secondary-button" type="button" data-action="clear-canvas">'+phrase("clear")+'</button><button class="primary-button" type="button" data-action="next-letter">'+phrase("newLetter")+' →</button></div>'+
+    '<a class="writing-academy-link" href="#academy">'+(state.language==="tl"?"📚 Magpatuloy sa kursong pagsulat":"📚 Continue sentence writing in the Academy")+' →</a></div>';
 }
 function settingsPage() {
   return `<div class="page-intro"><span class="eyebrow">⚙ ${phrase("settings")}</span><h1>${phrase("settings")}</h1></div>
@@ -252,6 +275,8 @@ document.addEventListener("click", event => {
     feedback=null;render();
   }
   else if (action === "next-letter") {letterIndex++;render();}
+  else if (action === "write-mode") {writingMode=["letters","words","sentences"].includes(button.dataset.value)?button.dataset.value:"letters";letterIndex=0;render();}
+  else if (action === "letter-case") {lowerCase=!lowerCase;render();}
   else if (action === "clear-canvas") {const canvas=document.getElementById("writing-canvas");canvas?.getContext("2d")?.clearRect(0,0,canvas.width,canvas.height);}
   else if (action === "language") { state.language=button.dataset.value === "tl" ? "tl" : "en"; save();feedback=null;render(); }
   else if (action === "reset") { if (window.confirm(phrase("resetConfirm"))) {state.completed=[];save();render();} }
