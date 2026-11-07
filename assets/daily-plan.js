@@ -42,7 +42,8 @@ export function makeDay(index){
  const writing=selected(group(writingTasks,level),week);
  const handbook=selected(group(grammarHandbook,level),week);
  const stageDrills=group(grammarDrills,level);
- const quiz=selected(stageDrills,within*7+week);
+ const openingQuizOrder=[11,0,2,1,5,6,7,18,8,19,17,18,13,9];
+ const quiz=selected(stageDrills,index<openingQuizOrder.length?openingQuizOrder[index]:within*7+week);
  const spelling=level==="starter"
    ? {ru:unit.words[stableIndex(index,unit.words.length)].ru,
       prompt:localized("Type the Russian word for: "+unit.words[stableIndex(index,unit.words.length)].en,
@@ -54,7 +55,8 @@ export function makeDay(index){
    const lesson=lessons[index];
    tasks.push(task("legacy:"+lesson.id,"legacy","#lesson/"+lesson.id,
       "Learn: "+lesson.title.en,"Aralin: "+lesson.title.tl,10,{key:lesson.id}));
-   const earlyPack=firstWordPacks[index];
+   const firstPacks=[0,10,4,3,8,7,1,11,16,13,14,17,19];
+   const earlyPack=firstWordPacks[firstPacks[index]];
    tasks.push(task("pack:"+earlyPack.id,"pack","#academy/first-words/"+earlyPack.id,
       "Learn 6 words: "+earlyPack.title.en,"Anim na salita: "+earlyPack.title.tl,12,{key:earlyPack.id+"/words"}));
  }else if(index===13){
