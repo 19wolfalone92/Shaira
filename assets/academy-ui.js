@@ -101,7 +101,7 @@ function overview(l){
   return '<div class="aca-hero"><div class="aca-stars" aria-hidden="true">А Б В</div><span class="aca-overline">SHAIRA · LANGUAGE ACADEMY</span><h1>'+UI[l].title+'</h1><p>'+UI[l].intro+'</p><div class="aca-hero-badges"><span>🇷🇺 Pre-A1 → B2</span><span>✍️ '+units.length+' '+UI[l].word+' / '+units.length+' units</span></div></div>'+
   '<div class="aca-summary"><div><b>'+d+'/'+totalActivities+'</b><small>'+UI[l].total+'</small></div><div><b>⭐ '+store.points+'</b><small>'+UI[l].stars+'</small></div><div><b>'+memory.due.length+'</b><small>'+UI[l].due+'</small></div></div>'+
   '<section class="aca-path-info"><strong>🌟 '+UI[l].courseGuide+'</strong><p>'+UI[l].notice+'</p></section>'+
-  '<a class="aca-review-call" href="#academy/first-words"><span>Аа</span><span><strong>'+tx("120 essential Russian words","120 mahalagang salita sa Ruso",l)+'</strong><small>'+tx("20 practical word topics, 6 words each","20 praktikal na paksa, tig-6 na salita",l)+'</small></span><b>›</b></a>'+
+  '<a class="aca-review-call" href="#academy/first-words"><span>Аа</span><span><strong>'+tx("240 themed Russian word cards","240 tematikong salita sa Ruso",l)+'</strong><small>'+tx("40 practical topics, six words each","40 praktikal na paksa, tig-6 na salita",l)+'</small></span><b>›</b></a>'+
   '<a class="aca-review-call" href="#academy/dialogues"><span>💬</span><span><strong>'+tx("Russian conversation lab","Pagsasanay sa usapan sa Ruso",l)+'</strong><small>'+tx("20 situations: say it, listen, understand","20 sitwasyon: magsalita, makinig, umunawa",l)+'</small></span><b>›</b></a>'+
   '<a class="aca-review-call" href="#academy/writing"><span>✎</span><span><strong>'+tx("Writing portfolio","Portfolio ng pagsusulat",l)+'</strong><small>'+tx("30 guided assignments · saved private drafts","30 gawaing pagsulat · pribadong mga draft",l)+'</small></span><b>›</b></a>'+
   '<a class="aca-review-call" href="#academy/lab"><span>✳</span><span><strong>'+tx("Grammar and reading studio","Pagsasanay sa gramatika at pagbasa",l)+'</strong><small>'+tx("100 grammar drills · 20 graded texts · independent writing","100 pagsasanay sa gramatika · 20 teksto · sariling pagsulat",l)+'</small></span><b>›</b></a>'+
@@ -114,9 +114,9 @@ function overview(l){
 function firstWordsPage(route,l){
   const packId=route.split("/")[2];
   if(!packId){
-    return '<a class="aca-back" href="#academy">← '+UI[l].back+'</a>'+top("🧸 Pre-A1",tx("My first 120 Russian words","Unang 120 salita sa Ruso",l),tx("Learn six words at a time. Listen, read, repeat and test your recall.","Anim na salita bawat aralin. Makinig, bumasa, ulitin at alalahanin.",l))+
+    return '<a class="aca-back" href="#academy">← '+UI[l].back+'</a>'+top("🧸 Pre-A1",tx("240 essential Russian word cards","240 tematikong salita sa Ruso",l),tx("Learn six words at a time. Listen, read, repeat and test your recall.","Anim na salita bawat aralin. Makinig, bumasa, ulitin at alalahanin.",l))+
       '<div class="aca-units">'+firstWordPacks.map((p,i)=>
-        '<a class="aca-unit-card" href="#academy/first-words/'+p.id+'"><span class="aca-unit-icon">'+p.icon+'</span><span><small>'+(i+1)+'/20</small><strong>'+esc(val(p.title,l))+'</strong><em>'+(modeDone(p,"words")?UI[l].completed:"6 "+UI[l].words)+'</em></span><span class="aca-chev">›</span></a>').join("")+'</div>';
+        '<a class="aca-unit-card" href="#academy/first-words/'+p.id+'"><span class="aca-unit-icon">'+p.icon+'</span><span><small>'+(i+1)+'/40</small><strong>'+esc(val(p.title,l))+'</strong><em>'+(modeDone(p,"words")?UI[l].completed:"6 "+UI[l].words)+'</em></span><span class="aca-chev">›</span></a>').join("")+'</div>';
   }
   const p=firstWordPacks.find(x=>x.id===packId);if(!p)return firstWordsPage("academy/first-words",l);
   const s=ensureSession(route,l);
