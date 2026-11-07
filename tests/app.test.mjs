@@ -58,8 +58,11 @@ test("main interface completes a lesson, keeps English instructions and opens wr
   const verbAction=()=>{};
   const scenariosHtml=()=>"<section>Roleplay</section>";
   const scenariosAction=()=>{};
-  const run = new Function("sections","lessons","alphabet","keyboardRows","document","window","location","navigator","localStorage","academyStatistics","labStats","stopSpeakingRehearsal","todayHtml","todayPreview","todayAction","todaySubmit","todayInput","masteryHtml","masteryAction","masterySubmit","caseHtml","caseAction","caseSubmit","listeningHtml","listeningAction","mixerHtml","mixerAction","mixerSubmit","verbHtml","verbAction","scenariosHtml","scenariosAction",source);
-  run(sections,lessons,alphabet,keyboardRows,document,window,location,navigator,localStorage,academyStatistics,labStats,stopSpeakingRehearsal,todayHtml,todayPreview,todayAction,todaySubmit,todayInput,masteryHtml,masteryAction,masterySubmit,caseHtml,caseAction,caseSubmit,listeningHtml,listeningAction,mixerHtml,mixerAction,mixerSubmit,verbHtml,verbAction,scenariosHtml,scenariosAction);
+  const phoneticsHtml=()=>"<section>Phonetics</section>";
+  const phoneticsAction=()=>{};
+  const coachHtml=()=>"<section>Coach</section>";
+  const run = new Function("sections","lessons","alphabet","keyboardRows","document","window","location","navigator","localStorage","academyStatistics","labStats","stopSpeakingRehearsal","todayHtml","todayPreview","todayAction","todaySubmit","todayInput","masteryHtml","masteryAction","masterySubmit","caseHtml","caseAction","caseSubmit","listeningHtml","listeningAction","mixerHtml","mixerAction","mixerSubmit","verbHtml","verbAction","scenariosHtml","scenariosAction","phoneticsHtml","phoneticsAction","coachHtml",source);
+  run(sections,lessons,alphabet,keyboardRows,document,window,location,navigator,localStorage,academyStatistics,labStats,stopSpeakingRehearsal,todayHtml,todayPreview,todayAction,todaySubmit,todayInput,masteryHtml,masteryAction,masterySubmit,caseHtml,caseAction,caseSubmit,listeningHtml,listeningAction,mixerHtml,mixerAction,mixerSubmit,verbHtml,verbAction,scenariosHtml,scenariosAction,phoneticsHtml,phoneticsAction,coachHtml);
   const click=(action,props={})=>events.click({target:{closest:selector=>selector==="[data-action]"?{dataset:{action,...props}}:null}});
   assert.match(app.innerHTML,/Your learning path/);
   click("open-lesson",{id:"vowels"});
