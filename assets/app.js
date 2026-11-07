@@ -8,6 +8,7 @@ import {caseHtml,caseAction,caseSubmit} from "./case-trainer.js";
 import {listeningHtml,listeningAction} from "./listening-ui.js";
 import {mixerHtml,mixerAction,mixerSubmit} from "./practice-ui.js";
 import {verbHtml,verbAction} from "./verb-ui.js";
+import {scenariosHtml,scenariosAction} from "./scenario-ui.js";
 
 const STORAGE_KEY = "shaira-progress-v1";
 const dictionary = {
@@ -241,7 +242,7 @@ function render() {
   if (drawingCleanup) { drawingCleanup(); drawingCleanup = null; }
   const route = currentRoute();
   if(!route.startsWith("academy/lesson/") || !route.endsWith("/speak"))stopSpeakingRehearsal();
-  const page = route==="academy/verbs"||route.startsWith("academy/verbs/") ? verbHtml(route) : route==="academy/mix"||route.startsWith("academy/mix/") ? mixerHtml(route) : route==="academy/listening"||route.startsWith("academy/listening/") ? listeningHtml(route) : route==="academy/cases"||route.startsWith("academy/cases/") ? caseHtml(route,state.language) : route==="academy/mastery"||route.startsWith("academy/mastery/")||route.startsWith("academy/checkpoint/") ? masteryHtml(route,state.language) : route === "today" ? todayHtml(state.language) : route === "home" ? home() : route === "academy/lab" || route.startsWith("academy/grammar") || route.startsWith("academy/library") || route.startsWith("academy/writing") || route.startsWith("academy/handbook") ? labHtml(route,state.language) : route.startsWith("academy") ? academyHtml(route,state.language) : route === "review" ? reviewPage() : route === "write" ? writePage() :
+  const page = route==="academy/scenarios"||route.startsWith("academy/scenarios/") ? scenariosHtml(route) : route==="academy/verbs"||route.startsWith("academy/verbs/") ? verbHtml(route) : route==="academy/mix"||route.startsWith("academy/mix/") ? mixerHtml(route) : route==="academy/listening"||route.startsWith("academy/listening/") ? listeningHtml(route) : route==="academy/cases"||route.startsWith("academy/cases/") ? caseHtml(route,state.language) : route==="academy/mastery"||route.startsWith("academy/mastery/")||route.startsWith("academy/checkpoint/") ? masteryHtml(route,state.language) : route === "today" ? todayHtml(state.language) : route === "home" ? home() : route === "academy/lab" || route.startsWith("academy/grammar") || route.startsWith("academy/library") || route.startsWith("academy/writing") || route.startsWith("academy/handbook") ? labHtml(route,state.language) : route.startsWith("academy") ? academyHtml(route,state.language) : route === "review" ? reviewPage() : route === "write" ? writePage() :
     route === "settings" ? settingsPage() : lessonPage(route.slice(7));
   document.documentElement.lang = "en";
   document.title = "Shaira · Learn Russian";
@@ -285,6 +286,8 @@ function initializeCanvas() {
   drawingCleanup = () => {canvas.removeEventListener("pointerdown",down);canvas.removeEventListener("pointermove",move);canvas.removeEventListener("pointerup",up);canvas.removeEventListener("pointercancel",up);};
 }
 document.addEventListener("click", event => {
+  const scenarioButton=event.target.closest("[data-scenario]");
+  if(scenarioButton){scenariosAction(scenarioButton,{route:currentRoute,render,speak,notice:showToast});return;}
   const verbButton=event.target.closest("[data-verb]");
   if(verbButton){verbAction(verbButton,{speak});return;}
   const mixButton=event.target.closest("[data-mix]");
