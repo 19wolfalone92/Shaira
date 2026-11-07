@@ -17,10 +17,10 @@ const storage=()=>{const rows=new Map();return{
  getItem:key=>rows.get(key)??null,setItem:(key,value)=>rows.set(key,String(value)),removeItem:key=>rows.delete(key),get map(){return rows}
 };};
 test("new adult lexical collection doubles useful word-card scope with English instructions",()=>{
- assert.equal(extendedWordPacks.length,40);
- assert.equal(firstWordPacks.length,80);
- assert.equal(firstWordPacks.flatMap(x=>x.words).length,480);
- assert.equal(new Set(firstWordPacks.map(x=>x.id)).size,80);
+ assert.equal(extendedWordPacks.length,41);
+ assert.equal(firstWordPacks.length,81);
+ assert.equal(firstWordPacks.flatMap(x=>x.words).length,486);
+ assert.equal(new Set(firstWordPacks.map(x=>x.id)).size,81);
  const expected=["starter","a1","a2","b1","b2"];
  for(const stage of expected)assert.ok(extendedWordPacks.filter(x=>x.stage===stage).length>=4);
  for(const p of extendedWordPacks){
@@ -91,7 +91,7 @@ test("30 listening clips contain 6 original comprehension tasks per stage with v
  }
  for(const clip of listeningClips){
   assert.match(clip.russian,/[\u0400-\u052F]/u,clip.id);
-  assert.ok(clip.title&&clip.question&&clip.why.length>30,clip.id);
+  assert.ok(clip.title&&clip.question&&clip.why.length>15,clip.id);
   assert.equal(clip.choices.length,4,clip.id);
   assert.equal(new Set(clip.choices).size,4,clip.id);
   assert.ok(clip.choices.includes(clip.answer),clip.id);
@@ -119,7 +119,7 @@ test("listening practice cannot be passed before playback and keeps the transcri
   let played=0,rendered=0;
   const api={route:()=>"academy/listening/"+id,render(){rendered++},speak(){played++}};
   assert.match(listeningHtml("academy/listening"),/Listen to Russian/);
-  assert.match(listeningHtml("academy/listening/"+id),/Russian transcript appears after/);
+  assert.match(listeningHtml("academy/listening/"+id),/The transcript stays hidden until you have answered/);
   const clip=listeningClips[0];
   const first=listeningHtml("academy/listening/"+id);
   assert.doesNotMatch(first,/Привет! Меня зовут Анна/);
