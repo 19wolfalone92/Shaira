@@ -61,3 +61,11 @@
 .lp-selfcheck ul{padding:0;list-style:none;margin:10px 0}.lp-selfcheck li{font-size:12px;line-height:1.65;margin-bottom:8px;display:flex;gap:9px}
 .lp-selfcheck li strong{font-size:15px;color:#65539b}
 #lp-studio-draft{font:inherit;font-size:16px;line-height:1.7;width:100%;border:1px solid #dcd4e8;color:#2e2b41;resize:vertical;min-height:220px;border-radius:13px;padding:13px;box-sizing:border-box}
+
+.lp-handbook-examples{display:grid;gap:11px}
+.lp-handbook-examples>div{border:1px solid #e8e1ee;border-radius:12px;padding:14px;background:#faf9fd;min-width:0}
+.lp-handbook-examples strong{display:block;font-size:20px;line-height:1.7;color:#302a42;overflow-wrap:anywhere;margin:8px 0}
+.lp-handbook-examples p{font-size:13px;line-height:1.55;color:#685d76;margin:3px 0}
+.lp-handbook-nav{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap;margin:12px 0 24px}
+.lp-handbook-nav>a{margin:0;font-size:12px}
+@media(min-width:640px){.lp-handbook-examples{grid-template-columns:repeat(2,minmax(0,1fr))}}

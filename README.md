@@ -13,7 +13,7 @@ An adult-first, free-to-use iPhone PWA for **Shaira** to learn Russian from the 
 | Academy path | 32 original topic units across **Pre-A1, A1, A2, B1 and B2** |
 | Unit practice | 7 formats per unit: vocabulary, listen/choose, phrase/grammar basics, reading, controlled writing, shadowing and open writing |
 | Conversation | 20 contextual Russian dialogues; optional private microphone recording and playback in speaking lessons (browser permitting) |
-| Independent grammar | **100 contextual questions** (20 per stage), with answer-specific explanations in EN and Filipino |
+| Independent grammar | **100 contextual questions** (20 per stage) with explanation and **30 offline grammar handbook chapters** with examples |
 | Reading | **20 original levelled texts**, 40 comprehension questions, word glossary, speaking aloud and associated writing tasks |
 | Writing portfolio | **30 guided tasks**, from basic sentences to extended B2-style arguments, on-device drafts and format-only self-review |
 | Retention | Spaced vocabulary review after 1, 3, 7, 14 and 30 days; practice and progress stored locally |

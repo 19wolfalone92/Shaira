@@ -5,8 +5,22 @@ import {readingLibrary,readingsForStage} from "../assets/reading-library.js";
 import {writingTasks,writingForStage,writingWordTargets} from "../assets/writing-tasks.js";
 import {stages} from "../assets/academy-data.js";
 import {readFileSync} from "node:fs";
+import {grammarHandbook,handbookForStage} from "../assets/grammar-handbook.js";
 
 const levels=stages.map(s=>s.id);
+test("offline grammar handbook covers 30 essential Russian topics",()=>{
+ assert.equal(grammarHandbook.length,30);
+ assert.equal(new Set(grammarHandbook.map(x=>x.id)).size,30);
+ for(const stage of levels)assert.ok(handbookForStage(stage).length>=4,stage);
+ for(const item of grammarHandbook){
+   for(const l of ["en","tl"])assert.ok(item.title[l]&&item.rule[l]&&item.pitfall[l],item.id);
+   assert.ok(item.examples.length>=4,item.id);
+   for(const ex of item.examples){
+     assert.ok(ex.ru&&ex.en&&ex.tl,item.id);
+     assert.match(ex.ru,/[\u0400-\u052F]/u,item.id);
+   }
+ }
+});
 test("100 contextual grammar questions are complete and bilingual",()=>{
  assert.equal(grammarDrills.length,100);
  assert.equal(new Set(grammarDrills.map(x=>x.id)).size,100);
@@ -62,6 +76,8 @@ test("grammar and reading routes, feedback and progress work without internet",a
   assert.match(labHtml("academy/lab","en"),/Grammar trainer/);
   assert.match(labHtml("academy/lab","tl"),/Pagsasanay sa gramatika/);
   assert.match(labHtml("academy/grammar","en"),/Pre-A1/);
+  assert.match(labHtml("academy/handbook","en"),/Russian grammar handbook/);
+  assert.match(labHtml("academy/handbook/accusative","tl"),/Accusative|layon/i);
   assert.match(labHtml("academy/library","en"),/Reading library/);
   assert.match(labHtml("academy/writing","tl"),/Portfolio/);
   assert.match(labHtml("academy/writing/task/debate-social","en"),/social media/);
@@ -93,5 +109,5 @@ test("grammar and reading routes, feedback and progress work without internet",a
 });
 test("offline shell references every new lab module",()=>{
  const sw=readFileSync(new URL("../sw.js",import.meta.url),"utf8");
- for(const p of ["grammar-drills.js","reading-library.js","learning-labs.js","writing-tasks.js","adult-theme.css"])assert.ok(sw.includes(p),p);
+ for(const p of ["grammar-drills.js","reading-library.js","learning-labs.js","writing-tasks.js","adult-theme.css","grammar-handbook.js"])assert.ok(sw.includes(p),p);
 });
