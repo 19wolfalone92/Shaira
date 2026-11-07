@@ -37,8 +37,9 @@ test("main interface completes a lesson, switches language, and opens writing ca
   const navigator = {};
   const academyStatistics = () => ({completed:0,activities:264,knownWords:0,dueWords:0});
   const labStats = () => ({readingsPassed:0,readingsTotal:20,grammarAttempts:0});
-  const run = new Function("sections","lessons","alphabet","keyboardRows","document","window","location","navigator","localStorage","academyStatistics","labStats",source);
-  run(sections,lessons,alphabet,keyboardRows,document,window,location,navigator,localStorage,academyStatistics,labStats);
+  const stopSpeakingRehearsal = () => {};
+  const run = new Function("sections","lessons","alphabet","keyboardRows","document","window","location","navigator","localStorage","academyStatistics","labStats","stopSpeakingRehearsal",source);
+  run(sections,lessons,alphabet,keyboardRows,document,window,location,navigator,localStorage,academyStatistics,labStats,stopSpeakingRehearsal);
   const click=(action,props={})=>events.click({target:{closest:selector=>selector==="[data-action]"?{dataset:{action,...props}}:null}});
   assert.match(app.innerHTML,/Your learning path/);
   click("open-lesson",{id:"vowels"});
