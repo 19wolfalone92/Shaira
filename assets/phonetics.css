@@ -1,0 +1,43 @@
+
+/* Phonetics lab — accessible English-first adult design, responsive to iPhone. */
+.ph-back{display:inline-block;text-decoration:none;font-size:13px;font-weight:850;color:#5f4d98;margin:8px 0 16px}
+.ph-hero{padding:23px 19px;background:#f1edf9;border:1px solid #ded4eb;border-radius:17px;color:#453651}
+.ph-hero>span{font-size:10px;letter-spacing:.12em;color:#7153a4;font-weight:900}
+.ph-hero h1{font-size:clamp(26px,7vw,35px);color:#352747;margin:12px 0}
+.ph-hero>p{font-size:14px;line-height:1.7;color:#675970}
+.ph-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:17px 0}
+.ph-stats>div{background:#fff9;padding:12px 8px;border-radius:11px}
+.ph-stats strong{font-size:19px;display:block;color:#564281}
+.ph-stats small{font-size:10px;line-height:1.4;color:#706580;display:block;margin-top:7px}
+.ph-note{font-size:11px!important;line-height:1.65!important;color:#786d83!important;margin:14px 0}
+.ph-warning{color:#85502c;background:#fff4e8;border:1px solid #efd9c3;padding:13px;border-radius:10px;font-size:12px;line-height:1.6}
+.ph-stage,.ph-challenge{background:#fff;border-radius:15px;border:1px solid #e9e2ef;padding:18px 16px;margin:15px 0}
+.ph-stage h2,.ph-challenge h2{color:#402f52;font-size:17px;margin:0 0 13px}
+.ph-stage>a{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:13px 3px;text-decoration:none;border-top:1px solid #f0ebf3;color:#3e3150}
+.ph-stage>a>div{flex:1}
+.ph-stage strong{font-size:13px;line-height:1.4;display:block}
+.ph-stage small{font-size:16px;color:#5e4e73;margin-top:7px;display:block}
+.ph-stage b{font-size:12px;color:#806699}
+.ph-audio{display:flex;flex-wrap:wrap;gap:9px;margin:18px 0}
+.ph-audio button,.ph-primary{min-height:47px;padding:12px 14px;border:1px solid #604b96;color:#fff;background:#604b96;border-radius:10px;font-size:13px;font-weight:850}
+.ph-audio button+button{background:#fff;color:#604b96}
+.ph-audio button:disabled{opacity:.5}
+.ph-choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:17px 0}
+.ph-choices button{min-height:75px;border-radius:13px;border:1px solid #e3d9ec;background:#fcfaff;color:#382b50;padding:12px;font-size:21px;line-height:1.5}
+.ph-choices button:disabled{opacity:.65}
+.ph-choices button.right{color:#216844;background:#edf8ef;border-color:#b6d9bc;opacity:1}
+.ph-choices button.wrong{color:#984f2c;background:#fff0e7;border-color:#e4c3a9;opacity:1}
+.ph-feedback{padding:15px;border-radius:11px;border:1px solid #ddd1e6;font-size:13px;line-height:1.6;margin:17px 0}
+.ph-feedback.good{background:#edf8f0;border-color:#bfe0c9;color:#275f40}
+.ph-feedback.bad{background:#fff3e9;border-color:#ebccb4;color:#865033}
+.ph-feedback p{margin:9px 0}
+.ph-feedback b{font-size:18px}
+.ph-feedback .ph-primary{margin-top:10px}
+.ph-comparison{margin:19px 0;border:1px solid #e4d9ee;border-radius:12px;padding:12px}
+.ph-comparison summary{font-size:12px;font-weight:800;color:#674c92;cursor:pointer}
+.ph-comparison>div{border-top:1px solid #e9e2f1;margin-top:9px;padding:11px 1px;display:flex;align-items:center;gap:11px}
+.ph-comparison button{min-height:36px;color:#695395;background:#f6f2fc;border-radius:8px;border:1px solid #e4dcee;padding:8px}
+.ph-comparison strong{font-size:18px;color:#41324f}
+.ph-comparison span{font-size:12px;color:#776782;flex:1}
+.ph-comparison p{font-size:12px;line-height:1.6;color:#625372}
+@media(max-width:350px){.ph-hero,.ph-stage,.ph-challenge{padding:14px 11px}.ph-choices{gap:8px}.ph-choices button{font-size:18px}}
