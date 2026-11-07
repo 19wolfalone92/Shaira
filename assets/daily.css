@@ -102,3 +102,12 @@
 @media(min-width:680px){.daily-task{flex-wrap:nowrap}.daily-task-actions{min-width:175px}.daily-micro{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.daily-micro>h2{grid-column:1/-1;margin-bottom:2px}.daily-exercise{margin:0}.daily-exercise:last-child{grid-column:1/-1}}
 @media(max-width:370px){.daily-hero,.daily-status,.daily-preferences,.daily-focus,.daily-task-area,.daily-exercise,.daily-finish,.daily-history{padding:15px 12px}.daily-task-actions{flex-basis:100%;align-items:stretch;padding-left:40px}.daily-task-actions a{width:100%}.daily-hero h1{font-size:27px}.daily-goals button{font-size:12px}}
 @media(prefers-reduced-motion:reduce){.daily-total-bar i{transition:none}}
+
+.daily-skill-title{font-size:14px;margin:22px 0 11px;color:#3c3151}
+.daily-skill-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
+.daily-skill-grid>div{background:#f9f7fc;border:1px solid #e9e3ef;border-radius:11px;padding:11px 10px}
+.daily-skill-grid>div>div{display:flex;justify-content:space-between;gap:6px;align-items:center;font-size:11px;line-height:1.5}
+.daily-skill-grid strong{color:#403650}.daily-skill-grid span{color:#736585;font-weight:750;white-space:nowrap}
+.daily-skill-grid i{display:block;height:6px;background:#e8e3ef;border-radius:8px;margin-top:9px;overflow:hidden}
+.daily-skill-grid em{display:block;height:100%;background:#826ba9;border-radius:8px}
+@media(max-width:350px){.daily-skill-grid{grid-template-columns:1fr}}
