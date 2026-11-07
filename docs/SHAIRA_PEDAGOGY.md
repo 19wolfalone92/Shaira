@@ -73,7 +73,7 @@ The handwriting canvas is deliberately described as **freehand drawing, not hand
 - \`assets/academy.css\` contains new responsive layouts.
 - \`tests/academy.test.mjs\` validates content integrity, screens, local progress and route flows.
 - \`sw.js\` must include every module under a new cache version for offline correctness.
-- No external endpoints, logins or secret keys. Content is stored only in browser localStorage; users should export important drafts manually if device changes.
+- No external endpoints, logins or secret keys. Content is stored only in browser localStorage; the user may export a private JSON progress and draft backup in Settings and restore it on another device.
 
 ## Acceptance checklist for the next release
 - Try all routes in EN and Filipino and complete one exercise for each of seven unit modes, beginner theme and dialogue.
