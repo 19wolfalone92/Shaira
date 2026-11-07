@@ -32,8 +32,8 @@ function cleanAcademy(x){
   return {done,memory,drafts,points};
 }
 function cleanLabs(x){
-  const grammar=Object.create(null),readings=Object.create(null),drafts=Object.create(null);
-  if(!object(x))return {grammar,readings,drafts};
+  const grammar=Object.create(null),readings=Object.create(null),drafts=Object.create(null),draftUpdated=Object.create(null);
+  if(!object(x))return {grammar,readings,drafts,draftUpdated};
   for(const [id,r] of Object.entries(safeObj(x.grammar)).slice(0,30)){
     if(!["starter","a1","a2","b1","b2"].includes(id)||!object(r))continue;
     const items=Object.create(null);
@@ -47,13 +47,16 @@ function cleanLabs(x){
     grammar[id]={
       best:Number.isInteger(r.best)&&r.best>=0&&r.best<=10?r.best:0,
       attempts:Number.isInteger(r.attempts)&&r.attempts>=0&&r.attempts<=100000?r.attempts:0,
-      last:Number.isFinite(r.last)&&r.last>=0?r.last:0,items
+      last:Number.isFinite(r.last)&&r.last>=0?r.last:0,
+      lastScore:Number.isInteger(r.lastScore)&&r.lastScore>=0&&r.lastScore<=10?r.lastScore:0,items
     };
   }
   for(const [id,r] of Object.entries(safeObj(x.readings)).slice(0,100)){
     if(id.length>100||!object(r))continue;
     readings[id]={
       passed:r.passed===true,
+      lastPassed:r.lastPassed===true,
+      lastScore:Number.isInteger(r.lastScore)&&r.lastScore>=0&&r.lastScore<=10?r.lastScore:0,
       attempts:Number.isInteger(r.attempts)&&r.attempts>=0&&r.attempts<=100000?r.attempts:0,
       last:Number.isFinite(r.last)&&r.last>=0?r.last:0
     };
@@ -61,7 +64,10 @@ function cleanLabs(x){
   for(const [id,d] of Object.entries(safeObj(x.drafts)).slice(0,200)){
     if(id.length<=180&&typeof d==="string"&&d.length<=100000)drafts[id]=d;
   }
-  return {grammar,readings,drafts};
+  for(const [id,t] of Object.entries(safeObj(x.draftUpdated)).slice(0,200)){
+    if(id.length<=180&&Number.isFinite(t)&&t>=0&&id in drafts)draftUpdated[id]=t;
+  }
+  return {grammar,readings,drafts,draftUpdated};
 }
 function parseExisting(storage,key){
   try{return JSON.parse(storage.getItem(key)||"{}");}
