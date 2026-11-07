@@ -4,6 +4,7 @@ import { downloadBackup, restoreBackup } from "./backup.js";
 import {todayHtml,todayPreview,todayAction,todaySubmit,todayInput} from "./daily-ui.js";
 import {labHtml,labAction,labInput,labStats} from "./learning-labs.js";
 import {masteryHtml,masteryAction,masterySubmit} from "./mastery-ui.js";
+import {caseHtml,caseAction,caseSubmit} from "./case-trainer.js";
 
 const STORAGE_KEY = "shaira-progress-v1";
 const dictionary = {
@@ -239,7 +240,7 @@ function render() {
   if (drawingCleanup) { drawingCleanup(); drawingCleanup = null; }
   const route = currentRoute();
   if(!route.startsWith("academy/lesson/") || !route.endsWith("/speak"))stopSpeakingRehearsal();
-  const page = route==="academy/mastery"||route.startsWith("academy/mastery/")||route.startsWith("academy/checkpoint/") ? masteryHtml(route,state.language) : route === "today" ? todayHtml(state.language) : route === "home" ? home() : route === "academy/lab" || route.startsWith("academy/grammar") || route.startsWith("academy/library") || route.startsWith("academy/writing") || route.startsWith("academy/handbook") ? labHtml(route,state.language) : route.startsWith("academy") ? academyHtml(route,state.language) : route === "review" ? reviewPage() : route === "write" ? writePage() :
+  const page = route==="academy/cases"||route.startsWith("academy/cases/") ? caseHtml(route,state.language) : route==="academy/mastery"||route.startsWith("academy/mastery/")||route.startsWith("academy/checkpoint/") ? masteryHtml(route,state.language) : route === "today" ? todayHtml(state.language) : route === "home" ? home() : route === "academy/lab" || route.startsWith("academy/grammar") || route.startsWith("academy/library") || route.startsWith("academy/writing") || route.startsWith("academy/handbook") ? labHtml(route,state.language) : route.startsWith("academy") ? academyHtml(route,state.language) : route === "review" ? reviewPage() : route === "write" ? writePage() :
     route === "settings" ? settingsPage() : lessonPage(route.slice(7));
   document.documentElement.lang = state.language === "tl" ? "fil" : "en";
   document.title = "Shaira · Learn Russian";
@@ -283,6 +284,8 @@ function initializeCanvas() {
   drawingCleanup = () => {canvas.removeEventListener("pointerdown",down);canvas.removeEventListener("pointermove",move);canvas.removeEventListener("pointerup",up);canvas.removeEventListener("pointercancel",up);};
 }
 document.addEventListener("click", event => {
+  const caseButton=event.target.closest("[data-case]");
+  if(caseButton){caseAction(caseButton,{language:()=>state.language,route:currentRoute,render,speak,navigate,notice:showToast});return;}
   const masteryButton=event.target.closest("[data-mastery]");
   if(masteryButton){masteryAction(masteryButton,{language:()=>state.language,route:currentRoute,render,speak,navigate,notice:showToast});return;}
   const todayButton=event.target.closest("[data-daily]");
@@ -327,6 +330,7 @@ document.addEventListener("click", event => {
 });
 document.addEventListener("input", event => {if(todayInput(event))return;labInput(event,{language:()=>state.language});});
 document.addEventListener("submit", event => {
+  if(caseSubmit(event,{language:()=>state.language,route:currentRoute,render,speak,navigate,notice:showToast}))return;
   if(masterySubmit(event,{language:()=>state.language,route:currentRoute,render,speak,navigate,notice:showToast}))return;
   if(todaySubmit(event,{language:()=>state.language,route:currentRoute,render,speak,navigate,notice:showToast}))return;
   if(handleAcademySubmit(event,{language:()=>state.language,route:currentRoute,render,speak}))return;
