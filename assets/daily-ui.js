@@ -8,7 +8,7 @@ import {goals} from "./daily-content.js";
 const TXT={
  en:{
   eyebrow:"YOUR PERSONAL RUSSIAN TEACHER",today:"Today's Russian lesson",intro:"Every study day combines real practice in words, grammar, reading, speaking and writing. Continue at your own pace.",
-  progress:"Guided study route",day:"Study day",of:"of",stage:"Current learning stage",goal:"Preferred study time",goalNote:"Choose a comfortable target. You can split the lesson across several sessions; no streaks or punishments.",
+  progress:"Guided study route",day:"Study day",of:"of",stage:"Topic level (not tested)",goal:"Preferred study time",goalNote:"Choose a comfortable target. You can split the lesson across several sessions; no streaks or punishments.",
   minutes:"min",teacher:"Teacher's objective",note:"Teaching tip",yourPath:"Your practice for this day",
   mission:"Open practice",done:"Completed",notDone:"Still to practise",status:"Progress",lesson:"Lesson",
   practice:"Three daily mini-exercises",first:"1. Understand a rule",second:"2. Spell in Russian",third:"3. Speak aloud",
@@ -38,7 +38,7 @@ const TXT={
  },
  tl:{
   eyebrow:"PERSONAL NA GURO SA RUSO",today:"Aralin sa Ruso ngayong araw",intro:"May tunay na pagsasanay sa salita, gramatika, pagbasa, pagsasalita at pagsusulat bawat araw. Sa sarili mong bilis.",
-  progress:"Landas ng pag-aaral",day:"Araw ng pag-aaral",of:"sa",stage:"Kasalukuyang antas",goal:"Gustong haba ng pag-aaral",goalNote:"Pumili ng komportableng oras. Puwedeng hati-hatiin ang aralin; walang parusa o streak.",
+  progress:"Landas ng pag-aaral",day:"Araw ng pag-aaral",of:"sa",stage:"Antas ng paksa (hindi nasusukat)",goal:"Gustong haba ng pag-aaral",goalNote:"Pumili ng komportableng oras. Puwedeng hati-hatiin ang aralin; walang parusa o streak.",
   minutes:"min",teacher:"Layunin ng guro",note:"Payo ng guro",yourPath:"Pagsasanay para sa araw na ito",
   mission:"Buksan ang pagsasanay",done:"Natapos",notDone:"Kailangan pang sanayin",status:"Pag-usad",lesson:"Aralin",
   practice:"Tatlong munting pagsasanay araw-araw",first:"1. Unawain ang tuntunin",second:"2. Sumulat sa Ruso",third:"3. Magsalita nang malakas",
