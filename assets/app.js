@@ -124,22 +124,39 @@ function navBar(route) {
     `<a href="#${id}" class="nav-item ${active === id ? "active" : ""}" ${active === id ? 'aria-current="page"' : ""}><span aria-hidden="true">${icon(id)}</span><small>${phrase(id)}</small></a>`).join("")}</nav>`;
 }
 function header() {
-  return `<header class="topbar"><div class="brand-mark" aria-hidden="true">Ш</div><div><div class="brand">shaira<span class="brand-dot">.</span></div><div class="brand-caption">${phrase("tagline")}</div></div><span class="top-counter" aria-label="${state.completed.length} ${phrase("completed")}">${state.completed.length}/${lessons.length} ✓</span></header>`;
+  return `<header class="topbar"><div class="brand-mark" aria-hidden="true">Ш</div><div><div class="brand">shaira<span class="brand-dot">.</span></div><div class="brand-caption">${phrase("tagline")}</div></div><a class="top-counter" href="#academy" aria-label="${phrase("progress")}">${academyStatistics().completed} ✓</a></header>`;
 }
 function home() {
-  return `<section class="hero"><div class="hero-copy"><span class="pill">🇷🇺 ${phrase("learn")}</span><h1>${phrase("hello")}</h1><p>${phrase("welcomeDesc")}</p></div><div class="hero-flower" aria-hidden="true">Ж</div></section>
-  <section class="progress-card" aria-label="${phrase("progress")}"><div class="progress-top"><strong>${phrase("keep")}</strong><span>${progressPercent()}%</span></div><div class="progress-track"><div class="progress-fill" style="width:${progressPercent()}%"></div></div><small>${state.completed.length} ${phrase("progressSuffix")} ${lessons.length} ${phrase("completed")}</small></section>
-  <a href="#academy" class="academy-shortcut"><span class="academy-shortcut-icon">🎓</span><span><strong>${state.language==="tl"?"Rusong mula zero hanggang B2":"Russian from zero to B2"}</strong><small>${state.language==="tl"?"Alpabeto • Pagbasa • Pakikinig • Gramatika • Pagsulat":"Alphabet • Reading • Listening • Grammar • Writing"}</small></span><span aria-hidden="true">›</span></a>
-  <h2 class="section-heading">${phrase("group")}</h2>
-  ${sections.map(section => {
-    const items = lessons.filter(l => l.section === section.id);
-    return `<section class="course-section" aria-labelledby="group-${section.id}">
-      <div class="course-heading"><div class="course-icon">${section.icon}</div><div><h3 id="group-${section.id}">${escapeHtml(loc(section.title))}</h3><p>${escapeHtml(loc(section.subtitle))}</p></div><span class="count">${items.filter(l => state.completed.includes(l.id)).length}/${items.length}</span></div>
-      <div class="lesson-list">${items.map((lesson,i)=>`<button class="lesson-row" data-action="open-lesson" data-id="${lesson.id}">
-        <span class="lesson-number ${state.completed.includes(lesson.id)?"finished":""}">${state.completed.includes(lesson.id)?"✓":i+1}</span>
-        <span class="lesson-info"><strong>${escapeHtml(loc(lesson.title))}</strong><small>${state.completed.includes(lesson.id)?phrase("done"):escapeHtml(loc(lesson.goal))}</small></span>
-        <span class="arrow" aria-hidden="true">›</span></button>`).join("")}</div></section>`;
-  }).join("")}`;
+  const a=academyStatistics(),labs=labStats();
+  const first=lessons.find(l=>!state.completed.includes(l.id));
+  const l=state.language, fil=l==="tl";
+  const headline=fil?"Kumusta, Shaira. Simulan natin ang Ruso.":"Shaira, Russian starts here.";
+  const detail=fil?"Isang kumpletong landas sa pagbabasa, pagsulat at pakikipag-usap. Magsimula sa alpabeto at umusad sa sariling bilis.":
+    "Learn to read, write and communicate in Russian. Start with Cyrillic and build your skills at your own pace.";
+  const summaryTitle=fil?"Iyong pag-unlad":"Your learning path";
+  const sectionsText=fil?["Alpabeto at unang pantig","Mga pangunahing salita","Gramatika at pagbasa","Pagsulat ng sariling teksto"]:
+    ["Alphabet and first syllables","Essential vocabulary","Grammar and reading","Independent writing"];
+  const routeCards=[
+    {href:first?"#lesson/"+first.id:"#academy/first-words",icon:"Аа",heading:sectionsText[0],sub:fil?"33 titik • tunog at baybay":"33 letters • sounds and spelling"},
+    {href:"#academy/first-words",icon:"01",heading:sectionsText[1],sub:fil?"120 salita • maiikling paksa":"120 words • practical topics"},
+    {href:"#academy/lab",icon:"✳",heading:sectionsText[2],sub:fil?"100 tanong • 20 mahabang teksto":"100 questions • 20 graded texts"},
+    {href:"#academy/library",icon:"✎",heading:sectionsText[3],sub:fil?"Sulat • mga draft • rebisyon":"Writing • drafts • revision"}
+  ];
+  return '<section class="adult-welcome"><div class="adult-welcome-copy"><span class="adult-eyebrow">SHAIRA · LEARN RUSSIAN</span><h1>'+headline+'</h1><p>'+detail+'</p>'+
+     '<a class="adult-cta" href="'+routeCards[0].href+'">'+(fil?"Simulan ang unang aralin":"Start the first lesson")+' →</a></div><div class="adult-russian" aria-hidden="true">Я</div></section>'+
+   '<section class="adult-progress"><h2>'+summaryTitle+'</h2><div class="adult-progress-row"><span><strong>'+state.completed.length+'</strong><small>/'+lessons.length+' '+(fil?"panimulang aralin":"foundation lessons")+'</small></span>'+
+   '<span><strong>'+a.completed+'</strong><small>/'+a.activities+' '+(fil?"pagsasanay":"course activities")+'</small></span>'+
+   '<span><strong>'+labs.readingsPassed+'</strong><small>/'+labs.readingsTotal+' '+(fil?"teksto":"reading texts")+'</small></span></div>'+
+   '<p class="adult-muted">'+(fil?"Layunin ang aktuwal na kasanayan, hindi lamang ang bilang ng natapos.":"The goal is real competence, not a completion counter.")+'</p></section>'+
+   '<h2 class="adult-heading">'+(fil?"Pumili ng pagsasanay":"Choose your next step")+'</h2><div class="adult-route-grid">'+
+   routeCards.map(x=>'<a href="'+x.href+'"><span>'+x.icon+'</span><div><strong>'+x.heading+'</strong><small>'+x.sub+'</small></div><b>›</b></a>').join("")+'</div>'+
+   '<a class="adult-course-link" href="#academy"><span>↗</span><div><strong>'+(fil?"Buksan ang buong kurso: Pre-A1 hanggang B2":"Explore the full course: Pre-A1 through B2")+'</strong>'+
+    '<small>'+(fil?"Iisang landas ng pag-aaral na may mga paksa at gawain":"A structured learning route with topics and practice")+'</small></div></a>'+
+   '<details class="adult-foundations" '+(state.completed.length===0?'open':'')+'><summary><strong>'+(fil?"Unang mga aralin: alpabeto, pagbasa, parirala":"Foundation lessons: alphabet, reading, phrases")+'</strong><span>'+state.completed.length+'/'+lessons.length+'</span></summary>'+
+    sections.map(section=>'<section class="course-section"><div class="course-heading"><div class="course-icon">'+section.icon+'</div><div><h3>'+escapeHtml(loc(section.title))+'</h3><p>'+escapeHtml(loc(section.subtitle))+'</p></div></div>'+
+    '<div class="lesson-list">'+lessons.filter(lesson=>lesson.section===section.id).map(lesson=>
+     '<button class="lesson-row" type="button" data-action="open-lesson" data-id="'+lesson.id+'"><span class="lesson-number '+(state.completed.includes(lesson.id)?"finished":"")+'">'+(state.completed.includes(lesson.id)?"✓":"→")+'</span>'+
+     '<span class="lesson-info"><strong>'+escapeHtml(loc(lesson.title))+'</strong><small>'+escapeHtml(loc(lesson.goal))+'</small></span><span class="arrow">›</span></button>').join("")+'</div></section>').join("")+'</details>';
 }
 function quizMarkup(lesson) {
   const quiz = lesson.quiz;
