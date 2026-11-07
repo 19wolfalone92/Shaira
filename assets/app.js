@@ -1,9 +1,10 @@
 import { sections, lessons, alphabet, keyboardRows } from "./lessons.js";
+import { academyHtml, handleAcademyAction, handleAcademySubmit } from "./academy-ui.js";
 
 const STORAGE_KEY = "shaira-progress-v1";
 const dictionary = {
   en: {
-    tagline:"Russian, from the very first letter", home:"Learn", review:"Review", write:"Write", settings:"Settings",
+    tagline:"Russian, from the very first letter", home:"Learn", academy:"School", review:"Review", write:"Write", settings:"Settings",
     hello:"Hi, Shaira! 🌷", start:"A little Russian every day.", completed:"lessons completed",
     keep:"Your learning path", group:"Explore lessons", done:"Completed", begin:"Start lesson", continue:"Open lesson",
     back:"Back to lessons", goal:"Today's idea", card:"Study card", next:"Next card", check:"Check what you learned",
@@ -27,7 +28,7 @@ const dictionary = {
     footer:"Made for learning, not for collecting data.", about:"Shaira • Russian from zero"
   },
   tl: {
-    tagline:"Ruso, mula sa unang titik", home:"Aralin", review:"Balikan", write:"Sumulat", settings:"Mga setting",
+    tagline:"Ruso, mula sa unang titik", home:"Aralin", academy:"Akademya", review:"Balikan", write:"Sumulat", settings:"Mga setting",
     hello:"Kumusta, Shaira! 🌷", start:"Kaunting Ruso bawat araw.", completed:"araling natapos",
     keep:"Iyong landas sa pag-aaral", group:"Pumili ng aralin", done:"Tapos na", begin:"Simulan", continue:"Buksan",
     back:"Bumalik sa mga aralin", goal:"Ideya ngayong araw", card:"Kard ng aralin", next:"Susunod na kard",
@@ -95,7 +96,7 @@ function navigate(route) {
 function currentRoute() {
   const hash = decodeURIComponent(location.hash.slice(1));
   if (hash.startsWith("lesson/") && lessons.some(l => l.id === hash.slice(7))) return hash;
-  return ["home","review","write","settings"].includes(hash) ? hash : "home";
+  return hash === "academy" || hash.startsWith("academy/") ? hash : ["home","review","write","settings"].includes(hash) ? hash : "home";
 }
 function speak(text) {
   if (!("speechSynthesis" in window)) { showToast(phrase("audioUnavailable")); return; }
@@ -109,11 +110,11 @@ function speak(text) {
   window.speechSynthesis.speak(utterance);
 }
 function icon(id) {
-  return {home:"⌂",review:"✦",write:"✎",settings:"⚙"}[id];
+  return {home:"⌂",academy:"🎓",review:"✦",write:"✎",settings:"⚙"}[id];
 }
 function navBar(route) {
-  const active = route.split("/")[0] === "lesson" ? "home" : route;
-  return `<nav class="bottom-nav" aria-label="Main navigation">${["home","review","write","settings"].map(id =>
+  const active = route.startsWith("academy") ? "academy" : route.split("/")[0] === "lesson" ? "home" : route;
+  return `<nav class="bottom-nav" aria-label="Main navigation">${["home","academy","review","write","settings"].map(id =>
     `<a href="#${id}" class="nav-item ${active === id ? "active" : ""}" ${active === id ? 'aria-current="page"' : ""}><span aria-hidden="true">${icon(id)}</span><small>${phrase(id)}</small></a>`).join("")}</nav>`;
 }
 function header() {
@@ -122,6 +123,7 @@ function header() {
 function home() {
   return `<section class="hero"><div class="hero-copy"><span class="pill">🇷🇺 ${phrase("learn")}</span><h1>${phrase("hello")}</h1><p>${phrase("welcomeDesc")}</p></div><div class="hero-flower" aria-hidden="true">Ж</div></section>
   <section class="progress-card" aria-label="${phrase("progress")}"><div class="progress-top"><strong>${phrase("keep")}</strong><span>${progressPercent()}%</span></div><div class="progress-track"><div class="progress-fill" style="width:${progressPercent()}%"></div></div><small>${state.completed.length} ${phrase("progressSuffix")} ${lessons.length} ${phrase("completed")}</small></section>
+  <a href="#academy" class="academy-shortcut"><span class="academy-shortcut-icon">🎓</span><span><strong>${state.language==="tl"?"Rusong mula zero hanggang B2":"Russian from zero to B2"}</strong><small>${state.language==="tl"?"Alpabeto • Pagbasa • Pakikinig • Gramatika • Pagsulat":"Alphabet • Reading • Listening • Grammar • Writing"}</small></span><span aria-hidden="true">›</span></a>
   <h2 class="section-heading">${phrase("group")}</h2>
   ${sections.map(section => {
     const items = lessons.filter(l => l.section === section.id);
@@ -188,7 +190,7 @@ function settingsPage() {
 function render() {
   if (drawingCleanup) { drawingCleanup(); drawingCleanup = null; }
   const route = currentRoute();
-  const page = route === "home" ? home() : route === "review" ? reviewPage() : route === "write" ? writePage() :
+  const page = route === "home" ? home() : route.startsWith("academy") ? academyHtml(route,state.language) : route === "review" ? reviewPage() : route === "write" ? writePage() :
     route === "settings" ? settingsPage() : lessonPage(route.slice(7));
   document.documentElement.lang = state.language === "tl" ? "fil" : "en";
   document.title = "Shaira · Learn Russian";
@@ -232,6 +234,8 @@ function initializeCanvas() {
   drawingCleanup = () => {canvas.removeEventListener("pointerdown",down);canvas.removeEventListener("pointermove",move);canvas.removeEventListener("pointerup",up);canvas.removeEventListener("pointercancel",up);};
 }
 document.addEventListener("click", event => {
+  const academyButton=event.target.closest("[data-aca]");
+  if(academyButton){handleAcademyAction(academyButton,{language:()=>state.language,route:currentRoute,render,speak});return;}
   const button=event.target.closest("[data-action]");
   if (!button) return;
   const action=button.dataset.action;
@@ -263,6 +267,7 @@ document.addEventListener("click", event => {
   }
 });
 document.addEventListener("submit", event => {
+  if(handleAcademySubmit(event,{language:()=>state.language,route:currentRoute,render,speak}))return;
   if (event.target.id !== "answer-form") return;
   event.preventDefault();
   const value=document.getElementById("answer-input")?.value;
