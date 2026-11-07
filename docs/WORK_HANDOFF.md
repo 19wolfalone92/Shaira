@@ -96,3 +96,18 @@ This repository is now **far more substantial** than the initial 13 beginner les
 - Added `assets/adult-theme.css`; all modules are cached offline. `assets/backup.js` now backs up lab sessions and drafts as well as Academy progress.
 - Main limitations remain **genuine B2 proof**, native-speaker audio, speaking assessment, qualified corrections for free writing, exhaustive grammatical coverage and enough unique lexemes.
 - Before calling this a complete course: expand contextual task variety substantially, human-review bilingual translations, verify all modules on a real iPhone Safari and independently benchmark four core skills.
+
+
+---
+
+## November 7, 2026 — Daily Teacher functional build
+
+The user explicitly prioritised genuine daily learning across ALL skills, analogous to the teaching pathway in the English_Child app but designed for adult Shaira. Implemented:
+- New first-screen \`#today\`, 210 planned guided study sessions with 14 original beginner days and real task evidence. \`assets/daily-content.js\`, \`assets/daily-plan.js\`, \`assets/daily-ui.js\`, \`assets/daily.css\`.
+- Tasks span alphabet, vocabulary, grammar, reading, listening, speaking, typed Russian, and longer writing. Grammar and spelling mini-exercises cannot be checked merely by marking a task done; they need correct inputs.
+- Independent grammar scores require >=8/10 from the newest session; reading requires a fresh fully correct comprehension attempt; writing requires a recent saved Cyrillic draft and length target. Optional handbook/speech practice is plainly labelled self-attested, not graded.
+- Randomised answer locations in all new grammar/reading/dialogue tests and harder spaced review (four distinct choices even with one due word).
+- Six factual skill-coverage counters, personal session length preferences, local learner history and recent error feedback, offline cache and backup of daily progress.
+- Tests: \`tests/daily-path.test.mjs\` covers 210 session content references, progression, assessment evidence, spelling, audio fallback, bilingual UI, saving and privacy.
+
+**Do not** claim 210 sessions attain CEFR B2 or that the app already contains enough independently assessable material to replace every Russian textbook. Student wants that end goal, but it remains a measurable roadmap rather than a completed linguistic validation. Continue by expanding authentic audio, lexical depth, multiple worked examples for all grammar cases, more diverse unseen exercises, substantial writing and oral correction, and real iPhone QA. Build on the shipped daily route rather than replacing it with another static list.
