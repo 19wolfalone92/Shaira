@@ -149,3 +149,11 @@ The user explicitly prioritised genuine daily learning across ALL skills, analog
 ## November 7, 2026 — comprehensive v0.7 addition
 
 Added 30 curated phonetic contrasts / 60 audio targets (real audio-first grading where browser TTS exists), a weekly sound activity across all 210 guided sessions, an English offline Writing Coach with 29 narrowly scoped grammar patterns and structural hints in both writing studios, and an explicit seven-skill Personal Study Coach based on actual local learning records. Added 800+ entry English/Russian search across all course libraries and new deep links in home, Academy and Practice Centre. Updated offline cache and sanitized backup for phonetics progress. This is not native-speaker audio or automatic free-text grading. See docs/V07_COMPLETE_SKILLS.md.
+
+## November 7, 2026 — v0.8 true-zero staircase
+
+Shaira must NOT be shown a complex 10-vowel + six-word + grammar Day 1 when she has absolutely no Russian. New learners now see 78 micro-rungs on `#today`; the first six are А, М, О, ма, мама, quick review. Teach all 33 letters individually and interleave 11 short syllables, 11 short words, 11 reviews, then 12 essential phrases. English instructions, optional synthetic voice and finger tracing (not automatically graded). Each rung takes ~2–5 minutes and uses only previously seen letters in required reading.
+
+Difficulty picker: Gentle 2 recognition questions (default), Steady 3 with one written answer, Challenge 4 with two written answers. Optional, explicitly chosen 6/6 unseen check verifies the next three rungs; no silent bypass and no punitive failure. Selected mode and verified progress persist in `shaira-microsteps-v1` and are sanitized in the unchanged version-1 portable backup.
+
+Backward compatibility: learners already active in the original 210-day route, grammar, Academy or writing retain prior progress and are not forced into a new onboarding. Once 78 foundational rungs are complete, the existing 210-session program begins. New files: assets/first-steps-{data,engine,ui}.js, first-steps.css; tests/first-steps.test.mjs. See docs/TRUE_BEGINNER_STAIRCASE.md.
