@@ -7,6 +7,8 @@ const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&
 const shuffle=list=>{const v=list.slice();for(let i=v.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[v[i],v[j]]=[v[j],v[i]];}return v;};
 const hasAudio=()=>typeof window!=="undefined"&&"speechSynthesis" in window&&typeof SpeechSynthesisUtterance!=="undefined";
 export const isFirstStepsStart=needsMicroStart;
+export const microCelebrationPending=()=>readMicro().index===MICRO_TOTAL&&
+  (!!active?.complete||active?.test?.result?.ok===true);
 let active=null;
 function makeSession(state){
  active={index:state.index,mode:state.mode,phase:"study",answers:[],question:0,feedback:null,typed:"",
