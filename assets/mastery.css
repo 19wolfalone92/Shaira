@@ -1,0 +1,72 @@
+/* Progressive adult Russian study: readable and keyboard/VoiceOver accessible. */
+.ms-heading{padding:15px 2px 20px}
+.ms-heading>span{display:block;font-weight:850;color:#6c5493;font-size:11px;letter-spacing:.13em}
+.ms-heading h1{color:#302746;font-size:clamp(26px,6.8vw,36px);line-height:1.17;margin:12px 0}
+.ms-heading p{font-size:14px;line-height:1.75;color:#625a74;max-width:650px}
+.ms-link{display:inline-block;margin:8px 0;color:#6950a8;text-decoration:none;font-size:13px;font-weight:850}
+.ms-message{padding:12px 14px;background:#f3f0f9;border-left:3px solid #8c75b2;border-radius:9px}
+.ms-overview-score{font-size:13px;color:#51427c;font-weight:850;background:#eae5f2;padding:12px 14px;border-radius:12px;margin-top:19px}
+.ms-stage{background:#fff;border:1px solid #e5deeb;border-radius:17px;margin:15px 0;padding:17px}
+.ms-stage-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:14px}
+.ms-stage-top>div{min-width:0;flex:1}
+.ms-stage-top>div>span{display:block;font-size:19px;font-weight:900;color:#433655}
+.ms-stage-top>div strong{display:block;font-size:14px;margin:6px 0 4px;color:#594f6b}
+.ms-stage-top>div small{color:#6e6582;font-size:11px;display:block;line-height:1.4}
+.ms-checklink{font-size:12px;color:#56458a;background:#eeeaf7;text-decoration:none;border-radius:10px;max-width:155px;padding:11px 10px;min-height:40px;box-sizing:border-box;line-height:1.4;text-align:center;font-weight:750}
+.ms-chapters{display:grid;gap:3px}
+.ms-chapters>a{display:flex;align-items:center;gap:12px;padding:12px 3px;border-top:1px solid #f0edf4;text-decoration:none;color:#302c42;min-width:0}
+.ms-chapter-index{display:grid;place-items:center;min-width:35px;height:35px;border-radius:9px;color:#715e93;background:#f5f2fa;font-size:12px;font-weight:850}
+.ms-chapters>a>div{flex:1;min-width:0}
+.ms-chapters strong{font-size:14px;line-height:1.5;display:block}
+.ms-chapters small{font-size:11px;color:#786e84;line-height:1.4;display:block;margin:5px 0}
+.ms-chapters>a b{color:#6b519f;font-size:18px}
+.ms-disclaimer{color:#797082;font-size:11px;line-height:1.65;margin:17px 0 28px}
+.ms-info,.ms-quiz,.ms-result{background:white;padding:19px 17px;border:1px solid #e7e0ed;border-radius:16px;margin:14px 0}
+.ms-info h2{font-size:19px;margin:0 0 18px;color:#3e3356}
+.ms-examples{display:grid;gap:10px}
+.ms-examples>div{border:1px solid #e9e2ef;border-radius:12px;padding:13px;background:#fcfaff}
+.ms-examples>div button{border:1px solid #e4d7ef;border-radius:9px;background:#f0ebfa;color:#58458e;font-size:13px;padding:9px 12px;min-height:40px}
+.ms-examples strong{display:block;color:#292340;font-size:clamp(18px,4.7vw,21px);line-height:1.7;margin:10px 0 4px;overflow-wrap:anywhere}
+.ms-examples p{font-size:13px;color:#655a73;line-height:1.55;margin:0}
+.ms-warning{background:#fff9ee;border-left:3px solid #b89158;border-radius:11px;color:#765631;padding:14px;font-size:12px;line-height:1.7;margin:14px 0}
+.ms-warning p{margin:7px 0 0}
+.ms-quiz-top{display:flex;align-items:center;justify-content:space-between;gap:12px;color:#73618f;font-size:12px;font-weight:850}
+.ms-quiz h2{font-size:clamp(17px,4.6vw,21px);line-height:1.55;margin:17px 0;color:#332945}
+.ms-meter{height:7px;background:#ede6f4;border-radius:12px;margin:13px 0;overflow:hidden}
+.ms-meter i{display:block;height:100%;background:#775cac;border-radius:12px}
+.ms-options{display:grid;gap:9px}
+.ms-options button{padding:13px;text-align:left;border:1px solid #e2d9eb;border-radius:11px;min-height:47px;background:#fcfaff;color:#332b44;font-size:15px;font-weight:650;line-height:1.55;overflow-wrap:anywhere}
+.ms-options button:disabled{opacity:1}
+.ms-options button.ms-good{background:#e8f5e9;border-color:#aad6b0;color:#28633c}
+.ms-options button.ms-bad{background:#fff1e9;border-color:#e2bca6;color:#9d5330}
+#ms-answer-form label{font-size:13px;color:#5b4c72;font-weight:850;display:block;margin-bottom:10px}
+#ms-answer{box-sizing:border-box;width:100%;padding:14px;font:inherit;font-size:17px;line-height:1.55;color:#302747;border:1px solid #d3c9e4;border-radius:12px;min-height:52px;margin-bottom:10px}
+.ms-muted{font-size:11px;line-height:1.65;color:#777082;margin:8px 0 12px}
+.ms-primary{display:inline-block;text-align:center;padding:12px 19px;background:#594797;color:white;border:1px solid #594797;border-radius:11px;font-size:13px;font-weight:850;min-height:45px}
+.ms-feedback{border-radius:12px;padding:14px;margin:18px 0 0;font-size:13px;line-height:1.65}
+.ms-feedback-good{background:#eff8ee;border:1px solid #c9e1c8;color:#325f42}
+.ms-feedback-bad{background:#fff5ea;border:1px solid #ebd5bb;color:#7c5732}
+.ms-feedback p{margin:7px 0}.ms-feedback strong{font-size:14px}
+.ms-passage{font-size:17px;line-height:2;color:#35304a;white-space:pre-wrap}
+.ms-listen{font-size:13px;min-height:43px;border:1px solid #d5c7e5;color:#5a4b8b;background:#f4f0fb;border-radius:11px;padding:9px 13px}
+.ms-result{text-align:center;padding:25px 16px}
+.ms-result>span{font-size:50px;font-weight:850;color:#7158a4}
+.ms-result h2{font-size:24px;margin:8px 0}
+.ms-result h3{font-size:17px;color:#423355;margin:9px 0}
+.ms-result>p{color:#675d76;font-size:13px;line-height:1.7}
+.ms-result .ms-primary{margin:18px 6px 10px}
+.ms-corrections{margin:19px 0;text-align:left}
+.ms-corrections details{border:1px solid #e9e2ef;border-radius:11px;padding:11px;margin:9px 0;color:#4b405d}
+.ms-corrections summary{cursor:pointer;font-size:13px;line-height:1.55;font-weight:750}
+.ms-corrections summary span{font-weight:900;margin-right:6px;color:#7858a0}
+.ms-corrections p{font-size:12px;line-height:1.6;color:#6c617a}
+.ms-corrections p strong{color:#3e3159}
+.ms-out-link{display:inline-block;text-decoration:none;color:#6d53a8;font-size:12px;margin:12px 10px;font-weight:850;line-height:1.6}
+@media(min-width:620px){.ms-examples{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:365px){.ms-info,.ms-quiz,.ms-result,.ms-stage{padding:14px 11px}.ms-stage-top{flex-wrap:wrap}.ms-checklink{max-width:none}.ms-options button{padding:12px 9px}}
+
+.ms-keyboard{border:1px solid #e4dbea;border-radius:10px;padding:10px;margin:13px 0}
+.ms-keyboard summary{font-size:12px;font-weight:800;color:#655391;cursor:pointer;margin-bottom:9px}
+.ms-keyboard>div{display:flex;justify-content:center;gap:3px;margin:4px 0}
+.ms-keyboard button{flex:1;min-width:0;min-height:36px;font-size:15px;color:#514369;background:white;border:1px solid #e2d9ef;border-radius:6px;padding:7px 0}
+.ms-keyboard button.ms-key-space{flex:5}

@@ -111,3 +111,12 @@ Each study session binds a genuine app lesson activity to an explanation-led Rus
 An adult learner can choose a comfortable study-time target (20/40/60 minutes), pause without penalties, and review a six-skill learning passport that distinguishes scored grammar/reading from self-reported speaking and ungraded writing. A local JSON backup includes the current daily lesson, finished sessions, and mistakes for feedback.
 
 **Important:** Full independent B2 requires thousands of varied words and contexts, native-speaker audio/listening comprehension, independent oral assessment, teacher-standard writing correction, and external four-skill tests. The current system is a substantive practical daily foundation, not proof of having learned everything.
+
+
+## Added subject-based progression and inflection practice
+
+Every one of the 32 thematic units now has a separate detailed adult study card containing a clear English/Filipino rule, a common error, three Russian worked examples, two new explained multiple-choice questions and a short productive Cyrillic reconstruction. The guided route introduces them progressively, rather than relying on unlabeled repetition.
+
+At the end of each 42-session teaching stage, a separate ten-item review uses a new levelled text and asks the learner to produce Russian writing as well as answer grammar and comprehension questions. Passing a short review requires >=8/10, >=1 correct typed answer, >=1 correct reading answer and current-session timing. The result is evidence of practice, **not** an external assessment of all five TORFL skills.
+
+There is now also a dedicated Russian noun **declension trainer** with 24 noun paradigms covering 6 cases × 2 numbers = 288 explicitly enumerated forms. It teaches nominative, genitive, dative, accusative, instrumental and prepositional alongside gender, animacy and irregular plural patterns. Ten novel form prompts are chosen adaptively; answered forms and scores are saved locally, including portable backup. At selected A1/A2 days an 8/10 fresh case session is mandatory.

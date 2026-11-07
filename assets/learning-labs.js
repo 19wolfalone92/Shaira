@@ -69,7 +69,8 @@ function overview(l){
   '<div class="lp-advice">'+esc(TXT[l].introAdvice)+'</div>'+
   '<div class="lp-paths"><a href="#academy/grammar"><span>✳</span><div><strong>'+TXT[l].grammar+'</strong><p>'+TXT[l].grammarDesc+'</p></div><b>›</b></a>'+
   '<a href="#academy/library"><span>▤</span><div><strong>'+TXT[l].reading+'</strong><p>'+TXT[l].readingDesc+'</p></div><b>›</b></a>'+
-  '<a href="#academy/writing"><span>✎</span><div><strong>'+b("Writing portfolio","Portfolio ng pagsusulat",l)+'</strong><p>'+b("30 guided adult writing tasks, from simple notes to balanced essays.","30 gawain sa pagsusulat: mula mensahe hanggang sanaysay.",l)+'</p></div><b>›</b></a>'+  '<a href="#academy/handbook"><span>А</span><div><strong>'+b("Grammar handbook","Manwal sa gramatika",l)+'</strong><p>'+b("30 illustrated grammar explanations, from Cyrillic to B2 prose.","30 paliwanag sa gramatika, mula Cyrillic hanggang B2.",l)+'</p></div><b>›</b></a></div>'+
+  '<a href="#academy/writing"><span>✎</span><div><strong>'+b("Writing portfolio","Portfolio ng pagsusulat",l)+'</strong><p>'+b("30 guided adult writing tasks, from simple notes to balanced essays.","30 gawain sa pagsusulat: mula mensahe hanggang sanaysay.",l)+'</p></div><b>›</b></a>'+  '<a href="#academy/cases"><span>Аа</span><div><strong>'+b("Russian case trainer","Pagsasanay sa mga kaso",l)+'</strong><p>'+b("288 singular/plural noun forms and independent endings practice.","288 anyo ng pangngalan at pagsasanay sa hulihan.",l)+'</p></div><b>›</b></a>'+
+  '<a href="#academy/handbook"><span>А</span><div><strong>'+b("Grammar handbook","Manwal sa gramatika",l)+'</strong><p>'+b("30 illustrated grammar explanations, from Cyrillic to B2 prose.","30 paliwanag sa gramatika, mula Cyrillic hanggang B2.",l)+'</p></div><b>›</b></a></div>'+
   '<small class="lp-muted">'+TXT[l].examples+'</small>';
 }
 function grammarMenu(l){
