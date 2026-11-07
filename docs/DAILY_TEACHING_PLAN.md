@@ -121,3 +121,9 @@ A separate Verb Lab documents 240 manually enumerated verb forms in English-guid
 ## v0.7 phonetics in every stage
 
 The listening/speaking-focused weekly day now includes one of six stage-appropriate sound contrasts; 30 unique exercises span the five stages. Success requires a fresh audio-based correct choice, or a completed real reading activity when the Russian voice engine is unavailable. The Personal Study Coach guides review of weak or incomplete exercise areas. The Writing Coach supports editing without falsely certifying free writing.
+
+## v0.8 — the prerequisite MICRO staircase before Day 1
+
+On a truly new device, `#today` begins with **78 little pre-course rungs**, not the old full six-word pack and grammar test. The first chapter teaches А, М, О, then ма, мама and a tiny review, with no assumption of existing Russian reading. There are 33 one-letter introductions, 11 two-sound blends, 11 short words, 11 revision lessons and 12 basic phrases. Learners may finish one or several micro-steps per calendar day; the 210 guided sessions begin after graduating this foundation. Existing users whose first session was started are unaffected.
+
+Default Gentle asks two recognition questions only. Steady and Challenge can be selected by the learner for three or four graded questions including typed Cyrillic. An optional 6/6 closed-book test verifies the next three rungs before advancing; otherwise no skipping by tapping. See `docs/TRUE_BEGINNER_STAIRCASE.md`.
