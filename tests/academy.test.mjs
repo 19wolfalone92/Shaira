@@ -40,10 +40,10 @@ test("each unit contains authentic RU teaching material in both learner language
     assert.ok(u.question.choices.includes(u.question.answer),u.id+" correct answer");
   }
 });
-test("beginner and adult picture-word sets preserve 40 themes and 240 cards",()=>{
-  assert.equal(firstWordPacks.length,40);
-  assert.equal(firstWordPacks.flatMap(p=>p.words).length,240);
-  assert.equal(new Set(firstWordPacks.map(p=>p.id)).size,40);
+test("beginner and adult picture-word sets include 80 themes and 480 cards",()=>{
+  assert.equal(firstWordPacks.length,80);
+  assert.equal(firstWordPacks.flatMap(p=>p.words).length,480);
+  assert.equal(new Set(firstWordPacks.map(p=>p.id)).size,80);
   for(const p of firstWordPacks){
     assert.equal(p.words.length,6);
     assert.ok(p.title.en&&p.title.tl);
@@ -53,8 +53,8 @@ test("beginner and adult picture-word sets preserve 40 themes and 240 cards",()=
     }
   }
 });
-test("20 conversations each test one answer grounded in a readable script",()=>{
-  assert.equal(dialogues.length,20);
+test("30 conversations each test one answer grounded in a readable script",()=>{
+  assert.equal(dialogues.length,30);
   for(const d of dialogues){
     assert.ok(stages.some(s=>s.id===d.stage));
     assert.ok(d.lines.length>=4);
