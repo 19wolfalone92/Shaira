@@ -122,16 +122,27 @@ function overview(l){
   '<a class="aca-review-call" href="#academy/review"><span>🧠</span><span><strong>'+UI[l].review+'</strong><small>'+UI[l].reviewInfo+'</small></span><b>'+memory.due.length+'</b></a>'+baseNav(l);
 }
 function firstWordsPage(route,l){
-  const packId=route.split("/")[2];
-  if(!packId){
-    return '<a class="aca-back" href="#academy">← '+UI[l].back+'</a>'+top("Pre-A1 → B2",tx(firstWordPacks.length*6+" Russian word cards",firstWordPacks.length*6+" Russian word cards",l),tx("Learn six words at a time. Listen, read, repeat and test your recall.","Anim na salita bawat aralin. Makinig, bumasa, ulitin at alalahanin.",l))+
-      '<div class="aca-units">'+firstWordPacks.map((p,i)=>
-        '<a class="aca-unit-card" href="#academy/first-words/'+p.id+'"><span class="aca-unit-icon">'+p.icon+'</span><span><small>'+(i+1)+'/40</small><strong>'+esc(val(p.title,l))+'</strong><em>'+(modeDone(p,"words")?UI[l].completed:"6 "+UI[l].words)+'</em></span><span class="aca-chev">›</span></a>').join("")+'</div>';
+  const path=route.split("/"),packId=path[2];
+  const groupOf=p=>{
+    const i=firstWordPacks.indexOf(p);
+    return i<20?"basics":i<40?"everyday":p.stage||"everyday";
+  };
+  const categories=[["basics","Start here"],["everyday","Everyday"],["starter","Foundation"],["a1","A1"],["a2","A2"],["b1","B1"],["b2","B2"]];
+  if(!packId||packId==="group"){
+    const requested=packId==="group"?path[3]:"basics";
+    const selected=categories.some(x=>x[0]===requested)?requested:"basics";
+    const packs=firstWordPacks.filter(p=>groupOf(p)===selected);
+    const tabs='<nav class="aca-vocab-tabs" aria-label="Vocabulary level">'+categories.map(([id,title])=>
+      '<a href="#academy/first-words/group/'+id+'" class="'+(selected===id?'selected':'')+'" '+(selected===id?'aria-current="page"':'')+'>'+title+'</a>').join("")+'</nav>';
+    return '<a class="aca-back" href="#academy">← '+UI[l].back+'</a>'+
+      top("Pre-A1 → B2",firstWordPacks.length*6+" Russian word cards","Choose a topic level. Learn six Russian words at a time, hear the sound, then test your recall.")+
+      tabs+'<div class="aca-units">'+packs.map((p,i)=>
+        '<a class="aca-unit-card" href="#academy/first-words/'+p.id+'"><span class="aca-unit-icon">'+p.icon+'</span><span><small>'+(i+1)+'/'+packs.length+' · '+(p.stage?p.stage.toUpperCase():"START")+'</small><strong>'+esc(val(p.title,l))+'</strong><em>'+(modeDone(p,"words")?UI[l].completed:"6 "+UI[l].words)+'</em></span><span class="aca-chev">›</span></a>').join("")+'</div>';
   }
   const p=firstWordPacks.find(x=>x.id===packId);if(!p)return firstWordsPage("academy/first-words",l);
   const s=ensureSession(route,l);
-  const header='<a class="aca-back" href="#academy/first-words">← '+UI[l].back+'</a>'+top(p.icon+" "+(p.stage?p.stage.toUpperCase():"Pre-A1"),val(p.title,l),tx("Look, say and remember.","Tingnan, sabihin at tandaan.",l));
-  if(s.phase==="done")return header+'<div class="aca-celebrate">🌟<h2>'+UI[l].finish+'</h2><a class="aca-cta aca-link" href="#academy/first-words">'+UI[l].studyNext+' →</a></div>';
+  const header='<a class="aca-back" href="#academy/first-words/group/'+groupOf(p)+'">← '+UI[l].back+'</a>'+top(p.icon+" "+(p.stage?p.stage.toUpperCase():"Pre-A1"),val(p.title,l),tx("Look, say and remember.","Tingnan, sabihin at tandaan.",l));
+  if(s.phase==="done")return header+'<div class="aca-celebrate">🌟<h2>'+UI[l].finish+'</h2><a class="aca-cta aca-link" href="#academy/first-words/group/'+groupOf(p)+'">'+UI[l].studyNext+' →</a></div>';
   if(s.phase==="quiz")return header+answersHtml(s,l,"words");
   return header+'<section class="aca-panel"><h2>'+UI[l].learnFirst+'</h2><div class="aca-word-grid">'+p.words.map(w=>
     '<div><span class="aca-emoji">'+w.icon+'</span><button class="aca-sound" data-aca="sound" data-text="'+esc(w.ru)+'">🔊</button><b lang="ru">'+esc(w.ru)+'</b><small>'+esc(val(w,l))+'</small></div>').join("")+'</div><button class="aca-cta aca-wide" data-aca="start-quiz">'+UI[l].testNow+' →</button></section>';
