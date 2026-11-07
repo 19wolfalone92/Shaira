@@ -50,7 +50,7 @@ function load(){
     if(!data||typeof data!=="object"||Array.isArray(data))return init();
     return {grammar:data.grammar&&typeof data.grammar==="object"?data.grammar:{},
       readings:data.readings&&typeof data.readings==="object"?data.readings:{},
-      drafts:data.drafts&&typeof data.drafts==="object"?data.drafts:{}};
+      drafts:data.drafts&&typeof data.drafts==="object"?data.drafts:{},draftUpdated:data.draftUpdated&&typeof data.draftUpdated==="object"?data.draftUpdated:{}};
   }catch{return init();}
 }
 const data=load();
@@ -263,6 +263,7 @@ export function labAction(button,api){
    const draft=input.value;
    if(a==="save-studio"){
      data.drafts["portfolio:"+id]=draft;
+     data.draftUpdated["portfolio:"+id]=Date.now();
      api.notice?.(save()?TXT[l].saved:TXT[l].saveError);
    }else{
      const node=document.getElementById("lp-studio-feedback");
@@ -273,6 +274,7 @@ export function labAction(button,api){
  if(a==="save-writing"){
    const id=route.split("/")[2],input=document.getElementById("lp-draft");if(!input)return;
    data.drafts[id]=input.value;
+   data.draftUpdated[id]=Date.now();
    const okay=save();
    api.notice?.(okay?TXT[l].saved:TXT[l].saveError);
    return;
@@ -293,7 +295,7 @@ export function labAction(button,api){
    if(session.index>=session.questions.length){
      session.complete=true;
      const rec=data.grammar[session.stage];
-     rec.best=Math.max(rec.best||0,session.correct);rec.attempts=(rec.attempts||0)+1;
+     rec.best=Math.max(rec.best||0,session.correct);rec.lastScore=session.correct;rec.attempts=(rec.attempts||0)+1;
      rec.last=Date.now();save();
    }
    api.render();return;
@@ -312,7 +314,7 @@ export function labAction(button,api){
    if(s.answered.length===p.questions.length){
      s.complete=true;
      const old=data.readings[s.id]||{attempts:0,passed:false};
-     data.readings[s.id]={attempts:old.attempts+1,passed:old.passed||s.answered.every(Boolean),last:Date.now()};
+     data.readings[s.id]={attempts:old.attempts+1,passed:old.passed||s.answered.every(Boolean),lastPassed:s.answered.every(Boolean),lastScore:s.answered.filter(Boolean).length,last:Date.now()};
      save();
    }
    api.render();return;
