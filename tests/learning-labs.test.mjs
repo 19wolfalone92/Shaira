@@ -33,10 +33,10 @@ test("100 contextual grammar questions are complete and bilingual",()=>{
    assert.ok(q.choices.includes(q.answer),q.id);
  }
 });
-test("20 original reading texts offer contextual comprehension and production tasks",()=>{
+test("35 original reading texts offer contextual comprehension and production tasks",()=>{
  assert.equal(readingLibrary.length,35);
- assert.equal(new Set(readingLibrary.map(x=>x.id)).size,20);
- for(const stage of levels)assert.equal(readingsForStage(stage).length,4,stage);
+ assert.equal(new Set(readingLibrary.map(x=>x.id)).size,35);
+ for(const stage of levels)assert.equal(readingsForStage(stage).length,7,stage);
  for(const r of readingLibrary){
    assert.ok(r.text.length>=({starter:80,a1:250,a2:400,b1:600,b2:900}[r.stage]),r.id+" text length appropriate to stage");
    assert.match(r.text,/[\u0400-\u052F]/u,r.id);
@@ -52,11 +52,11 @@ test("20 original reading texts offer contextual comprehension and production ta
    }
  }
 });
-test("30 adult writing assignments are levelled and have meaningful goals",()=>{
+test("45 adult writing assignments are levelled and have meaningful goals",()=>{
  assert.equal(writingTasks.length,45);
- assert.equal(new Set(writingTasks.map(x=>x.id)).size,30);
+ assert.equal(new Set(writingTasks.map(x=>x.id)).size,45);
  for(const level of levels){
-   assert.equal(writingForStage(level).length,6,level);
+   assert.equal(writingForStage(level).length,9,level);
    assert.ok(writingWordTargets[level][0]<writingWordTargets[level][1]);
  }
  for(const w of writingTasks){
